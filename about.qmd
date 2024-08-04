@@ -1,11 +1,16 @@
 ---
-title: "About"
+title: About
+image: image/profile.jpg
+about:
+  template: jolla
+  image-width: 10em
+  links: 
+    - icon: github
+      text: GitHub
+      href: https://github.com/ohshane
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/oh-shane
 ---
 
-About this site
-
-```{python}
-import numpy as np
-
-np.random.randn(4,4)
-```
+Made with ♥ by **Shane Oh**

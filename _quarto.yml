@@ -1,9 +1,17 @@
 project:
   type: website
+  render: 
+    - "*.qmd"
+    - "!*_.qmd"
 
 website:
-  title: "website"
+  title: Shane
+  open-graph: true
+  favicon: image/favicon.ico
+  page-navigation: true
   navbar:
+    title: false
+    logo: image/logo.png
     left:
       - href: index.qmd
         text: Home
@@ -14,6 +22,7 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
-
-
-
+    mainfont: Pretendard Variable
+    monofont: JetBrains Mono
+    include-in-header: header.html
+    
