@@ -1,0 +1,11 @@
+---
+title: "About"
+---
+
+About this site
+
+```{python}
+print('hello world')
+l = [2**i for i in range(11)]
+print(l)
+```
