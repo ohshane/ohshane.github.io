@@ -1,16 +1,16 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\n\nl = [2**i for i in range(11)]\nprint(l)\n\n[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "website",
     "section": "",
     "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\nprint('hello world')\nl = [2**i for i in range(11)]\nprint(l)\n\nhello world\n[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]"
   }
 ]
