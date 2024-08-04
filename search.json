@@ -11,6 +11,6 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\nprint('hello world')\nl = [2**i for i in range(11)]\nprint(l)\n\nhello world\n[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]"
+    "text": "About this site\n\nimport numpy as np\n\nnp.random.randn(4,4)\n\narray([[ 0.44992868,  0.18857322, -0.87184395,  0.31008077],\n       [-0.87126303,  0.09052572, -0.16138057,  2.02408553],\n       [ 0.29798307,  2.32293594, -0.9401635 , -1.3979369 ],\n       [-0.3383509 , -0.52381889,  0.65005249,  0.34899197]])"
   }
 ]
