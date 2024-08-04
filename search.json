@@ -4,7 +4,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site"
+    "text": "About this site\n\nl = [2**i for i in range(11)]\nprint(l)\n\n[1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]"
   },
   {
     "objectID": "index.html",
