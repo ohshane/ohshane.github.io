@@ -1,16 +1,23 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "website",
+    "objectID": "posts/Matplotlib.html",
+    "href": "posts/Matplotlib.html",
+    "title": "GridSpec",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "import numpy as np\nimport matplotlib.pyplot as plt\n\nplt.figure(figsize=(2,2))\nplt.scatter(*np.random.randn(2,100), alpha=.4)"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\nimport numpy as np\n\nnp.random.randn(4,4)\n\narray([[ 0.44992868,  0.18857322, -0.87184395,  0.31008077],\n       [-0.87126303,  0.09052572, -0.16138057,  2.02408553],\n       [ 0.29798307,  2.32293594, -0.9401635 , -1.3979369 ],\n       [-0.3383509 , -0.52381889,  0.65005249,  0.34899197]])"
+    "text": "Made with ♥ by Shane Oh"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Shane",
+    "section": "",
+    "text": "GridSpec\n\n\n\n\n\n\nplot\n\n\n\nAbout plotting with matplotlib\n\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]
