@@ -1,6 +1,21 @@
 ---
+# title: Posts
 listing:
   contents: posts
   type: default
-  categories: true
+  sort: [date, desc]
+  sort-ui: true
+  filter-ui: true
+  fields:
+    - title
+    - subtitle
+    # - author
+    - description
+    - date
+    - image
+    - reading-time
+    - categories
+  # date-format: iso
+  categories: numbered
+page-layout: article
 ---
