@@ -1,0 +1,175 @@
+---
+title: Local Git Commands
+categories:
+  - Git
+---
+
+Thanks Cottle for creating [this](https://learngitbranching.js.org) educational tool.
+Ever thought of git graphs as linked lists? 
+[Here](https://medium.com/swlh/data-structures-used-in-git-implementation-a2c95bf4135e) is a great explanation.
+
+First things first,
+
+## `git commit`
+
+This creates a new commit `C1`, which references where it was based off of --- in this case, a `C0` which is a initial commit becomes the parent.
+
+```{.sh}
+git commit
+```
+
+::: {layout-ncol=2}
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  main:::pointer -.-> C0
+  HEAD:::pointer -.-> C0
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit -.-> Null:::pointer
+  main:::pointer -.-> C1
+  HEAD:::pointer -.-> C1
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+## `git branch`
+
+Branches is Git are simply pointers to a specific commit -- nothing more. This is why many Git enthusiasts chant the mantra
+
+> branch early, and branch often.
+
+When we start mixing branches (pointers) and commits, we will see how these two features combine.
+For now, just remember that a branch essentially says
+
+> I want to include the work of this commit and all parent commits.
+
+```{.sh}
+git branch dev
+```
+
+::: {layout-ncol=2}
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  main:::pointer -.-> C1
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  main:::pointer -.-> C1
+  dev:::pointer -.-> C1
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+```{.sh}
+git checkout -b dev
+```
+`-b` for branch
+
+```{.sh}
+git switch -c dev
+```
+`-c` for create
+
+::: {layout-ncol=2}
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  main:::pointer -.-> C1
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  main:::pointer -.-> C1
+  dev:::pointer -.-> C1
+  HEAD:::pointer -.-> dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+## `git merge`
+
+`merge` command eventually creates a special commit which has two unique parents.
+A commit with two parents essentially means
+
+> I want to include all the work from both parents, and the set of all their parents.
+
+```{.sh}
+git merge dev # <1>
+git checkout dev
+git merge main # <2>
+```
+1. The command merges `dev` branch into the current `main` branch.
+This leaves the `dev` branch (pointer) behind.
+2. We don’t need to derive the work from both the `main` and `dev` parents again because the `dev` graph is a subgraph of the `main` graph. Instead, we can simply move the `dev` pointer to match the position of the `main` pointer.
+
+::: {layout-ncol=3}
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C3
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C2:::commit
+  C4:::commit --> C3:::commit
+
+  main:::pointer -.-> C4
+  dev:::pointer -.-> C3
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C2:::commit
+  C4:::commit --> C3:::commit
+
+  main:::pointer -.-> C4
+  dev:::pointer -.-> C4
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+## `git rebase`
