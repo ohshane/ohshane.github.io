@@ -1,10 +1,45 @@
 [
   {
-    "objectID": "posts/Matplotlib.html",
-    "href": "posts/Matplotlib.html",
-    "title": "GridSpec",
+    "objectID": "posts/Git.html",
+    "href": "posts/Git.html",
+    "title": "Local Git Commands",
     "section": "",
-    "text": "import numpy as np\nimport matplotlib.pyplot as plt\n\nplt.figure(figsize=(2,2))\nplt.scatter(*np.random.randn(2,100), alpha=.4)"
+    "text": "Thanks Cottle for creating this educational tool. Ever thought of Git graphs as linked lists? Here is a great explanation.\nFirst things first,"
+  },
+  {
+    "objectID": "posts/Git.html#git-commit",
+    "href": "posts/Git.html#git-commit",
+    "title": "Local Git Commands",
+    "section": "git commit",
+    "text": "git commit\nThis creates a new commit C1, which references where it was based off of — in this case, a C0 which is a initial commit becomes the parent.\ngit commit\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  main:::pointer -.-&gt; C0\n  HEAD:::pointer -.-&gt; C0\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C1:::commit --&gt; C0:::commit -.-&gt; Null:::pointer\n  main:::pointer -.-&gt; C1\n  HEAD:::pointer -.-&gt; C1\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000"
+  },
+  {
+    "objectID": "posts/Git.html#git-branch",
+    "href": "posts/Git.html#git-branch",
+    "title": "Local Git Commands",
+    "section": "git branch",
+    "text": "git branch\nBranches is Git are simply pointers to a specific commit – nothing more. This is why many Git enthusiasts chant the mantra\n\nbranch early, and branch often.\n\nWhen we start mixing branches (pointers) and commits, we will see how these two features combine. For now, just remember that a branch essentially says\n\nI want to include the work of this commit and all parent commits.\n\ngit branch dev\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  C1:::commit --&gt; C0:::commit\n  main:::pointer -.-&gt; C1\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  C1:::commit --&gt; C0:::commit\n  main:::pointer -.-&gt; C1\n  dev:::pointer -.-&gt; C1\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\ngit checkout -b dev\n-b for branch\ngit switch -c dev\n-c for create\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  C1:::commit --&gt; C0:::commit\n  main:::pointer -.-&gt; C1\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  C1:::commit --&gt; C0:::commit\n  main:::pointer -.-&gt; C1\n  dev:::pointer -.-&gt; C1\n  HEAD:::pointer -.-&gt; dev\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000"
+  },
+  {
+    "objectID": "posts/Git.html#git-merge",
+    "href": "posts/Git.html#git-merge",
+    "title": "Local Git Commands",
+    "section": "git merge",
+    "text": "git merge\nmerge command eventually creates a special commit which has two unique parents. A commit with two parents essentially means\n\nI want to include all the work from both parents, and the set of all their parents.\n\n1git merge dev\ngit checkout dev\n2git merge main\n\n1\n\nThe command merges dev branch into the current main branch. This leaves the dev branch (pointer) behind.\n\n2\n\nWe don’t need to derive the work from both the main and dev parents again because the dev graph is a subgraph of the main graph. Instead, we can simply move the dev pointer to match the position of the main pointer.\n\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  C1:::commit --&gt; C0:::commit\n  C2:::commit --&gt; C1:::commit\n  C3:::commit --&gt; C1:::commit\n  main:::pointer -.-&gt; C2\n  dev:::pointer -.-&gt; C3\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  C1:::commit --&gt; C0:::commit\n  C2:::commit --&gt; C1:::commit\n  C3:::commit --&gt; C1:::commit\n  C4:::commit --&gt; C2:::commit\n  C4:::commit --&gt; C3:::commit\n\n  main:::pointer -.-&gt; C4\n  dev:::pointer -.-&gt; C3\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C0:::commit -.-&gt; Null:::pointer\n  C1:::commit --&gt; C0:::commit\n  C2:::commit --&gt; C1:::commit\n  C3:::commit --&gt; C1:::commit\n  C4:::commit --&gt; C2:::commit\n  C4:::commit --&gt; C3:::commit\n\n  main:::pointer -.-&gt; C4\n  dev:::pointer -.-&gt; C4\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000"
+  },
+  {
+    "objectID": "posts/Git.html#git-rebase",
+    "href": "posts/Git.html#git-rebase",
+    "title": "Local Git Commands",
+    "section": "git rebase",
+    "text": "git rebase"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Posts",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n.kube/config\n\n\nWith KubeContext\n\n\n2 min\n\n\n\nK8s\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 23, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nLocal Git Commands\n\n\nEver thought of Git graphs as Linked Lists?\n\n\n3 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
@@ -14,10 +49,10 @@
     "text": "Made with ♥ by Shane Oh"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Shane",
+    "objectID": "posts/Kubeconfig.html",
+    "href": "posts/Kubeconfig.html",
+    "title": ".kube/config",
     "section": "",
-    "text": "GridSpec\n\n\n\n\n\n\nplot\n\n\n\nAbout plotting with matplotlib\n\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.\nBelow is an example of the configured .kube/config file:\n\n\n.kube/config\n\n\napiVersion: v1\nclusters:\n- cluster:\n    certificate-authority-data: LS0...LS0tCg==\n    server: https://kubernetes.docker.internal:6443\n  name: docker-desktop\n- cluster:\n    insecure-skip-tls-verify: true\n    server: https://121.135.111.111:6443\n  name: raspberrypi\n- cluster:\n    certificate-authority: /Users/shane/.minikube/ca.crt\n    extensions:\n    - extension:\n        last-update: Sun, 20 Aug 2023 17:04:00 KST\n        version: v1.30.1\n        provider: minikube.sigs.k8s.io\n      name: cluster_info\n    server: https://127.0.0.1:60544\n  name: minikube\n\nThe above configuration file defines three clusters:\n\ndocker-desktop\nraspberrypi (the Raspberry Pi cluster at home, with the server address https://121.135.111.111:6443)\nminikube\n\nWith this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:\nkubectl config use-context raspberrypi\nTo bypass the process of verifying the SSL certificate as a public certificate, use the following command:\n- cluster:\n    insecure-skip-tls-verify: true"
   }
 ]
