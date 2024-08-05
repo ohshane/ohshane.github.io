@@ -1,11 +1,15 @@
 ---
 title: Local Git Commands
+subtitle: "Ever thought of Git graphs as Linked Lists?"
+description: ""
+author: Shane Oh
+date: 2023-06-23
 categories:
   - Git
 ---
 
 Thanks Cottle for creating [this](https://learngitbranching.js.org) educational tool.
-Ever thought of git graphs as linked lists? 
+Ever thought of Git graphs as linked lists? 
 [Here](https://medium.com/swlh/data-structures-used-in-git-implementation-a2c95bf4135e) is a great explanation.
 
 First things first,
