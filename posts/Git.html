@@ -163,6 +163,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#git-branch" id="toc-git-branch" class="nav-link" data-scroll-target="#git-branch"><code>git branch</code></a></li>
   <li><a href="#git-merge" id="toc-git-merge" class="nav-link" data-scroll-target="#git-merge"><code>git merge</code></a></li>
   <li><a href="#git-rebase" id="toc-git-rebase" class="nav-link" data-scroll-target="#git-rebase"><code>git rebase</code></a></li>
+  <li><a href="#git-checkout" id="toc-git-checkout" class="nav-link" data-scroll-target="#git-checkout"><code>git checkout</code></a>
+  <ul class="collapse">
+  <li><a href="#relative-reference-and" id="toc-relative-reference-and" class="nav-link" data-scroll-target="#relative-reference-and">Relative reference (<code>^</code> and <code>~</code>)</a></li>
+  <li><a href="#branch-forcing-git-branch--f" id="toc-branch-forcing-git-branch--f" class="nav-link" data-scroll-target="#branch-forcing-git-branch--f">Branch forcing (<code>git branch -f</code>)</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -221,9 +226,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
-  main:::pointer -.-&gt; C0
-  HEAD:::pointer -.-&gt; C0
+  main:::pointer -.-&gt; C0:::commit
+  HEAD:::pointer -.-&gt; main
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 </pre>
@@ -238,9 +242,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C1:::commit --&gt; C0:::commit -.-&gt; Null:::pointer
+  C1:::commit --&gt; C0:::commit
   main:::pointer -.-&gt; C1
-  HEAD:::pointer -.-&gt; C1
+  HEAD:::pointer -.-&gt; main
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 </pre>
@@ -262,7 +266,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>I want to include the work of this commit and all parent commits.</p>
 </blockquote>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div>
 
 </div>
@@ -274,7 +279,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
   C1:::commit --&gt; C0:::commit
   main:::pointer -.-&gt; C1
   HEAD:::pointer -.-&gt; main
@@ -292,7 +296,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
   C1:::commit --&gt; C0:::commit
   main:::pointer -.-&gt; C1
   dev:::pointer -.-&gt; C1
@@ -307,10 +310,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><code>-b</code> for branch</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><code>-c</code> for create</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div>
 
 </div>
@@ -322,7 +325,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
   C1:::commit --&gt; C0:::commit
   main:::pointer -.-&gt; C1
   HEAD:::pointer -.-&gt; main
@@ -340,7 +342,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
   C1:::commit --&gt; C0:::commit
   main:::pointer -.-&gt; C1
   dev:::pointer -.-&gt; C1
@@ -362,31 +363,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <blockquote class="blockquote">
 <p>I want to include all the work from both parents, and the set of all their parents.</p>
 </blockquote>
-<div class="sourceCode" id="annotated-cell-5"><pre class="sourceCode sh code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-1" class="code-annotation-target"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge dev</span>
-<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout dev</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-3" class="code-annotation-target"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge main</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="annotated-cell-5"><pre class="sourceCode sh code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge dev</span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout dev</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-4" class="code-annotation-target"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge main</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="1" data-code-annotation="1">The command merges <code>dev</code> branch into the current <code>main</code> branch. This leaves the <code>dev</code> branch (pointer) behind.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="1">The command merges <code>dev</code> branch into the current <code>main</code> branch. This leaves the <code>dev</code> branch (pointer) behind.</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="3" data-code-annotation="2">We don’t need to derive the work from both the <code>main</code> and <code>dev</code> parents again because the <code>dev</code> graph is a subgraph of the <code>main</code> graph. Instead, we can simply move the <code>dev</code> pointer to match the position of the <code>main</code> pointer.</span>
+<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="2">We don’t need to derive the work from both the <code>main</code> and <code>dev</code> parents again because the <code>dev</code> graph is a subgraph of the <code>main</code> graph. Instead, we can simply move the <code>dev</code> pointer to match the position of the <code>main</code> pointer. This is also called fast forward.</span>
 </dd>
 </dl>
 <div>
 
 </div>
-<div class="quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-panel" data-layout-ncol="4">
 <div class="quarto-layout-row">
-<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
   C1:::commit --&gt; C0:::commit
   C2:::commit --&gt; C1:::commit
   C3:::commit --&gt; C1:::commit
@@ -401,13 +402,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
   C1:::commit --&gt; C0:::commit
   C2:::commit --&gt; C1:::commit
   C3:::commit --&gt; C1:::commit
@@ -425,13 +425,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div class="cell quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TB
-  C0:::commit -.-&gt; Null:::pointer
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3:::commit --&gt; C1:::commit
+  C4:::commit --&gt; C2:::commit
+  C4:::commit --&gt; C3:::commit
+
+  main:::pointer -.-&gt; C4
+  dev:::pointer -.-&gt; C3
+  HEAD:::pointer -.-&gt; dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
   C1:::commit --&gt; C0:::commit
   C2:::commit --&gt; C1:::commit
   C3:::commit --&gt; C1:::commit
@@ -440,7 +462,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
   main:::pointer -.-&gt; C4
   dev:::pointer -.-&gt; C4
-  HEAD:::pointer -.-&gt; main
+  HEAD:::pointer -.-&gt; dev
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 </pre>
@@ -454,8 +476,240 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="git-rebase" class="level2">
 <h2 class="anchored" data-anchor-id="git-rebase"><code>git rebase</code></h2>
+<p><code>rebase</code> copies the commits and stack them on somewhere else.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The position of the <code>HEAD</code> pointer is different when merging and rebasing.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main <span class="co"># &lt;- HEAD</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout dev <span class="co"># &lt;- HEAD</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When rebasing, we are willing to <code>rebase</code> with copied commits onto <code>main</code>.</p>
+</div>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout dev</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> rebase main</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge dev</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="4">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3:::commit --&gt; C1:::commit
+  C4:::commit --&gt; C3:::commit
+  main:::pointer -.-&gt; C2
+  dev:::pointer -.-&gt; C4
+  HEAD:::pointer -.-&gt; dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3':::commit --&gt; C2:::commit
+  C4':::commit --&gt; C3':::commit
+  main:::pointer -.-&gt; C2
+  dev:::pointer -.-&gt; C4'
+  HEAD:::pointer -.-&gt; dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3':::commit --&gt; C2:::commit
+  C4':::commit --&gt; C3':::commit
+  main:::pointer -.-&gt; C2
+  dev:::pointer -.-&gt; C4'
+  HEAD:::pointer -.-&gt; main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3':::commit --&gt; C2:::commit
+  C4':::commit --&gt; C3':::commit
+  main:::pointer -.-&gt; C4'
+  dev:::pointer -.-&gt; C4'
+  HEAD:::pointer -.-&gt; main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="git-checkout" class="level2">
+<h2 class="anchored" data-anchor-id="git-checkout"><code>git checkout</code></h2>
+<p>Didn’t we use the <code>git checkout</code> command without any discomfort so far? What <code>checkout</code> does is point <code>HEAD</code> to the desired object such as a branch or a commit.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout 1b7979e16daafabf7c052411b083ea9e2e8a13d5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="relative-reference-and" class="level3">
+<h3 class="anchored" data-anchor-id="relative-reference-and">Relative reference (<code>^</code> and <code>~</code>)</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout C1</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout C2^</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main^^</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main~2</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout HEAD^<span class="kw">;</span> <span class="fu">git</span> checkout HEAD^</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3:::commit --&gt; C2:::commit
+  main:::pointer -.-&gt; C3
+  HEAD:::pointer -.-&gt; main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3:::commit --&gt; C2:::commit
+  main:::pointer -.-&gt; C3
+  HEAD:::pointer -.-&gt; C1
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="branch-forcing-git-branch--f" class="level3">
+<h3 class="anchored" data-anchor-id="branch-forcing-git-branch--f">Branch forcing (<code>git branch -f</code>)</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-f</span> feature dev^</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3:::commit --&gt; C1:::commit
+  C4:::commit --&gt; C3:::commit
+  C5:::commit --&gt; C4:::commit
+  C6:::commit --&gt; C5:::commit
+  C7:::commit --&gt; C4:::commit
+  main:::pointer -.-&gt; C2
+  dev:::pointer -.-&gt; C6
+  feature:::pointer -.-&gt; C7
+  HEAD:::pointer -.-&gt; main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  C1:::commit --&gt; C0:::commit
+  C2:::commit --&gt; C1:::commit
+  C3:::commit --&gt; C1:::commit
+  C4:::commit --&gt; C3:::commit
+  C5:::commit --&gt; C4:::commit
+  C6:::commit --&gt; C5:::commit
+  main:::pointer -.-&gt; C2
+  dev:::pointer -.-&gt; C6
+  feature:::pointer -.-&gt; C5
+  HEAD:::pointer -.-&gt; main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
