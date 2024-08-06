@@ -25,18 +25,17 @@ git commit
 ::: {layout-ncol=2}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
-  main:::pointer -.-> C0
-  HEAD:::pointer -.-> C0
+  main:::pointer -.-> C0:::commit
+  HEAD:::pointer -.-> main
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 ```
 
 ```{mermaid}
 flowchart TB
-  C1:::commit --> C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
   main:::pointer -.-> C1
-  HEAD:::pointer -.-> C1
+  HEAD:::pointer -.-> main
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 ```
@@ -60,7 +59,6 @@ git branch dev
 ::: {layout-ncol=2}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   HEAD:::pointer -.-> main
@@ -70,7 +68,6 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   dev:::pointer -.-> C1
@@ -93,7 +90,6 @@ git switch -c dev
 ::: {layout-ncol=2}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   HEAD:::pointer -.-> main
@@ -103,7 +99,6 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   dev:::pointer -.-> C1
@@ -121,18 +116,20 @@ A commit with two parents essentially means
 > I want to include all the work from both parents, and the set of all their parents.
 
 ```{.sh}
+git checkout main
 git merge dev # <1>
 git checkout dev
 git merge main # <2>
 ```
 1. The command merges `dev` branch into the current `main` branch.
 This leaves the `dev` branch (pointer) behind.
-2. We don’t need to derive the work from both the `main` and `dev` parents again because the `dev` graph is a subgraph of the `main` graph. Instead, we can simply move the `dev` pointer to match the position of the `main` pointer.
+2. We don’t need to derive the work from both the `main` and `dev` parents again because the `dev` graph is a subgraph of the `main` graph.
+Instead, we can simply move the `dev` pointer to match the position of the `main` pointer.
+This is also called fast forward.
 
-::: {layout-ncol=3}
+::: {layout-ncol=4}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   C2:::commit --> C1:::commit
   C3:::commit --> C1:::commit
@@ -145,7 +142,6 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   C2:::commit --> C1:::commit
   C3:::commit --> C1:::commit
@@ -161,7 +157,21 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C2:::commit
+  C4:::commit --> C3:::commit
+
+  main:::pointer -.-> C4
+  dev:::pointer -.-> C3
+  HEAD:::pointer -.-> dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
   C1:::commit --> C0:::commit
   C2:::commit --> C1:::commit
   C3:::commit --> C1:::commit
@@ -170,10 +180,98 @@ flowchart TB
 
   main:::pointer -.-> C4
   dev:::pointer -.-> C4
-  HEAD:::pointer -.-> main
+  HEAD:::pointer -.-> dev
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 ```
 :::
 
 ## `git rebase`
+
+`rebase` copies the commits and stack them on somewhere else.
+
+::: {.callout-note}
+
+The position of the `HEAD` pointer is different when merging and rebasing. 
+
+```{.sh}
+git checkout main # <- HEAD
+git merge dev
+```
+
+```{.sh}
+git checkout dev # <- HEAD
+git rebase main
+```
+When rebasing, we are willing to `rebase` with copied commits onto `main`.
+:::
+
+```{.sh}
+git checkout dev
+git rebase main
+git checkout main
+git merge dev
+```
+
+::: {layout-ncol=4}
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C3:::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C4
+  HEAD:::pointer -.-> dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3':::commit --> C2:::commit
+  C4':::commit --> C3':::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C4'
+  HEAD:::pointer -.-> dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3':::commit --> C2:::commit
+  C4':::commit --> C3':::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C4'
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3':::commit --> C2:::commit
+  C4':::commit --> C3':::commit
+  main:::pointer -.-> C4'
+  dev:::pointer -.-> C4'
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+## `git checkout`
+
+Didn't we use the `git checkout` command without any discomfort so far?
+What `checkout` does is point `HEAD` to the desired object such as a branch or a commit.
+
+```{.sh}
+git checkout 924c31c8d8cb40bc0ef41548aa97cb05c3eb3ce4
+```
