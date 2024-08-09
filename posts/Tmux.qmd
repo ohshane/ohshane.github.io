@@ -1,10 +1,11 @@
 
 ---
 title: Tmux
-subtitle: "Terminal multiplexer --- Goes well with practicing Git"
+subtitle: "Terminal multiplexer"
 description: ""
 author: Shane Oh
-date: 2023-04-14
+date: 2023-06-05
+image: "https://raw.githubusercontent.com/tmux/tmux/master/logo/tmux-logo.svg"
 categories:
   - Linux
 ---
@@ -17,48 +18,178 @@ brew install tmux
 
 ```{=html}
 <div id="fig-tmux">
-  <div class="session session-1">
-    <div class="window">window</div>
-    <div class="window">window</div>
-  </div>
-  <div class="session session-2">
-    <div class="window">window</div>
-    <div class="window">window</div>
-  </div>
-  <div class="session session-3">
-    <div class="window">window</div>
-    <div class="window">window</div>
+
+  <div class="--box --session">
+    <div class="--tag">session</div>
+
+    <div class="--box --window">
+      <div class="--tag">window</div>
+      <div class="--panes">
+        <div class="--pane --pane-1">pane</div>
+        <div class="--pane --pane-2">
+          <div class="--pane --pane-21">pane</div>
+          <div class="--pane --pane-22">pane</div>
+        </div>
+      </div>
+      <div class="--pane-bottom"></div>
+    </div>
   </div>
 </div>
 
 <style>
   #fig-tmux {
+    width: 50%;
+    min-width: 300px;
+    margin: 50px auto;
+  }
+
+  .--tag {
+    margin: 10px;
+  }
+
+  .--box {
     box-sizing: border-box;
   }
-
-  .session {
-    position: absolute;
-    border: 2px solid black;
-    width: fit-content;
-    background: #eee;
+  
+  .--session {
+    border: 1px dashed black;
   }
 
-  .session-1 {
-    transform: translate(10, 10);
-    z-index: 1;
-  }
-
-  .session-2 {
-    transform: translate(20, 20);
-    z-index: 2;
-  }
-
-  .window {
+  .--window {
     border: 1px solid black;
-    margin: 5px;
-    padding: 10px;
-    width: fit-content;
-    background: #fff;
+    margin: 10px;
+  }
+
+  .--panes {
+    display: flex;
+  }
+
+  .--pane-1 {
+    display: flex;
+    width: 50%;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+  }
+
+  .--pane-2 {
+    width: 50%;
+    height: 200px;
+  }
+
+  .--pane-21 {
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+  }
+
+  .--pane-22 {
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+  }
+
+  .--pane-bottom {
+    background: #00c200;
+    height: 10px;
   }
 </style>
 ```
+
+## Intro {#intro}
+There are three main concepts in `tmux`: `session`, `window`, and `pane`.
+Start by entering `tmux` in the terminal.
+
+The screen you see right after entering the command is a `pane` in a `window`.
+
+## Pane
+
+Split the `pane` using {{<kbd Ctrl-b>}} {{<kbd '%'>}} and {{<kbd Ctrl-b>}} {{<kbd '"'>}}.
+
+The {{<kbd Ctrl-b>}} works as a `prefix` to send a command --- later below.
+
+Navigate through the panes using 
+{{<kbd Ctrl-b>}} {{<kbd &uarr;>}},
+{{<kbd Ctrl-b>}} {{<kbd &rarr;>}},
+{{<kbd Ctrl-b>}} {{<kbd &darr;>}},
+{{<kbd Ctrl-b>}} {{<kbd &larr;>}}.
+
+## Window
+
+Open a new `window` with {{<kbd Ctrl-b>}} {{<kbd c>}}.
+
+See the windows you opened on the bottom green bar?
+This gives us some information about the `window`s in the `session`.
+The current window you are seeing is marked with an `*`.
+
+Navigate through the windows using
+{{<kbd Ctrl-b>}} {{<kbd n>}} --- `n` is for next.
+This will cycle through all the windows in the current session.
+Reverse navigate with {{<kbd Ctrl-b>}} {{<kbd p>}} --- `p` is for previous.
+You can also navigate directly to a `window` using the index. The bindings will be like {{<kbd Ctrl-b>}} {{<kbd 1>}}.
+
+## Session
+
+From the very [first](#intro), right after the `tmux` command, you are attached to a session with an auto generated index. 
+Detach the session with the {{<kbd Ctrl-b>}} {{<kbd d>}} command --- and `d` is for detach.
+It's almost the same as starting the `bash` session and detaching with the `exit` command.
+Tmux can also be detached using the `exit` command, but this can be tedious because each split pane needs to be closed individually with the `exit` command.
+
+## Configurations
+
+Feeling comfortable with the keybindings? I hope not. The default keybindings can put significant stress on your left pinky.
+This brings us to the `.tmux.conf` file for some configuration.
+
+```{.sh filename="~/.tmux.conf" .code-overflow-wrap}
+unbind-key C-b
+set -g prefix C-a
+bind-key C-a send-prefix # <1>
+
+set -g mouse on # <2>
+set -g base-index 1 # <3>
+set -g renumber-windows on
+set -g default-terminal "tmux-256color"
+
+bind r source-file ~/.tmux.conf \; display-message ".tmux.conf reloaded!" # <4>
+
+bind '\' split-window -h -c "#{pane_current_path}" # <5>
+bind - split-window -v -c "#{pane_current_path}" # <6>
+
+bind h select-pane -L # <7>
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+bind x kill-pane # <8>
+bind X kill-window # <9>
+```
+
+1. Replace the prefix key from {{<kbd Ctrl-b>}} to {{<kbd Ctrl-a>}}. When you are using a keyboard like HHKB, this will come in pretty handy. Let's talk more about HHKB in some other posts.
+2. Pretty straight forward. Helps you navigate split panes with a mouse.
+3. The default is `0`. For me, `0` key is a bit far for everyday use.
+4. Reload the .tmux.conf file and display a message when done --- similar to something like `source .bashrc`.
+5. Split the window horizontally using the current pane's path.
+6. Split the window vertically using the current pane's path.
+7. Move between panes using Vim-style keybindings.
+8. Kill the current pane.
+9. Kill the current window.
+
+Personal preference on the following one.
+
+```{.sh filename=".zshrc" .code-overflow-wrap}
+tmux() {
+    if [ "$#" -eq 0 ]; then
+        command tmux new-session -A -s default # <1>
+    else
+        command tmux "$@"
+    fi
+}
+```
+1. Attach a session named `default` when `tmux` is typed.
+
