@@ -42,11 +42,11 @@
     "text": "git checkout\nDidn’t we use the git checkout command without any discomfort so far? What checkout does is point HEAD to the desired object such as a branch or a commit.\ngit checkout 1b7979e16daafabf7c052411b083ea9e2e8a13d5\n\nRelative reference (^ and ~)\ngit checkout C1\ngit checkout C2^\ngit checkout main^^\ngit checkout main~2\ngit checkout HEAD^; git checkout HEAD^\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C1:::commit --&gt; C0:::commit\n  C2:::commit --&gt; C1:::commit\n  C3:::commit --&gt; C2:::commit\n  main:::pointer -.-&gt; C3\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C1:::commit --&gt; C0:::commit\n  C2:::commit --&gt; C1:::commit\n  C3:::commit --&gt; C2:::commit\n  main:::pointer -.-&gt; C3\n  HEAD:::pointer -.-&gt; C1\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\nBranch forcing (git branch -f)\ngit branch -f feature dev^\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C1:::commit --&gt; C0:::commit\n  C2:::commit --&gt; C1:::commit\n  C3:::commit --&gt; C1:::commit\n  C4:::commit --&gt; C3:::commit\n  C5:::commit --&gt; C4:::commit\n  C6:::commit --&gt; C5:::commit\n  C7:::commit --&gt; C4:::commit\n  main:::pointer -.-&gt; C2\n  dev:::pointer -.-&gt; C6\n  feature:::pointer -.-&gt; C7\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000\n\n\n\n\n\n\n\n\n\n\n\nflowchart TB\n  C1:::commit --&gt; C0:::commit\n  C2:::commit --&gt; C1:::commit\n  C3:::commit --&gt; C1:::commit\n  C4:::commit --&gt; C3:::commit\n  C5:::commit --&gt; C4:::commit\n  C6:::commit --&gt; C5:::commit\n  main:::pointer -.-&gt; C2\n  dev:::pointer -.-&gt; C6\n  feature:::pointer -.-&gt; C5\n  HEAD:::pointer -.-&gt; main\n  classDef commit fill: #abc, color: #000\n  classDef pointer fill: #fff, color #000, font: #000"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Posts",
+    "objectID": "posts/Kubeconfig.html",
+    "href": "posts/Kubeconfig.html",
+    "title": ".kube/config",
     "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n.kube/config\n\n\nWith KubeContext\n\n\n2 min\n\n\n\nK8s\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 23, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nLocal Git Commands\n\n\nEver thought of Git graphs as Linked Lists?\n\n\n6 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.\nBelow is an example of the configured .kube/config file:\n\n\n.kube/config\n\n\napiVersion: v1\nclusters:\n- cluster:\n    certificate-authority-data: LS0...LS0tCg==\n    server: https://kubernetes.docker.internal:6443\n  name: docker-desktop\n- cluster:\n    insecure-skip-tls-verify: true\n    server: https://121.135.111.111:6443\n  name: raspberrypi\n- cluster:\n    certificate-authority: /Users/shane/.minikube/ca.crt\n    extensions:\n    - extension:\n        last-update: Sun, 20 Aug 2023 17:04:00 KST\n        version: v1.30.1\n        provider: minikube.sigs.k8s.io\n      name: cluster_info\n    server: https://127.0.0.1:60544\n  name: minikube\n\nThe above configuration file defines three clusters:\n\ndocker-desktop\nraspberrypi (the Raspberry Pi cluster at home, with the server address https://121.135.111.111:6443)\nminikube\n\nWith this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:\nkubectl config use-context raspberrypi\nTo bypass the process of verifying the SSL certificate as a public certificate, use the following command:\n- cluster:\n    insecure-skip-tls-verify: true"
   },
   {
     "objectID": "about.html",
@@ -56,10 +56,52 @@
     "text": "Made with ♥ by Shane Oh"
   },
   {
-    "objectID": "posts/Kubeconfig.html",
-    "href": "posts/Kubeconfig.html",
-    "title": ".kube/config",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Posts",
     "section": "",
-    "text": "I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.\nBelow is an example of the configured .kube/config file:\n\n\n.kube/config\n\n\napiVersion: v1\nclusters:\n- cluster:\n    certificate-authority-data: LS0...LS0tCg==\n    server: https://kubernetes.docker.internal:6443\n  name: docker-desktop\n- cluster:\n    insecure-skip-tls-verify: true\n    server: https://121.135.111.111:6443\n  name: raspberrypi\n- cluster:\n    certificate-authority: /Users/shane/.minikube/ca.crt\n    extensions:\n    - extension:\n        last-update: Sun, 20 Aug 2023 17:04:00 KST\n        version: v1.30.1\n        provider: minikube.sigs.k8s.io\n      name: cluster_info\n    server: https://127.0.0.1:60544\n  name: minikube\n\nThe above configuration file defines three clusters:\n\ndocker-desktop\nraspberrypi (the Raspberry Pi cluster at home, with the server address https://121.135.111.111:6443)\nminikube\n\nWith this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:\nkubectl config use-context raspberrypi\nTo bypass the process of verifying the SSL certificate as a public certificate, use the following command:\n- cluster:\n    insecure-skip-tls-verify: true"
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n.kube/config\n\n\nWith KubeContext\n\n\n2 min\n\n\n\nK8s\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 23, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nLocal Git Commands\n\n\nEver thought of Git graphs as Linked Lists?\n\n\n6 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nTmux\n\n\nTerminal multiplexer — Goes well with practicing Git\n\n\n4 min\n\n\n\nLinux\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/Tmux.html",
+    "href": "posts/Tmux.html",
+    "title": "Tmux",
+    "section": "",
+    "text": "Start off with installing tmux with homebrew on Mac."
+  },
+  {
+    "objectID": "posts/Tmux.html#intro",
+    "href": "posts/Tmux.html#intro",
+    "title": "Tmux",
+    "section": "Intro",
+    "text": "Intro\nThere are three main concepts in tmux: session, window, and pane. Start by entering tmux in the terminal.\nThe screen you see right after entering the command is a pane in a window."
+  },
+  {
+    "objectID": "posts/Tmux.html#pane",
+    "href": "posts/Tmux.html#pane",
+    "title": "Tmux",
+    "section": "Pane",
+    "text": "Pane\nSplit the pane using Ctrl-bCtrl-b %% and Ctrl-bCtrl-b \"\".\nThe Ctrl-bCtrl-b works as a prefix to send a command — later below.\nNavigate through the panes using Ctrl-bCtrl-b ↑↑, Ctrl-bCtrl-b →→, Ctrl-bCtrl-b ↓↓, Ctrl-bCtrl-b ←←."
+  },
+  {
+    "objectID": "posts/Tmux.html#window",
+    "href": "posts/Tmux.html#window",
+    "title": "Tmux",
+    "section": "Window",
+    "text": "Window\nOpen a new window with Ctrl-bCtrl-b cc.\nSee the windows you opened on the bottom green bar? This gives us some information about the windows in the session. The current window you are seeing is marked with an *.\nNavigate through the windows using Ctrl-bCtrl-b nn — n is for next. This will cycle through all the windows in the current session. Reverse navigate with Ctrl-bCtrl-b pp — p is for previous. You can also navigate directly to a window using the index. The bindings will be like Ctrl-bCtrl-b 11."
+  },
+  {
+    "objectID": "posts/Tmux.html#session",
+    "href": "posts/Tmux.html#session",
+    "title": "Tmux",
+    "section": "Session",
+    "text": "Session\nFrom the very first, right after the tmux command, you are attached to a session with an auto generated index. Detach the session with the Ctrl-bCtrl-b dd command — and d is for detach. It’s almost the same as starting the bash session and detaching with the exit command. Tmux can also be detached using the exit command, but this can be tedious because each split pane needs to be closed individually with the exit command."
+  },
+  {
+    "objectID": "posts/Tmux.html#configurations",
+    "href": "posts/Tmux.html#configurations",
+    "title": "Tmux",
+    "section": "Configurations",
+    "text": "Configurations\nFeeling comfortable with the keybindings? I hope not. The default keybindings can put significant stress on your left pinky. This brings us to the .tmux.conf file for some configuration.\n\n\n~/.tmux.conf\n\nunbind-key C-b\nset -g prefix C-a\n1bind-key C-a send-prefix\n\n2set -g mouse on\n3set -g base-index 1\nset -g renumber-windows on\nset -g default-terminal \"tmux-256color\"\n\n4bind r source-file ~/.tmux.conf \\; display-message \".tmux.conf reloaded!\"\n\n5bind '\\' split-window -h -c \"#{pane_current_path}\"\n6bind - split-window -v -c \"#{pane_current_path}\"\n\n7bind h select-pane -L\nbind j select-pane -D\nbind k select-pane -U\nbind l select-pane -R\n\n8bind x kill-pane\n9bind X kill-window\n\n\n1\n\nReplace the prefix key from Ctrl-bCtrl-b to Ctrl-aCtrl-a. When you are using a keyboard like HHKB, this will come in pretty handy. Let’s talk more about HHKB in some other posts.\n\n2\n\nPretty straight forward. Helps you navigate split panes with a mouse.\n\n3\n\nThe default is 0. For me, 0 key is a bit far for everyday use.\n\n4\n\nReload the .tmux.conf file and display a message when done — similar to something like source .bashrc.\n\n5\n\nSplit the window horizontally using the current pane’s path.\n\n6\n\nSplit the window vertically using the current pane’s path.\n\n7\n\nMove between panes using Vim-style keybindings.\n\n8\n\nKill the current pane.\n\n9\n\nKill the current window."
   }
 ]

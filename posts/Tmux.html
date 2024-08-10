@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Shane Oh">
+<meta name="dcterms.date" content="2023-04-14">
 
-<title>Posts – Shane</title>
+<title>Tmux – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +22,62 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./image/favicon.ico" rel="icon">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../image/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/kbd/kbd.js"></script>
+<link href="../site_libs/quarto-contrib/kbd/kbd.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,72 +105,15 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-subtitle','listing-author','listing-description','listing-date','listing-image','listing-reading-time','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <link rel="apple-touch-icon" href="image/apple-touch-icon.png">
 <link rel="apple-touch-startup-image" href="image/profile.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Posts – Shane">
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Tmux – Shane">
+<meta property="og:description" content="Terminal multiplexer — Goes well with practicing Git">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -145,8 +124,8 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./image/logo.png" alt="" class="navbar-logo">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../image/logo.png" alt="" class="navbar-logo">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -156,11 +135,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -175,21 +154,47 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Git">Git <span class="quarto-category-count">(1)</span></div><div class="category" data-category="K8s">K8s <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linux">Linux <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a></li>
+  <li><a href="#pane" id="toc-pane" class="nav-link" data-scroll-target="#pane">Pane</a></li>
+  <li><a href="#window" id="toc-window" class="nav-link" data-scroll-target="#window">Window</a></li>
+  <li><a href="#session" id="toc-session" class="nav-link" data-scroll-target="#session">Session</a></li>
+  <li><a href="#configurations" id="toc-configurations" class="nav-link" data-scroll-target="#configurations">Configurations</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Posts</h1>
-</div>
+<h1 class="title">Tmux</h1>
+<p class="subtitle lead">Terminal multiplexer — Goes well with practicing Git</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Linux</div>
+  </div>
+  </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Shane Oh </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 14, 2023</p>
+    </div>
+  </div>
   
     
   </div>
@@ -199,144 +204,183 @@ window.Quarto = {
 </header>
 
 
+<p>Start off with installing <code>tmux</code> with homebrew on Mac.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install tmux</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tmux">
 
+  <div class="-box -session">
+    <div class="-tag">session</div>
 
-
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-       <option value="" disabled="" selected="" hidden="">Order By</option>
-       <option value="index" data-direction="asc">Default</option>
-         <option value="listing-title" data-direction="asc">
-          Title
-        </option>
-         <option value="listing-date-sort" data-direction="asc">
-          Date - Oldest
-        </option>
-         <option value="listing-date-sort" data-direction="desc">
-          Date - Newest
-        </option>
-         <option value="listing-author" data-direction="asc">
-          Author
-        </option>
-     </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
+    <div class="-box -window">
+      <div class="-tag">window</div>
+      <div class="-panes">
+        <div class="-pane -pane-1">pane</div>
+        <div class="-pane -pane-2">
+          <div class="-pane -pane-21">pane</div>
+          <div class="-pane -pane-22">pane</div>
+        </div>
+      </div>
+      <div class="-pane-bottom"></div>
     </div>
+  </div>
 </div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="K8s" data-listing-date-sort="1692748800000" data-listing-file-modified-sort="1723277400961" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224">
-<a href="./posts/Kubeconfig.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-.kube/config
-</h5>
-<div class="card-subtitle listing-subtitle">
-With KubeContext
+
+<style>
+  #fig-tmux {
+    width: 50%;
+    margin: 50px auto;
+  }
+
+  .-tag {
+    margin: 10px;
+  }
+
+  .-box {
+    box-sizing: border-box;
+  }
+  
+  .-session {
+    border: 1px dashed black;
+  }
+
+  .-window {
+    border: 1px solid black;
+    margin: 10px;
+  }
+
+  .-panes {
+    display: flex;
+  }
+
+  .-pane-1 {
+    display: flex;
+    width: 50%;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+  }
+
+  .-pane-2 {
+    width: 50%;
+    height: 200px;
+  }
+
+  .-pane-21 {
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+  }
+
+  .-pane-22 {
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+  }
+
+  .-pane-bottom {
+    background: #00c200;
+    height: 10px;
+  }
+</style>
+<section id="intro" class="level2">
+<h2 class="anchored" data-anchor-id="intro">Intro</h2>
+<p>There are three main concepts in <code>tmux</code>: <code>session</code>, <code>window</code>, and <code>pane</code>. Start by entering <code>tmux</code> in the terminal.</p>
+<p>The screen you see right after entering the command is a <code>pane</code> in a <code>window</code>.</p>
+</section>
+<section id="pane" class="level2">
+<h2 class="anchored" data-anchor-id="pane">Pane</h2>
+<p>Split the <code>pane</code> using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">%</kbd><span class="visually-hidden">%</span> and <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">"</kbd><span class="visually-hidden">"</span>.</p>
+<p>The <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> works as a <code>prefix</code> to send a command — later below.</p>
+<p>Navigate through the panes using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">↑</kbd><span class="visually-hidden">↑</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">→</kbd><span class="visually-hidden">→</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">↓</kbd><span class="visually-hidden">↓</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">←</kbd><span class="visually-hidden">←</span>.</p>
+</section>
+<section id="window" class="level2">
+<h2 class="anchored" data-anchor-id="window">Window</h2>
+<p>Open a new <code>window</code> with <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">c</kbd><span class="visually-hidden">c</span>.</p>
+<p>See the windows you opened on the bottom green bar? This gives us some information about the <code>window</code>s in the <code>session</code>. The current window you are seeing is marked with an <code>*</code>.</p>
+<p>Navigate through the windows using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">n</kbd><span class="visually-hidden">n</span> — <code>n</code> is for next. This will cycle through all the windows in the current session. Reverse navigate with <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">p</kbd><span class="visually-hidden">p</span> — <code>p</code> is for previous. You can also navigate directly to a <code>window</code> using the index. The bindings will be like <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">1</kbd><span class="visually-hidden">1</span>.</p>
+</section>
+<section id="session" class="level2">
+<h2 class="anchored" data-anchor-id="session">Session</h2>
+<p>From the very <a href="#intro">first</a>, right after the <code>tmux</code> command, you are attached to a session with an auto generated index. Detach the session with the <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">d</kbd><span class="visually-hidden">d</span> command — and <code>d</code> is for detach. It’s almost the same as starting the <code>bash</code> session and detaching with the <code>exit</code> command. Tmux can also be detached using the <code>exit</code> command, but this can be tedious because each split pane needs to be closed individually with the <code>exit</code> command.</p>
+</section>
+<section id="configurations" class="level2">
+<h2 class="anchored" data-anchor-id="configurations">Configurations</h2>
+<p>Feeling comfortable with the keybindings? I hope not. The default keybindings can put significant stress on your left pinky. This brings us to the <code>.tmux.conf</code> file for some configuration.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>~/.tmux.conf</strong></pre>
 </div>
-<div class="listing-reading-time card-text text-muted">
-2 min
+<div class="sourceCode" id="annotated-cell-2" data-filename="~/.tmux.conf"><pre class="sourceCode sh code-overflow-wrap code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unbind-key</span> C-b</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> prefix C-a</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bind-key</span> C-a send-prefix</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> mouse on</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> base-index 1</span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> renumber-windows on</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> default-terminal <span class="st">"tmux-256color"</span></span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-10" class="code-annotation-target"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> r source-file ~/.tmux.conf <span class="dt">\;</span> display-message <span class="st">".tmux.conf reloaded!"</span></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-12" class="code-annotation-target"><a href="#annotated-cell-2-12" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> <span class="st">'\'</span> split-window <span class="at">-h</span> <span class="at">-c</span> <span class="st">"#{pane_current_path}"</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> <span class="at">-</span> split-window <span class="at">-v</span> <span class="at">-c</span> <span class="st">"#{pane_current_path}"</span></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-2-15" class="code-annotation-target"><a href="#annotated-cell-2-15" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> h select-pane <span class="at">-L</span></span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> j select-pane <span class="at">-D</span></span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> k select-pane <span class="at">-U</span></span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> l select-pane <span class="at">-R</span></span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-2-20" class="code-annotation-target"><a href="#annotated-cell-2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> x kill-pane</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-2-21" class="code-annotation-target"><a href="#annotated-cell-2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> X kill-window</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('K8s'); return false;">
-K8s
-</div>
-</div>
-<div class="card-text listing-description">
-I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to…
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 23, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="Git" data-listing-date-sort="1681430400000" data-listing-file-modified-sort="1723277400961" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1097">
-<a href="./posts/Git.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Local Git Commands
-</h5>
-<div class="card-subtitle listing-subtitle">
-Ever thought of Git graphs as Linked Lists?
-</div>
-<div class="listing-reading-time card-text text-muted">
-6 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Git'); return false;">
-Git
-</div>
-</div>
-<div class="card-text listing-description">
-Thanks Cottle for creating this educational tool. Ever thought of Git graphs as linked lists? Here is a great explanation.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Apr 14, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Linux" data-listing-date-sort="1681430400000" data-listing-file-modified-sort="1723277400961" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="773">
-<a href="./posts/Tmux.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Tmux
-</h5>
-<div class="card-subtitle listing-subtitle">
-Terminal multiplexer — Goes well with practicing Git
-</div>
-<div class="listing-reading-time card-text text-muted">
-4 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Linux'); return false;">
-Linux
-</div>
-</div>
-<div class="card-text listing-description">
-Start off with installing <code>tmux</code> with homebrew on Mac.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Apr 14, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Replace the prefix key from <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> to <kbd aria-hidden="true">Ctrl-a</kbd><span class="visually-hidden">Ctrl-a</span>. When you are using a keyboard like HHKB, this will come in pretty handy. Let’s talk more about HHKB in some other posts.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="2">Pretty straight forward. Helps you navigate split panes with a mouse.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="3">The default is <code>0</code>. For me, <code>0</code> key is a bit far for everyday use.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="10" data-code-annotation="4">Reload the .tmux.conf file and display a message when done — similar to something like <code>source .bashrc</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="12" data-code-annotation="5">Split the window horizontally using the current pane’s path.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="13" data-code-annotation="6">Split the window vertically using the current pane’s path.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="7">7</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="15" data-code-annotation="7">Move between panes using Vim-style keybindings.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="8">8</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="20" data-code-annotation="8">Kill the current pane.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="9">9</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="21" data-code-annotation="9">Kill the current window.</span>
+</dd>
+</dl>
+
+
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

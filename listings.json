@@ -3,7 +3,8 @@
     "listing": "/index.html",
     "items": [
       "/posts/Kubeconfig.html",
-      "/posts/Git.html"
+      "/posts/Git.html",
+      "/posts/Tmux.html"
     ]
   }
 ]
