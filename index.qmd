@@ -14,7 +14,6 @@ listing:
     - image
     - reading-time
     - categories
-  # date-format: iso
   categories: numbered
 page-layout: article
 ---

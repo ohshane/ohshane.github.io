@@ -3,6 +3,8 @@ project:
   render: 
     - "*.qmd"
     - "!*_.qmd"
+  preview: 
+    port: 8888
 
 website:
   title: Shane
