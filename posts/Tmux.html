@@ -229,6 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>
   #fig-tmux {
     width: 50%;
+    min-width: 300px;
     margin: 50px auto;
   }
 
@@ -375,6 +376,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <dt data-target-cell="annotated-cell-2" data-target-annotation="9">9</dt>
 <dd>
 <span data-code-cell="annotated-cell-2" data-code-lines="21" data-code-annotation="9">Kill the current window.</span>
+</dd>
+</dl>
+<p>Personal preference on the following one.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>.zshrc</strong></pre>
+</div>
+<div class="sourceCode" id="annotated-cell-3" data-filename=".zshrc"><pre class="sourceCode sh code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmux()</span> <span class="kw">{</span></span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="st">"</span><span class="va">$#</span><span class="st">"</span> <span class="ot">-eq</span> 0 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-3" class="code-annotation-target"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">command</span> tmux new-session <span class="at">-A</span> <span class="at">-s</span> default</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">command</span> tmux <span class="st">"</span><span class="va">$@</span><span class="st">"</span></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="1">Attach a session named <code>default</code> when <code>tmux</code> is typed.</span>
 </dd>
 </dl>
 
