@@ -9,6 +9,15 @@ categories:
   - Git
 ---
 
+Turn this
+<code style="color: black;">
+  user@host gitrepo $ 
+</code>
+into this
+<code style="color: black;">
+  user@host gitrepo <span style="color: green;">**(main)**</span> $
+</code>.
+
 Download the `git-prompt.sh` with the `curl` command.
 
 ```{.sh .code-overflow-wrap}
