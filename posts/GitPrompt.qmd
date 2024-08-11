@@ -1,0 +1,23 @@
+---
+title: Git Prompt
+subtitle: "Check the branch you are working on"
+description: ""
+author: Shane Oh
+date: 2023-04-18
+image: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg"
+categories:
+  - Git
+---
+
+Download the `git-prompt.sh` with the `curl` command.
+
+```{.sh .code-overflow-wrap}
+curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh
+```
+Then add the following lines in the `.zshrc` file.
+
+```{.sh filename=".zshrc" .code-overflow-wrap}
+source ~/.git-prompt.sh
+setopt PROMPT_SUBST
+PS1='%n@%m %c%F{green}$(__git_ps1 " (%s)")%f \$ '
+```
