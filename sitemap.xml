@@ -2,26 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ohshane.github.io/posts/Git.html</loc>
-    <lastmod>2024-08-11T05:32:51.209Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/Kubeconfig.html</loc>
-    <lastmod>2024-08-11T05:32:51.209Z</lastmod>
+    <lastmod>2024-08-12T01:46:16.660Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/index.html</loc>
-    <lastmod>2024-08-11T05:32:51.205Z</lastmod>
+    <lastmod>2024-08-12T01:46:16.660Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/about.html</loc>
-    <lastmod>2024-08-11T05:32:51.205Z</lastmod>
+    <lastmod>2024-08-12T01:46:16.656Z</lastmod>
   </url>
   <url>
-    <loc>https://ohshane.github.io/posts/GitPrompt.html</loc>
-    <lastmod>2024-08-11T05:32:51.209Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/Tmux.html</loc>
-    <lastmod>2024-08-11T05:32:51.209Z</lastmod>
+    <loc>https://ohshane.github.io/posts/Kubeconfig.html</loc>
+    <lastmod>2024-08-12T01:46:16.660Z</lastmod>
   </url>
 </urlset>
