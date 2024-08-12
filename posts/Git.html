@@ -169,6 +169,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#relative-reference-and" id="toc-relative-reference-and" class="nav-link" data-scroll-target="#relative-reference-and">Relative reference (<code>^</code> and <code>~</code>)</a></li>
   <li><a href="#branch-forcing-git-branch--f" id="toc-branch-forcing-git-branch--f" class="nav-link" data-scroll-target="#branch-forcing-git-branch--f">Branch forcing (<code>git branch -f</code>)</a></li>
   </ul></li>
+  <li><a href="#git-reset" id="toc-git-reset" class="nav-link" data-scroll-target="#git-reset"><code>git reset</code></a></li>
+  <li><a href="#git-revert" id="toc-git-revert" class="nav-link" data-scroll-target="#git-revert"><code>git revert</code></a></li>
   </ul>
 </nav>
     </div>
@@ -651,6 +653,7 @@ Note
 </section>
 <section id="branch-forcing-git-branch--f" class="level3">
 <h3 class="anchored" data-anchor-id="branch-forcing-git-branch--f">Branch forcing (<code>git branch -f</code>)</h3>
+<p>This is called branch forcing.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-f</span> feature dev^</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div>
 
@@ -708,9 +711,30 @@ Note
 </div>
 </div>
 </div>
-
-
 </section>
+</section>
+<section id="git-reset" class="level2">
+<h2 class="anchored" data-anchor-id="git-reset"><code>git reset</code></h2>
+<p>The <code>reset</code> command is often used to undo changes that have been staged or committed. This sets the <code>HEAD</code> to the desired commit object. The most common command will be as follows.</p>
+<p>Undoing the <code>add</code> command.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset HEAD</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This command moves <code>HEAD</code> to the parent of the current commit (<code>HEAD^</code>), effectively undoing the most recent commit.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset HEAD^</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Undo a commit and make a topic branch out of it.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch topic/foo</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> HEAD~3</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout topic/foo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="git-revert" class="level2">
+<h2 class="anchored" data-anchor-id="git-revert"><code>git revert</code></h2>
+<p><code>revert</code> is a command that creates a new commit that undoes the changes made by a previous commit. This means that instead of deleting or altering past commits, git revert adds a new commit on top of the branch.</p>
+<p>When <code>HEAD</code> is on the merge commit,</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert HEAD <span class="at">-m</span> 1</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert HEAD <span class="at">-m</span> 2 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The number (index) of a parent can be checked with the command <code>git cat-file -p HEAD</code>.</p>
+
+
 </section>
 
 </main> <!-- /main -->
