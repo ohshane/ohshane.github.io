@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2023-08-23">
+<meta name="dcterms.date" content="2023-06-05">
 
-<title>.kube/config – Shane</title>
+<title>Tmux – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -76,6 +76,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/kbd/kbd.js"></script>
+<link href="../site_libs/quarto-contrib/kbd/kbd.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,9 +112,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content=".kube/config – Shane">
-<meta property="og:description" content="with KubeContext">
-<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/6/67/Kubernetes_logo.svg">
+<meta property="og:title" content="Tmux – Shane">
+<meta property="og:description" content="Terminal multiplexer">
+<meta property="og:image" content="https://raw.githubusercontent.com/tmux/tmux/master/logo/tmux-logo.svg">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -152,18 +154,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a></li>
+  <li><a href="#pane" id="toc-pane" class="nav-link" data-scroll-target="#pane">Pane</a></li>
+  <li><a href="#window" id="toc-window" class="nav-link" data-scroll-target="#window">Window</a></li>
+  <li><a href="#session" id="toc-session" class="nav-link" data-scroll-target="#session">Session</a></li>
+  <li><a href="#configurations" id="toc-configurations" class="nav-link" data-scroll-target="#configurations">Configurations</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">.kube/config</h1>
-<p class="subtitle lead">with KubeContext</p>
+<h1 class="title">Tmux</h1>
+<p class="subtitle lead">Terminal multiplexer</p>
   <div class="quarto-categories">
-    <div class="quarto-category">K8s</div>
+    <div class="quarto-category">Linux</div>
   </div>
   </div>
 
@@ -181,7 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 23, 2023</p>
+      <p class="date">June 5, 2023</p>
     </div>
   </div>
   
@@ -193,47 +205,201 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.</p>
-<p>Below is an example of the configured .kube/config file:</p>
+<p>Start off with installing <code>tmux</code> with homebrew on Mac.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install tmux</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tmux">
+
+  <div class="--box --session">
+    <div class="--tag">session</div>
+
+    <div class="--box --window">
+      <div class="--tag">window</div>
+      <div class="--panes">
+        <div class="--pane --pane-1">pane</div>
+        <div class="--pane --pane-2">
+          <div class="--pane --pane-21">pane</div>
+          <div class="--pane --pane-22">pane</div>
+        </div>
+      </div>
+      <div class="--pane-bottom"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #fig-tmux {
+    width: 50%;
+    min-width: 300px;
+    margin: 50px auto;
+  }
+
+  .--tag {
+    margin: 10px;
+  }
+
+  .--box {
+    box-sizing: border-box;
+  }
+  
+  .--session {
+    border: 1px dashed black;
+  }
+
+  .--window {
+    border: 1px solid black;
+    margin: 10px;
+  }
+
+  .--panes {
+    display: flex;
+  }
+
+  .--pane-1 {
+    display: flex;
+    width: 50%;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+  }
+
+  .--pane-2 {
+    width: 50%;
+    height: 200px;
+  }
+
+  .--pane-21 {
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+  }
+
+  .--pane-22 {
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid black;
+  }
+
+  .--pane-bottom {
+    background: #00c200;
+    height: 10px;
+  }
+</style>
+<section id="intro" class="level2">
+<h2 class="anchored" data-anchor-id="intro">Intro</h2>
+<p>There are three main concepts in <code>tmux</code>: <code>session</code>, <code>window</code>, and <code>pane</code>. Start by entering <code>tmux</code> in the terminal.</p>
+<p>The screen you see right after entering the command is a <code>pane</code> in a <code>window</code>.</p>
+</section>
+<section id="pane" class="level2">
+<h2 class="anchored" data-anchor-id="pane">Pane</h2>
+<p>Split the <code>pane</code> using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">%</kbd><span class="visually-hidden">%</span> and <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">"</kbd><span class="visually-hidden">"</span>.</p>
+<p>The <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> works as a <code>prefix</code> to send a command — later below.</p>
+<p>Navigate through the panes using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">↑</kbd><span class="visually-hidden">↑</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">→</kbd><span class="visually-hidden">→</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">↓</kbd><span class="visually-hidden">↓</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">←</kbd><span class="visually-hidden">←</span>.</p>
+</section>
+<section id="window" class="level2">
+<h2 class="anchored" data-anchor-id="window">Window</h2>
+<p>Open a new <code>window</code> with <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">c</kbd><span class="visually-hidden">c</span>.</p>
+<p>See the windows you opened on the bottom green bar? This gives us some information about the <code>window</code>s in the <code>session</code>. The current window you are seeing is marked with an <code>*</code>.</p>
+<p>Navigate through the windows using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">n</kbd><span class="visually-hidden">n</span> — <code>n</code> is for next. This will cycle through all the windows in the current session. Reverse navigate with <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">p</kbd><span class="visually-hidden">p</span> — <code>p</code> is for previous. You can also navigate directly to a <code>window</code> using the index. The bindings will be like <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">1</kbd><span class="visually-hidden">1</span>.</p>
+</section>
+<section id="session" class="level2">
+<h2 class="anchored" data-anchor-id="session">Session</h2>
+<p>From the very <a href="#intro">first</a>, right after the <code>tmux</code> command, you are attached to a session with an auto generated index. Detach the session with the <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">d</kbd><span class="visually-hidden">d</span> command — and <code>d</code> is for detach. It’s almost the same as starting the <code>bash</code> session and detaching with the <code>exit</code> command. Tmux can also be detached using the <code>exit</code> command, but this can be tedious because each split pane needs to be closed individually with the <code>exit</code> command.</p>
+</section>
+<section id="configurations" class="level2">
+<h2 class="anchored" data-anchor-id="configurations">Configurations</h2>
+<p>Feeling comfortable with the keybindings? I hope not. The default keybindings can put significant stress on your left pinky. This brings us to the <code>.tmux.conf</code> file for some configuration.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
-<pre><strong>.kube/config</strong></pre>
+<pre><strong>~/.tmux.conf</strong></pre>
 </div>
-<div class="sourceCode" id="cb1" data-filename=".kube/config"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">clusters</span><span class="kw">:</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">certificate-authority-data</span><span class="kw">:</span><span class="at"> LS0...LS0tCg==</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">server</span><span class="kw">:</span><span class="at"> https://kubernetes.docker.internal:6443</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> docker-desktop</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">insecure-skip-tls-verify</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">server</span><span class="kw">:</span><span class="at"> https://121.135.111.111:6443</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> raspberrypi</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">certificate-authority</span><span class="kw">:</span><span class="at"> /Users/shane/.minikube/ca.crt</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">extensions</span><span class="kw">:</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">extension</span><span class="kw">:</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">last-update</span><span class="kw">:</span><span class="at"> Sun, 20 Aug 2023 17:04:00 KST</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">version</span><span class="kw">:</span><span class="at"> v1.30.1</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">provider</span><span class="kw">:</span><span class="at"> minikube.sigs.k8s.io</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">name</span><span class="kw">:</span><span class="at"> cluster_info</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">server</span><span class="kw">:</span><span class="at"> https://127.0.0.1:60544</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> minikube</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="annotated-cell-2" data-filename="~/.tmux.conf"><pre class="sourceCode sh code-overflow-wrap code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unbind-key</span> C-b</span>
+<span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> prefix C-a</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bind-key</span> C-a send-prefix</span>
+<span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-2-5" class="code-annotation-target"><a href="#annotated-cell-2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> mouse on</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-2-6" class="code-annotation-target"><a href="#annotated-cell-2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> base-index 1</span>
+<span id="annotated-cell-2-7"><a href="#annotated-cell-2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> renumber-windows on</span>
+<span id="annotated-cell-2-8"><a href="#annotated-cell-2-8" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> default-terminal <span class="st">"tmux-256color"</span></span>
+<span id="annotated-cell-2-9"><a href="#annotated-cell-2-9" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-2-10" class="code-annotation-target"><a href="#annotated-cell-2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> r source-file ~/.tmux.conf <span class="dt">\;</span> display-message <span class="st">".tmux.conf reloaded!"</span></span>
+<span id="annotated-cell-2-11"><a href="#annotated-cell-2-11" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-2-12" class="code-annotation-target"><a href="#annotated-cell-2-12" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> <span class="st">'\'</span> split-window <span class="at">-h</span> <span class="at">-c</span> <span class="st">"#{pane_current_path}"</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-2-13" class="code-annotation-target"><a href="#annotated-cell-2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> <span class="at">-</span> split-window <span class="at">-v</span> <span class="at">-c</span> <span class="st">"#{pane_current_path}"</span></span>
+<span id="annotated-cell-2-14"><a href="#annotated-cell-2-14" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-2-15" class="code-annotation-target"><a href="#annotated-cell-2-15" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> h select-pane <span class="at">-L</span></span>
+<span id="annotated-cell-2-16"><a href="#annotated-cell-2-16" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> j select-pane <span class="at">-D</span></span>
+<span id="annotated-cell-2-17"><a href="#annotated-cell-2-17" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> k select-pane <span class="at">-U</span></span>
+<span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> l select-pane <span class="at">-R</span></span>
+<span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-2-20" class="code-annotation-target"><a href="#annotated-cell-2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> x kill-pane</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-2-21" class="code-annotation-target"><a href="#annotated-cell-2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> X kill-window</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The above configuration file defines three clusters:</p>
-<ul>
-<li>docker-desktop</li>
-<li>raspberrypi (the Raspberry Pi cluster at home, with the server address https://121.135.111.111:6443)</li>
-<li>minikube</li>
-</ul>
-<p>With this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> config use-context raspberrypi</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>To bypass the process of verifying the SSL certificate as a public certificate, use the following command:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">insecure-skip-tls-verify</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Replace the prefix key from <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> to <kbd aria-hidden="true">Ctrl-a</kbd><span class="visually-hidden">Ctrl-a</span>. When you are using a keyboard like HHKB, this will come in pretty handy. Let’s talk more about HHKB in some other posts.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="5" data-code-annotation="2">Pretty straight forward. Helps you navigate split panes with a mouse.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="6" data-code-annotation="3">The default is <code>0</code>. For me, <code>0</code> key is a bit far for everyday use.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="10" data-code-annotation="4">Reload the .tmux.conf file and display a message when done — similar to something like <code>source .bashrc</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="12" data-code-annotation="5">Split the window horizontally using the current pane’s path.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="13" data-code-annotation="6">Split the window vertically using the current pane’s path.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="7">7</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="15" data-code-annotation="7">Move between panes using Vim-style keybindings.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="8">8</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="20" data-code-annotation="8">Kill the current pane.</span>
+</dd>
+<dt data-target-cell="annotated-cell-2" data-target-annotation="9">9</dt>
+<dd>
+<span data-code-cell="annotated-cell-2" data-code-lines="21" data-code-annotation="9">Kill the current window.</span>
+</dd>
+</dl>
+<p>Personal preference on the following one.</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>.zshrc</strong></pre>
+</div>
+<div class="sourceCode" id="annotated-cell-3" data-filename=".zshrc"><pre class="sourceCode sh code-overflow-wrap code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmux()</span> <span class="kw">{</span></span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="st">"</span><span class="va">$#</span><span class="st">"</span> <span class="ot">-eq</span> 0 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-3" class="code-annotation-target"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">command</span> tmux new-session <span class="at">-A</span> <span class="at">-s</span> default</span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">command</span> tmux <span class="st">"</span><span class="va">$@</span><span class="st">"</span></span>
+<span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="3" data-code-annotation="1">Attach a session named <code>default</code> when <code>tmux</code> is typed.</span>
+</dd>
+</dl>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

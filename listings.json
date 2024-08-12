@@ -3,7 +3,9 @@
     "listing": "/index.html",
     "items": [
       "/posts/Kubeconfig.html",
-      "/posts/Git.html"
+      "/posts/GitPrompt.html",
+      "/posts/Git.html",
+      "/posts/Tmux.html"
     ]
   }
 ]
