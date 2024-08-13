@@ -1,15 +1,14 @@
 ---
-# title: Posts
+title: Posts
 listing:
   contents: posts
-  type: default
-  sort: [date, desc]
+  type: grid
   sort-ui: true
   filter-ui: true
   fields:
     - title
     - subtitle
-    # - author
+    - author
     - description
     - date
     - image

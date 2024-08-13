@@ -1,11 +1,15 @@
 ---
 title: Local Git Commands
+subtitle: "Ever thought of Git graphs as linked lists?"
+description: ""
+author: Shane Oh
+date: 2023-04-14
 categories:
   - Git
 ---
 
 Thanks Cottle for creating [this](https://learngitbranching.js.org) educational tool.
-Ever thought of git graphs as linked lists? 
+Ever thought of Git graphs as linked lists? 
 [Here](https://medium.com/swlh/data-structures-used-in-git-implementation-a2c95bf4135e) is a great explanation.
 
 First things first,
@@ -21,18 +25,17 @@ git commit
 ::: {layout-ncol=2}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
-  main:::pointer -.-> C0
-  HEAD:::pointer -.-> C0
+  main:::pointer -.-> C0:::commit
+  HEAD:::pointer -.-> main
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 ```
 
 ```{mermaid}
 flowchart TB
-  C1:::commit --> C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
   main:::pointer -.-> C1
-  HEAD:::pointer -.-> C1
+  HEAD:::pointer -.-> main
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 ```
@@ -50,13 +53,13 @@ For now, just remember that a branch essentially says
 > I want to include the work of this commit and all parent commits.
 
 ```{.sh}
+git checkout main
 git branch dev
 ```
 
 ::: {layout-ncol=2}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   HEAD:::pointer -.-> main
@@ -66,7 +69,6 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   dev:::pointer -.-> C1
@@ -77,19 +79,18 @@ flowchart TB
 :::
 
 ```{.sh}
+git checkout main
 git checkout -b dev
 ```
-`-b` for branch
 
 ```{.sh}
+git checkout main
 git switch -c dev
 ```
-`-c` for create
 
 ::: {layout-ncol=2}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   HEAD:::pointer -.-> main
@@ -99,7 +100,6 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   main:::pointer -.-> C1
   dev:::pointer -.-> C1
@@ -117,18 +117,20 @@ A commit with two parents essentially means
 > I want to include all the work from both parents, and the set of all their parents.
 
 ```{.sh}
+git checkout main
 git merge dev # <1>
 git checkout dev
 git merge main # <2>
 ```
 1. The command merges `dev` branch into the current `main` branch.
 This leaves the `dev` branch (pointer) behind.
-2. We don’t need to derive the work from both the `main` and `dev` parents again because the `dev` graph is a subgraph of the `main` graph. Instead, we can simply move the `dev` pointer to match the position of the `main` pointer.
+2. We don’t need to derive the work from both the `main` and `dev` parents again because the `dev` graph is a subgraph of the `main` graph.
+Instead, we can simply move the `dev` pointer to match the position of the `main` pointer.
+This is also called fast forward.
 
-::: {layout-ncol=3}
+::: {layout-ncol=4}
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   C2:::commit --> C1:::commit
   C3:::commit --> C1:::commit
@@ -141,7 +143,6 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
   C1:::commit --> C0:::commit
   C2:::commit --> C1:::commit
   C3:::commit --> C1:::commit
@@ -157,7 +158,21 @@ flowchart TB
 
 ```{mermaid}
 flowchart TB
-  C0:::commit -.-> Null:::pointer
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C2:::commit
+  C4:::commit --> C3:::commit
+
+  main:::pointer -.-> C4
+  dev:::pointer -.-> C3
+  HEAD:::pointer -.-> dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
   C1:::commit --> C0:::commit
   C2:::commit --> C1:::commit
   C3:::commit --> C1:::commit
@@ -166,10 +181,214 @@ flowchart TB
 
   main:::pointer -.-> C4
   dev:::pointer -.-> C4
-  HEAD:::pointer -.-> main
+  HEAD:::pointer -.-> dev
   classDef commit fill: #abc, color: #000
   classDef pointer fill: #fff, color #000, font: #000
 ```
 :::
 
 ## `git rebase`
+
+`rebase` copies the commits and stack them on somewhere else.
+
+::: {.callout-note}
+
+The position of the `HEAD` pointer is different when merging and rebasing. 
+
+```{.sh}
+git checkout main # <- HEAD
+git merge dev
+```
+
+```{.sh}
+git checkout dev # <- HEAD
+git rebase main
+```
+When rebasing, we are willing to `rebase` with copied commits onto `main`.
+:::
+
+```{.sh}
+git checkout dev
+git rebase main
+git checkout main
+git merge dev
+```
+
+::: {layout-ncol=4}
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C3:::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C4
+  HEAD:::pointer -.-> dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3':::commit --> C2:::commit
+  C4':::commit --> C3':::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C4'
+  HEAD:::pointer -.-> dev
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3':::commit --> C2:::commit
+  C4':::commit --> C3':::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C4'
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3':::commit --> C2:::commit
+  C4':::commit --> C3':::commit
+  main:::pointer -.-> C4'
+  dev:::pointer -.-> C4'
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+## `git checkout`
+
+Didn't we use the `git checkout` command without any discomfort so far?
+What `checkout` does is point `HEAD` to the desired object such as a branch or a commit.
+
+```{.sh}
+git checkout 1b7979e16daafabf7c052411b083ea9e2e8a13d5
+```
+
+### Relative reference (`^` and `~`)
+
+```{.sh}
+git checkout C1
+git checkout C2^
+git checkout main^^
+git checkout main~2
+git checkout HEAD^; git checkout HEAD^
+```
+
+::: {layout-ncol=2}
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C2:::commit
+  main:::pointer -.-> C3
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C2:::commit
+  main:::pointer -.-> C3
+  HEAD:::pointer -.-> C1
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+### Branch forcing (`git branch -f`)
+
+This is called branch forcing.
+
+```{.sh}
+git branch -f feature dev^
+```
+
+::: {layout-ncol=2}
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C3:::commit
+  C5:::commit --> C4:::commit
+  C6:::commit --> C5:::commit
+  C7:::commit --> C4:::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C6
+  feature:::pointer -.-> C7
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+
+```{mermaid}
+flowchart TB
+  C1:::commit --> C0:::commit
+  C2:::commit --> C1:::commit
+  C3:::commit --> C1:::commit
+  C4:::commit --> C3:::commit
+  C5:::commit --> C4:::commit
+  C6:::commit --> C5:::commit
+  main:::pointer -.-> C2
+  dev:::pointer -.-> C6
+  feature:::pointer -.-> C5
+  HEAD:::pointer -.-> main
+  classDef commit fill: #abc, color: #000
+  classDef pointer fill: #fff, color #000, font: #000
+```
+:::
+
+## `git reset`
+
+The `reset` command is often used to undo changes that have been staged or committed. 
+This sets the `HEAD` to the desired commit object. 
+The most common command will be as follows.
+
+Undoing the `add` command.
+
+```{.sh}
+git reset
+git reset HEAD
+```
+This command moves `HEAD` to the parent of the current commit (`HEAD^`), effectively undoing the most recent commit.
+
+```{.sh}
+git reset HEAD^
+```
+Undo a commit and make a topic branch out of it.
+
+```{.sh}
+git branch topic/foo
+git reset --hard HEAD~3
+git checkout topic/foo
+```
+
+## `git revert`
+
+`revert` is a command that creates a new commit that undoes the changes made by a previous commit.
+This means that instead of deleting or altering past commits, git revert adds a new commit on top of the branch.
+
+When `HEAD` is on the merge commit,
+
+```{.sh}
+git revert HEAD -m 1
+git revert HEAD -m 2 
+```
+
+The number (index) of a parent can be checked with the command `git cat-file -p HEAD`.
