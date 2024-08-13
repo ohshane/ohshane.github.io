@@ -1,0 +1,21 @@
+<html>
+  <script>
+    const images = document.querySelectorAll('.quarto-grid-item > p > img');
+    images.forEach(image => {
+      image.onload = () => {
+        const width = image.naturalWidth;
+        const height = image.naturalHeight;
+        if (width >= height) {
+            image.style.objectFit = 'contain';
+            image.style.width = 'min(200px, 80%)';
+            image.style.marginLeft = 'calc((100% - min(200px, 80%))/2)';
+        } else {
+            image.style.objectFit = 'cover';
+        }
+      };
+      if (image.complete) {
+          image.onload();
+      }
+    });
+  </script>
+</html>

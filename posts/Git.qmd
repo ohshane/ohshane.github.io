@@ -4,6 +4,7 @@ subtitle: "Ever thought of Git graphs as linked lists?"
 description: ""
 author: Shane Oh
 date: 2023-04-14
+image: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg"
 categories:
   - Git
 ---

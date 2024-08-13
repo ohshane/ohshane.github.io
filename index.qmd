@@ -16,4 +16,6 @@ listing:
     - categories
   categories: numbered
 page-layout: article
+include-after-body: 
+  - file: object-fit.html
 ---

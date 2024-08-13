@@ -1,4 +1,3 @@
-
 ---
 title: Tmux
 subtitle: "Terminal multiplexer"
