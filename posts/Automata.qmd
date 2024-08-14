@@ -1,0 +1,141 @@
+---
+title: Automata Theory
+subtitle: "Some fun applications of discrete mathematics"
+description: ""
+image: src/image/automata.svg
+author: Shane Oh
+date: 2023-07-20
+# image: ""
+categories:
+  - Math
+  - Discrete
+  - Set
+---
+
+```{=html}
+<style>
+  .dot figure svg {
+    width: 100% !important;
+    max-width: 400px !important;
+    max-height: 300px !important;
+  }
+</style>
+```
+
+## Intro
+
+Have you heard of Automata before?
+One of my best advisor was passionate about the subject called _Automata theory_.
+
+Take a look at this [playlist](https://youtube.com/playlist?list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&si=a2XZwAQSuLtcXi57) by Neso Academy if you are interested. It is simply awsome.
+
+::: {.dot}
+```{dot}
+//| label: fig-automata
+//| fig-cap: An arbitrary Deterministic Finite Automata (DFA).
+
+digraph dfa {
+  rankdir=LR
+
+  "" [shape=none, width=0, height=0]
+  A [shape=circle]
+  B [shape=circle]
+  C [shape=circle]
+  D [shape=doublecircle]
+
+  "" -> A
+  A -> C [label=" 1 "]
+  C -> A [label=" 1 "]
+
+  A -> B [label=" 0 "]
+  B -> A [label=" 0 "]
+
+  B -> D [label=" 1 "]
+  D -> B [label=" 1 "]
+
+  C -> D [label=" 0 "]
+  D -> C [label=" 0 "]
+}
+```
+:::
+
+Each circle represents a state, and the numbers marked alongside the directed arrows are inputs.
+In this case, `A`, `B`, `C` and `D` are the states, and the numbers `0` and `1` are the inputs.
+
+The `A` state is the start state also represented as $q_0$ (we will take a look at the notations below).
+
+You can easily distinguish that the state `D` is different from the others by being marked with a double circle.
+This is called a terminal state, which represents the completion of the computation process for input sequences.
+
+::: {.callout-note}
+There could be multiple terminal states or no terminal states at all --- which isn't very practical, so it's not discussed much.
+
+Also, we can continue the process after reaching the terminal state, such as the example 
+`A` &rarr; `B` &rarr; `D` &rarr; `C` &rarr; `D`, but we should always finish at the terminal state.
+:::
+
+In @fig-automata, we can see that we need a sequence length of at least 2 to reach the terminal (final; $F$) state.
+Moreover, in this case, the sequence length must be an even number greater than or equal to 2.
+
+This is a simple example of automata, or more precisely, a Deterministic Finite Automata, DFA for short.
+
+There are some classes of automata. Take a look at below.
+
+```{mermaid}
+flowchart TB
+TM(Turing Machine) --> FSM(FSM - Finite State Machine)
+FSM --> FA(FA - Finite Automata)
+FA --> FA1(FA with output)
+FA --> FA2(FA without output)
+FA1 --> Moore(Moore Machine)
+FA1 --> Mealy(Mealy Machine)
+FA2 --> DFA(DFA - Deterministic Finite Automata)
+FA2 --> NFA(NFA - Non-deterministic Finite Automata)
+```
+
+## Notations
+
+To cover up all of those classes, we need a [formal definition](https://en.wikipedia.org/wiki/Automata_theory) of automation.
+
+### Automation
+$$
+M = \langle \Sigma, \Gamma, Q, \delta, \lambda \rangle
+$$
+
+- $\Sigma$ is a finite set of symbols, called the **input** alphabet of the automation.
+- $\Gamma$ is another finite set of symbols, called the **output** alphabet of the automation.
+- $Q$ is a set of **states**.
+- $\delta$ is the **next-state function** $\delta : Q \times \Sigma \to Q$
+- $\lambda$ is the **next-output function** $\lambda : Q \times \Sigma \to \Gamma$
+
+::: {.callout-note}
+If $Q$ (set of states) is finite, then $M$ is finite automation.
+:::
+
+When we take a look at the automation without output,
+the output $\Gamma$ and $\lambda$ doesn't do much.
+Instead we try to understand the automation without output as in terms of automation as an acceptor to see if the automation can accept a certain language or not.
+
+When we look at an automaton without output,
+the output alphabet ($\Gamma$) and the output function ($\lambda$) don't play a significant role.
+Instead, we try to understand the _automaton without output_
+in terms of an _automaton as an acceptor_,
+to see if it can accept a certain language or not.
+
+The notation below will be more useful.
+
+### Automation as an Acceptor
+$$
+M = \langle \Sigma, q_0, Q, \delta, F \rangle
+$$
+
+- $q_0 \in Q$ is a start state
+- $F \subseteq Q$ is called final states or _accept_ state.
+Notice that $F$ is a set, which means there could be none, one or multiple final states.
+
+Take an example with @fig-automata as an acceptor.
+
+- $\Sigma = \lbrace 0, 1 \rbrace$
+- $q_0 = A$
+- $Q = \lbrace A, B, C, D \rbrace$
+- $F = \lbrace F \rbrace$
