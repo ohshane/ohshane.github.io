@@ -1,0 +1,19 @@
+---
+title: Doom Emacs
+subtitle: ""
+description: ""
+image: "https://upload.wikimedia.org/wikipedia/commons/0/08/EmacsIcon.svg"
+author: Shane Oh
+date: 2023-08-21
+categories:
+  - Emacs
+---
+
+Dear Mac users.
+
+The official repository for `doom` can be found [here](https://github.com/doomemacs/doomemacs). The [Getting Started guide](https://github.com/doomemacs/doomemacs/blob/master/docs/getting_started.org) is a great place to begin your journey.
+
+There are several ports available in `emacs` to help you get started. This post will cover what worked best for me.
+
+## Installation
+
