@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Shane Oh">
+<meta name="dcterms.date" content="2023-08-21">
 
-<title>Posts – Shane</title>
+<title>Initial Steps in Entrepreneurship – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,25 +25,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./image/favicon.ico" rel="icon">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../image/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,72 +69,18 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-subtitle','listing-author','listing-description','listing-date','listing-image','listing-reading-time','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <link rel="apple-touch-icon" href="image/apple-touch-icon.png">
 <link rel="apple-touch-startup-image" href="image/profile.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Posts – Shane">
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Initial Steps in Entrepreneurship – Shane">
+<meta property="og:description" content="Convertible bond">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -145,8 +91,8 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./image/logo.png" alt="" class="navbar-logo">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../image/logo.png" alt="" class="navbar-logo">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -156,11 +102,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -175,21 +121,47 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="Discrete">Discrete <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Emacs">Emacs <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Entrepreneurship">Entrepreneurship <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Finance">Finance <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Git">Git <span class="quarto-category-count">(2)</span></div><div class="category" data-category="K8s">K8s <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linux">Linux <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Math">Math <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Set">Set <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Tools">Tools <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#자산-자본-부채" id="toc-자산-자본-부채" class="nav-link active" data-scroll-target="#자산-자본-부채">자산 = 자본 + 부채</a></li>
+  <li><a href="#꾸짖을-책責과-빚-채債" id="toc-꾸짖을-책責과-빚-채債" class="nav-link" data-scroll-target="#꾸짖을-책責과-빚-채債">꾸짖을 책(責)과 빚 채(債)</a></li>
+  <li><a href="#전환사채convertible-bond-cb" id="toc-전환사채convertible-bond-cb" class="nav-link" data-scroll-target="#전환사채convertible-bond-cb">전환사채(Convertible Bond, CB)</a></li>
+  <li><a href="#call-put-option" id="toc-call-put-option" class="nav-link" data-scroll-target="#call-put-option">전환사채의 콜옵션과 풋옵션</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Posts</h1>
-</div>
+<h1 class="title">Initial Steps in Entrepreneurship</h1>
+<p class="subtitle lead">Convertible bond</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Finance</div>
+    <div class="quarto-category">Entrepreneurship</div>
+  </div>
+  </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Shane Oh </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 21, 2023</p>
+    </div>
+  </div>
   
     
   </div>
@@ -199,341 +171,59 @@ window.Quarto = {
 </header>
 
 
+<section id="자산-자본-부채" class="level2">
+<h2 class="anchored" data-anchor-id="자산-자본-부채">자산 = 자본 + 부채</h2>
+<p>이 항등식은 재무상태표의 대전제이다. 회계 등식이라고 한다.</p>
+<p><strong>자산(Asset)</strong>은 기업이 소유하고 있는 모든 경제적 가치이다(예: 현금, 재고, 부동산 등). 이 중 <strong>부채(Liability)</strong>는 타인의 몫으로, 기업이 외부로부터 빌린 자금이나 갚아야할 의무에 해당된다(예: 대출, 미지급금 등). <strong>자본(Equity)</strong>은 자산에서 부채를 제외한 나머지를 칭한다.</p>
+</section>
+<section id="꾸짖을-책責과-빚-채債" class="level2">
+<h2 class="anchored" data-anchor-id="꾸짖을-책責과-빚-채債">꾸짖을 책(責)과 빚 채(債)</h2>
+<p>이번 포스팅은 부채에 관한 내용이므로 ’채’자가 무엇인지 알아보자.</p>
+<p>꾸짖을 책(責)의 어원은 가시(龶=朿)가 돋친 돈(貝). 즉, 빚을 뜻한다<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. 責자를 꾸짓다는 뜻으로 쓰이면서 빚은 인변(亻)을 붙여 債자를 쓴다<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. 責은 책임(責任), 책무(責務) 등으로 쓰인다.</p>
+<p>직책을 달고 있다는 것은 꾸중을 도맡으면서 돈 값을 하라는 자리인 것인가ㅎㅎ.</p>
+</section>
+<section id="전환사채convertible-bond-cb" class="level2">
+<h2 class="anchored" data-anchor-id="전환사채convertible-bond-cb">전환사채(Convertible Bond, CB)</h2>
+<p>전환사채는 일반적으로 주식회사가 투자자에게 발행하는 하나의 금융 상품이다. 해당 상품에는 발행 회사와 투자자간 중요한 계약 조건이 있는데 이것이 <a href="#call-put-option">콜옵션과 풋옵션</a>이다.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+A(주식회사) -- 전환사채증권 --&gt; B(투자자)
+B -- 납입 --&gt; A
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>이로서 납입금은 회사의 자산으로 인식된다.</p>
+</section>
+<section id="call-put-option" class="level2">
+<h2 class="anchored" data-anchor-id="call-put-option">전환사채의 콜옵션과 풋옵션</h2>
+<p>전환사채증권의 단위는 일반적으로 금액(예: 원, 달러 등)이다. 문서의 주요 구성 요소는 다음과 같다.</p>
+<ul>
+<li>발행 금액: 전환사채의 액면 금액을 명시한다.</li>
+<li>이자율: 예를 들어 5% 등</li>
+<li>만기일: 전환사채의 만기일을 명시한다. 만기일에 도달하면 사채권자(투자자)가 채권을 주식으로 전환할지 아니면 원금을 상환받을지 결정한다.</li>
+<li>전환가액: 전환사채를 주식으로 전환할 때 적용하는 주식 가격이다.</li>
+<li>부가조건</li>
+</ul>
+<p>부가조건들 중에 콜옵션과 풋옵션이 들어간다. 각각 발행한 회사 그리고 사채권자의 조기상환권이다.</p>
 
 
+</section>
 
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-       <option value="" disabled="" selected="" hidden="">Order By</option>
-       <option value="index" data-direction="asc">Default</option>
-         <option value="listing-title" data-direction="asc">
-          Title
-        </option>
-         <option value="listing-date-sort" data-direction="asc">
-          Date - Oldest
-        </option>
-         <option value="listing-date-sort" data-direction="desc">
-          Date - Newest
-        </option>
-         <option value="listing-author" data-direction="asc">
-          Author
-        </option>
-     </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="K8s" data-listing-date-sort="1692748800000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224">
-<a href="./posts/Kubeconfig.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/6/67/Kubernetes_logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-.kube/config
-</h5>
-<div class="card-subtitle listing-subtitle">
-with KubeContext
-</div>
-<div class="listing-reading-time card-text text-muted">
-2 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('K8s'); return false;">
-K8s
-</div>
-</div>
-<div class="card-text listing-description">
-I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to…
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 23, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="Math,Discrete,Set" data-listing-date-sort="1689811200000" data-listing-file-modified-sort="1723803755774" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="656">
-<a href="./posts/Automata.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/src/image/automata.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Automata Theory
-</h5>
-<div class="card-subtitle listing-subtitle">
-Some fun applications of discrete mathematics
-</div>
-<div class="listing-reading-time card-text text-muted">
-4 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Math'); return false;">
-Math
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Discrete'); return false;">
-Discrete
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Set'); return false;">
-Set
-</div>
-</div>
-<div class="card-text listing-description">
-Have you heard of Automata before? One of my best advisor was passionate about the subject called <em>Automata theory</em>.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Jul 20, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Emacs" data-listing-date-sort="1692576000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="43">
-<a href="./posts/Doom.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/0/08/EmacsIcon.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Doom Emacs
-</h5>
-<div class="card-subtitle listing-subtitle">
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
-</div>
-<div class="listing-reading-time card-text text-muted">
-1 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Emacs'); return false;">
-Emacs
-</div>
-</div>
-<div class="card-text listing-description">
-Dear Mac users.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 21, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Git" data-listing-date-sort="1681776000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="46">
-<a href="./posts/GitPrompt.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Git Prompt
-</h5>
-<div class="card-subtitle listing-subtitle">
-Check the branch you are working on
-</div>
-<div class="listing-reading-time card-text text-muted">
-1 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Git'); return false;">
-Git
-</div>
-</div>
-<div class="card-text listing-description">
-Turn this <code style="color: black;"> user@host gitrepo $ </code> into this <code style="color: black;"> user@host gitrepo <span style="color: green;"><strong>(main)</strong></span> $ </code>.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Apr 18, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="Finance,Entrepreneurship" data-listing-date-sort="1692576000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="283">
-<a href="./posts/Entrepreneurship.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Initial Steps in Entrepreneurship
-</h5>
-<div class="card-subtitle listing-subtitle">
-Capital contribution
-</div>
-<div class="listing-reading-time card-text text-muted">
-2 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Finance'); return false;">
-Finance
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Entrepreneurship'); return false;">
-Entrepreneurship
-</div>
-</div>
-<div class="card-text listing-description">
-3명의 창업자가 함께 프로젝트를 진행하다가 이를 정식으로 회사로 발전시키기로 결정했다. 이들은 법인을 설립하여 프로젝트를 회사로 전환하기로 한다.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 21, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="5" data-categories="Finance,Entrepreneurship" data-listing-date-sort="1692576000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="180">
-<a href="./posts/CB.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Initial Steps in Entrepreneurship
-</h5>
-<div class="card-subtitle listing-subtitle">
-Convertible bond
-</div>
-<div class="listing-reading-time card-text text-muted">
-1 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Finance'); return false;">
-Finance
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Entrepreneurship'); return false;">
-Entrepreneurship
-</div>
-</div>
-<div class="card-text listing-description">
-이 항등식은 재무상태표의 대전제이다. 회계 등식이라고 한다.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 21, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="6" data-categories="Git" data-listing-date-sort="1681430400000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1245">
-<a href="./posts/Git.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Local Git Commands
-</h5>
-<div class="card-subtitle listing-subtitle">
-Ever thought of Git graphs as linked lists?
-</div>
-<div class="listing-reading-time card-text text-muted">
-7 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Git'); return false;">
-Git
-</div>
-</div>
-<div class="card-text listing-description">
-Thanks Cottle for creating this educational tool. Ever thought of Git graphs as linked lists? Here is a great explanation.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Apr 14, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="7" data-categories="Linux,Tools" data-listing-date-sort="1685923200000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="838">
-<a href="./posts/Tmux.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://raw.githubusercontent.com/tmux/tmux/master/logo/tmux-logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Tmux
-</h5>
-<div class="card-subtitle listing-subtitle">
-Terminal multiplexer
-</div>
-<div class="listing-reading-time card-text text-muted">
-5 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Linux'); return false;">
-Linux
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Tools'); return false;">
-Tools
-</div>
-</div>
-<div class="card-text listing-description">
-Start off with installing <code>tmux</code> with homebrew on Mac.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Jun 5, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+<ol>
+<li id="fn1"><p><a href="https://ko.wiktionary.org/wiki/責">위키낱말사전, 꾸짖을 책(責)</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://ko.wiktionary.org/wiki/債">위키낱말사전, 빚 채(債)</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -955,27 +645,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-
-  <script>
-    const images = document.querySelectorAll('.quarto-grid-item > p > img');
-    images.forEach(image => {
-      image.onload = () => {
-        const width = image.naturalWidth;
-        const height = image.naturalHeight;
-        if (width >= height) {
-            image.style.objectFit = 'contain';
-            image.style.width = 'min(200px, 80%)';
-            image.style.marginLeft = 'calc((100% - min(200px, 80%))/2)';
-        } else {
-            image.style.objectFit = 'cover';
-        }
-      };
-      if (image.complete) {
-          image.onload();
-      }
-    });
-  </script>
-
 
 
 

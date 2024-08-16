@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Shane Oh">
+<meta name="dcterms.date" content="2023-07-20">
 
-<title>Posts – Shane</title>
+<title>Automata Theory – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,25 +25,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./image/favicon.ico" rel="icon">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../image/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,39 +69,13 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-subtitle','listing-author','listing-description','listing-date','listing-image','listing-reading-time','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <link rel="apple-touch-icon" href="image/apple-touch-icon.png">
 <link rel="apple-touch-startup-image" href="image/profile.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -133,8 +107,10 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Posts – Shane">
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="Automata Theory – Shane">
+<meta property="og:description" content="Some fun applications of discrete mathematics">
+<meta property="og:image" content="https://ohshane.github.io/posts/src/image/automata.svg">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -145,8 +121,8 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./image/logo.png" alt="" class="navbar-logo">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../image/logo.png" alt="" class="navbar-logo">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -156,11 +132,11 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -175,21 +151,50 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="Discrete">Discrete <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Emacs">Emacs <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Entrepreneurship">Entrepreneurship <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Finance">Finance <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Git">Git <span class="quarto-category-count">(2)</span></div><div class="category" data-category="K8s">K8s <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Linux">Linux <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Math">Math <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Set">Set <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Tools">Tools <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#intro" id="toc-intro" class="nav-link active" data-scroll-target="#intro">Intro</a></li>
+  <li><a href="#notations" id="toc-notations" class="nav-link" data-scroll-target="#notations">Notations</a>
+  <ul class="collapse">
+  <li><a href="#automation" id="toc-automation" class="nav-link" data-scroll-target="#automation">Automation</a></li>
+  <li><a href="#automation-as-an-acceptor" id="toc-automation-as-an-acceptor" class="nav-link" data-scroll-target="#automation-as-an-acceptor">Automation as an Acceptor</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Posts</h1>
-</div>
+<h1 class="title">Automata Theory</h1>
+<p class="subtitle lead">Some fun applications of discrete mathematics</p>
+  <div class="quarto-categories">
+    <div class="quarto-category">Math</div>
+    <div class="quarto-category">Discrete</div>
+    <div class="quarto-category">Set</div>
+  </div>
+  </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Shane Oh </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 20, 2023</p>
+    </div>
+  </div>
   
     
   </div>
@@ -199,341 +204,225 @@ window.Quarto = {
 </header>
 
 
+<style>
+  .dot figure svg {
+    width: 100% !important;
+    max-width: 400px !important;
+    max-height: 300px !important;
+  }
+</style>
+<section id="intro" class="level2">
+<h2 class="anchored" data-anchor-id="intro">Intro</h2>
+<p>Have you heard of Automata before? One of my best advisor was passionate about the subject called <em>Automata theory</em>.</p>
+<p>Take a look at this <a href="https://youtube.com/playlist?list=PLBlnK6fEyqRgp46KUv4ZY69yXmpwKOIev&amp;si=a2XZwAQSuLtcXi57">playlist</a> by Neso Academy if you are interested. It is simply awsome.</p>
+<div class="dot">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-automata" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-automata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 348.04 96.79" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 92.79)">
+<title>dfa</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-92.79 344.04,-92.79 344.04,4 -4,4"></polygon>
+<g id="node1" class="node">
+<title></title>
+</g>
+<!-- A -->
+<g id="node2" class="node">
+<title>A</title>
+<ellipse fill="none" stroke="black" cx="56.01" cy="-21.78" rx="18.02" ry="18.02"></ellipse>
+<text text-anchor="middle" x="56.01" y="-17.58" font-family="Times,serif" font-size="14.00">A</text>
+</g>
+<!-- &#45;&gt;A -->
+<g id="edge1" class="edge">
+<title>-&gt;A</title>
+<path fill="none" stroke="black" d="M1.15,-21.78C2.67,-21.78 15.1,-21.78 27.63,-21.78"></path>
+<polygon fill="black" stroke="black" points="27.95,-25.28 37.95,-21.78 27.95,-18.28 27.95,-25.28"></polygon>
+</g>
+<!-- B -->
+<g id="node3" class="node">
+<title>B</title>
+<ellipse fill="none" stroke="black" cx="142.02" cy="-64.78" rx="18" ry="18"></ellipse>
+<text text-anchor="middle" x="142.02" y="-60.58" font-family="Times,serif" font-size="14.00">B</text>
+</g>
+<!-- A&#45;&gt;B -->
+<g id="edge4" class="edge">
+<title>A-&gt;B</title>
+<path fill="none" stroke="black" d="M67.47,-35.87C73.75,-43.29 82.38,-51.84 92.02,-56.78 98.69,-60.2 106.49,-62.22 113.88,-63.4"></path>
+<polygon fill="black" stroke="black" points="113.55,-66.88 123.89,-64.55 114.35,-59.93 113.55,-66.88"></polygon>
+<text text-anchor="middle" x="99.02" y="-65.98" font-family="Times,serif" font-size="14.00"> 0 </text>
+</g>
+<!-- C -->
+<g id="node4" class="node">
+<title>C</title>
+<ellipse fill="none" stroke="black" cx="322.04" cy="-21.78" rx="18" ry="18"></ellipse>
+<text text-anchor="middle" x="322.04" y="-17.58" font-family="Times,serif" font-size="14.00">C</text>
+</g>
+<!-- A&#45;&gt;C -->
+<g id="edge2" class="edge">
+<title>A-&gt;C</title>
+<path fill="none" stroke="black" d="M74.33,-21.78C119.2,-21.78 239.45,-21.78 293.76,-21.78"></path>
+<polygon fill="black" stroke="black" points="294,-25.28 304,-21.78 294,-18.28 294,-25.28"></polygon>
+<text text-anchor="middle" x="185.02" y="-25.98" font-family="Times,serif" font-size="14.00"> 1 </text>
+</g>
+<!-- B&#45;&gt;A -->
+<g id="edge5" class="edge">
+<title>B-&gt;A</title>
+<path fill="none" stroke="black" d="M128.63,-52.47C122.31,-46.77 114.23,-40.31 106.02,-35.98 99.13,-32.34 91.18,-29.53 83.72,-27.4"></path>
+<polygon fill="black" stroke="black" points="84.55,-24 73.99,-24.91 82.81,-30.78 84.55,-24"></polygon>
+<text text-anchor="middle" x="99.02" y="-40.98" font-family="Times,serif" font-size="14.00"> 0 </text>
+</g>
+<!-- D -->
+<g id="node5" class="node">
+<title>D</title>
+<ellipse fill="none" stroke="black" cx="232.03" cy="-66.78" rx="18.02" ry="18.02"></ellipse>
+<ellipse fill="none" stroke="black" cx="232.03" cy="-66.78" rx="22.02" ry="22.02"></ellipse>
+<text text-anchor="middle" x="232.03" y="-62.58" font-family="Times,serif" font-size="14.00">D</text>
+</g>
+<!-- B&#45;&gt;D -->
+<g id="edge6" class="edge">
+<title>B-&gt;D</title>
+<path fill="none" stroke="black" d="M160.08,-67.12C165.77,-67.8 172.16,-68.45 178.02,-68.78 185.06,-69.18 192.64,-69.16 199.79,-68.94"></path>
+<polygon fill="black" stroke="black" points="200.04,-72.44 209.87,-68.5 199.73,-65.44 200.04,-72.44"></polygon>
+<text text-anchor="middle" x="185.02" y="-72.98" font-family="Times,serif" font-size="14.00"> 1 </text>
+</g>
+<!-- C&#45;&gt;A -->
+<g id="edge3" class="edge">
+<title>C-&gt;A</title>
+<path fill="none" stroke="black" d="M304.38,-16.84C277.78,-9.52 224.02,2.94 178.02,-0.98 145.27,-3.78 108.08,-10.75 83.67,-15.85"></path>
+<polygon fill="black" stroke="black" points="82.78,-12.47 73.73,-17.98 84.24,-19.31 82.78,-12.47"></polygon>
+<text text-anchor="middle" x="185.02" y="-5.98" font-family="Times,serif" font-size="14.00"> 1 </text>
+</g>
+<!-- C&#45;&gt;D -->
+<g id="edge8" class="edge">
+<title>C-&gt;D</title>
+<path fill="none" stroke="black" d="M304.73,-26.72C294.98,-29.94 282.51,-34.55 272.04,-39.98 267.42,-42.38 262.7,-45.23 258.2,-48.17"></path>
+<polygon fill="black" stroke="black" points="256.22,-45.29 249.94,-53.82 260.17,-51.07 256.22,-45.29"></polygon>
+<text text-anchor="middle" x="279.04" y="-44.98" font-family="Times,serif" font-size="14.00"> 0 </text>
+</g>
+<!-- D&#45;&gt;B -->
+<g id="edge7" class="edge">
+<title>D-&gt;B</title>
+<path fill="none" stroke="black" d="M212.61,-55.81C206.3,-52.63 199.06,-49.59 192.02,-47.98 183.54,-46.05 174.48,-47.97 166.48,-51.11"></path>
+<polygon fill="black" stroke="black" points="164.94,-47.97 157.37,-55.37 167.91,-54.31 164.94,-47.97"></polygon>
+<text text-anchor="middle" x="185.02" y="-52.98" font-family="Times,serif" font-size="14.00"> 1 </text>
+</g>
+<!-- D&#45;&gt;C -->
+<g id="edge9" class="edge">
+<title>D-&gt;C</title>
+<path fill="none" stroke="black" d="M254.12,-65.7C264.24,-64.47 276.27,-61.94 286.04,-56.78 292.47,-53.38 298.48,-48.41 303.64,-43.26"></path>
+<polygon fill="black" stroke="black" points="306.33,-45.5 310.54,-35.78 301.19,-40.76 306.33,-45.5"></polygon>
+<text text-anchor="middle" x="279.04" y="-65.98" font-family="Times,serif" font-size="14.00"> 0 </text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-automata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: An arbitrary Deterministic Finite Automata (DFA).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Each circle represents a state, and the numbers marked alongside the directed arrows are inputs. In this case, <code>A</code>, <code>B</code>, <code>C</code> and <code>D</code> are the states, and the numbers <code>0</code> and <code>1</code> are the inputs.</p>
+<p>The <code>A</code> state is the start state also represented as <span class="math inline">\(q_0\)</span> (we will take a look at the notations below).</p>
+<p>You can easily distinguish that the state <code>D</code> is different from the others by being marked with a double circle. This is called a terminal state, which represents the completion of the computation process for input sequences.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There could be multiple terminal states or no terminal states at all — which isn’t very practical, so it’s not discussed much.</p>
+<p>Also, we can continue the process after reaching the terminal state, such as the example <code>A</code> → <code>B</code> → <code>D</code> → <code>C</code> → <code>D</code>, but we should always finish at the terminal state.</p>
+</div>
+</div>
+<p>In <a href="#fig-automata" class="quarto-xref">Figure&nbsp;1</a>, we can see that we need a sequence length of at least 2 to reach the terminal (final; <span class="math inline">\(F\)</span>) state. Moreover, in this case, the sequence length must be an even number greater than or equal to 2.</p>
+<p>This is a simple example of automata, or more precisely, a Deterministic Finite Automata, DFA for short.</p>
+<p>There are some classes of automata. Take a look at below.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+TM(Turing Machine) --&gt; FSM(FSM - Finite State Machine)
+FSM --&gt; FA(FA - Finite Automata)
+FA --&gt; FA1(FA with output)
+FA --&gt; FA2(FA without output)
+FA1 --&gt; Moore(Moore Machine)
+FA1 --&gt; Mealy(Mealy Machine)
+FA2 --&gt; DFA(DFA - Deterministic Finite Automata)
+FA2 --&gt; NFA(NFA - Non-deterministic Finite Automata)
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="notations" class="level2">
+<h2 class="anchored" data-anchor-id="notations">Notations</h2>
+<p>To cover up all of those classes, we need a <a href="https://en.wikipedia.org/wiki/Automata_theory">formal definition</a> of automation.</p>
+<section id="automation" class="level3">
+<h3 class="anchored" data-anchor-id="automation">Automation</h3>
+<p><span class="math display">\[
+M = \langle \Sigma, \Gamma, Q, \delta, \lambda \rangle
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\Sigma\)</span> is a finite set of symbols, called the <strong>input</strong> alphabet of the automation.</li>
+<li><span class="math inline">\(\Gamma\)</span> is another finite set of symbols, called the <strong>output</strong> alphabet of the automation.</li>
+<li><span class="math inline">\(Q\)</span> is a set of <strong>states</strong>.</li>
+<li><span class="math inline">\(\delta\)</span> is the <strong>next-state function</strong> <span class="math inline">\(\delta : Q \times \Sigma \to Q\)</span></li>
+<li><span class="math inline">\(\lambda\)</span> is the <strong>next-output function</strong> <span class="math inline">\(\lambda : Q \times \Sigma \to \Gamma\)</span></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(Q\)</span> (set of states) is finite, then <span class="math inline">\(M\)</span> is finite automation.</p>
+</div>
+</div>
+<p>When we take a look at the automation without output, the output <span class="math inline">\(\Gamma\)</span> and <span class="math inline">\(\lambda\)</span> doesn’t do much. Instead we try to understand the automation without output as in terms of automation as an acceptor to see if the automation can accept a certain language or not.</p>
+<p>When we look at an automaton without output, the output alphabet (<span class="math inline">\(\Gamma\)</span>) and the output function (<span class="math inline">\(\lambda\)</span>) don’t play a significant role. Instead, we try to understand the <em>automaton without output</em> in terms of an <em>automaton as an acceptor</em>, to see if it can accept a certain language or not.</p>
+<p>The notation below will be more useful.</p>
+</section>
+<section id="automation-as-an-acceptor" class="level3">
+<h3 class="anchored" data-anchor-id="automation-as-an-acceptor">Automation as an Acceptor</h3>
+<p><span class="math display">\[
+M = \langle \Sigma, q_0, Q, \delta, F \rangle
+\]</span></p>
+<ul>
+<li><span class="math inline">\(q_0 \in Q\)</span> is a start state</li>
+<li><span class="math inline">\(F \subseteq Q\)</span> is called final states or <em>accept</em> state. Notice that <span class="math inline">\(F\)</span> is a set, which means there could be none, one or multiple final states.</li>
+</ul>
+<p>Take an example with <a href="#fig-automata" class="quarto-xref">Figure&nbsp;1</a> as an acceptor.</p>
+<ul>
+<li><span class="math inline">\(\Sigma = \lbrace 0, 1 \rbrace\)</span></li>
+<li><span class="math inline">\(q_0 = A\)</span></li>
+<li><span class="math inline">\(Q = \lbrace A, B, C, D \rbrace\)</span></li>
+<li><span class="math inline">\(F = \lbrace F \rbrace\)</span></li>
+</ul>
 
 
+</section>
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-       <option value="" disabled="" selected="" hidden="">Order By</option>
-       <option value="index" data-direction="asc">Default</option>
-         <option value="listing-title" data-direction="asc">
-          Title
-        </option>
-         <option value="listing-date-sort" data-direction="asc">
-          Date - Oldest
-        </option>
-         <option value="listing-date-sort" data-direction="desc">
-          Date - Newest
-        </option>
-         <option value="listing-author" data-direction="asc">
-          Author
-        </option>
-     </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="K8s" data-listing-date-sort="1692748800000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="224">
-<a href="./posts/Kubeconfig.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/6/67/Kubernetes_logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-.kube/config
-</h5>
-<div class="card-subtitle listing-subtitle">
-with KubeContext
-</div>
-<div class="listing-reading-time card-text text-muted">
-2 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('K8s'); return false;">
-K8s
-</div>
-</div>
-<div class="card-text listing-description">
-I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to…
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 23, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="Math,Discrete,Set" data-listing-date-sort="1689811200000" data-listing-file-modified-sort="1723803755774" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="656">
-<a href="./posts/Automata.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/src/image/automata.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Automata Theory
-</h5>
-<div class="card-subtitle listing-subtitle">
-Some fun applications of discrete mathematics
-</div>
-<div class="listing-reading-time card-text text-muted">
-4 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Math'); return false;">
-Math
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Discrete'); return false;">
-Discrete
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Set'); return false;">
-Set
-</div>
-</div>
-<div class="card-text listing-description">
-Have you heard of Automata before? One of my best advisor was passionate about the subject called <em>Automata theory</em>.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Jul 20, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Emacs" data-listing-date-sort="1692576000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="43">
-<a href="./posts/Doom.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/0/08/EmacsIcon.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Doom Emacs
-</h5>
-<div class="card-subtitle listing-subtitle">
-
-</div>
-<div class="listing-reading-time card-text text-muted">
-1 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Emacs'); return false;">
-Emacs
-</div>
-</div>
-<div class="card-text listing-description">
-Dear Mac users.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 21, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Git" data-listing-date-sort="1681776000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="46">
-<a href="./posts/GitPrompt.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Git Prompt
-</h5>
-<div class="card-subtitle listing-subtitle">
-Check the branch you are working on
-</div>
-<div class="listing-reading-time card-text text-muted">
-1 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Git'); return false;">
-Git
-</div>
-</div>
-<div class="card-text listing-description">
-Turn this <code style="color: black;"> user@host gitrepo $ </code> into this <code style="color: black;"> user@host gitrepo <span style="color: green;"><strong>(main)</strong></span> $ </code>.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Apr 18, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="Finance,Entrepreneurship" data-listing-date-sort="1692576000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="283">
-<a href="./posts/Entrepreneurship.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Initial Steps in Entrepreneurship
-</h5>
-<div class="card-subtitle listing-subtitle">
-Capital contribution
-</div>
-<div class="listing-reading-time card-text text-muted">
-2 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Finance'); return false;">
-Finance
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Entrepreneurship'); return false;">
-Entrepreneurship
-</div>
-</div>
-<div class="card-text listing-description">
-3명의 창업자가 함께 프로젝트를 진행하다가 이를 정식으로 회사로 발전시키기로 결정했다. 이들은 법인을 설립하여 프로젝트를 회사로 전환하기로 한다.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 21, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="5" data-categories="Finance,Entrepreneurship" data-listing-date-sort="1692576000000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="180">
-<a href="./posts/CB.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Initial Steps in Entrepreneurship
-</h5>
-<div class="card-subtitle listing-subtitle">
-Convertible bond
-</div>
-<div class="listing-reading-time card-text text-muted">
-1 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Finance'); return false;">
-Finance
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Entrepreneurship'); return false;">
-Entrepreneurship
-</div>
-</div>
-<div class="card-text listing-description">
-이 항등식은 재무상태표의 대전제이다. 회계 등식이라고 한다.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Aug 21, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="6" data-categories="Git" data-listing-date-sort="1681430400000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1245">
-<a href="./posts/Git.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Git-logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Local Git Commands
-</h5>
-<div class="card-subtitle listing-subtitle">
-Ever thought of Git graphs as linked lists?
-</div>
-<div class="listing-reading-time card-text text-muted">
-7 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Git'); return false;">
-Git
-</div>
-</div>
-<div class="card-text listing-description">
-Thanks Cottle for creating this educational tool. Ever thought of Git graphs as linked lists? Here is a great explanation.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Apr 14, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="7" data-categories="Linux,Tools" data-listing-date-sort="1685923200000" data-listing-file-modified-sort="1723803755778" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="838">
-<a href="./posts/Tmux.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://raw.githubusercontent.com/tmux/tmux/master/logo/tmux-logo.svg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Tmux
-</h5>
-<div class="card-subtitle listing-subtitle">
-Terminal multiplexer
-</div>
-<div class="listing-reading-time card-text text-muted">
-5 min
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Linux'); return false;">
-Linux
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Tools'); return false;">
-Tools
-</div>
-</div>
-<div class="card-text listing-description">
-Start off with installing <code>tmux</code> with homebrew on Mac.
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Shane Oh
-</div>
-<div class="listing-date">
-Jun 5, 2023
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -955,27 +844,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-
-  <script>
-    const images = document.querySelectorAll('.quarto-grid-item > p > img');
-    images.forEach(image => {
-      image.onload = () => {
-        const width = image.naturalWidth;
-        const height = image.naturalHeight;
-        if (width >= height) {
-            image.style.objectFit = 'contain';
-            image.style.width = 'min(200px, 80%)';
-            image.style.marginLeft = 'calc((100% - min(200px, 80%))/2)';
-        } else {
-            image.style.objectFit = 'cover';
-        }
-      };
-      if (image.complete) {
-          image.onload();
-      }
-    });
-  </script>
-
 
 
 
