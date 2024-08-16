@@ -1,0 +1,33 @@
+---
+title: Initial Steps in Entrepreneurship
+subtitle: Convertible bond
+description: ""
+author: Shane Oh
+date: 2023-08-21
+categories:
+  - Finance
+  - Entrepreneurship
+---
+
+## 꾸짖을 책(責)과 빚 채(債)
+꾸짖을 책(責)의 어원은 가시(龶=朿)가 돋친 돈(貝). 즉, 빚을 뜻한다[^꾸짖을책].
+責자를 꾸짓다는 뜻으로 쓰이면서 빚은 인변(亻)을 붙여 債자를 쓴다[^빚채].
+責은 책임(責任), 책무(責務) 등으로 쓰인다.
+
+그러니 직책을 달고 있다는 것은 꾸중을 도맡으면서 돈 값을 하라는 자리인 것인가ㅎㅎ.
+
+[^꾸짖을책]: [위키낱말사전, 꾸짖을 책(責)](https://ko.wiktionary.org/wiki/責)
+[^빚채]: [위키낱말사전, 빚 채(債)](https://ko.wiktionary.org/wiki/債)
+
+## 전환사채(Convertible bond; CB)
+전환사채는 일반적으로 주식회사가 투자자에게 발행하는 하나의 금융 상품이다.
+해당 상품에는 발행 회사와 투자자간 주요한 계약 조건이 있는데 이것이 콜옵션과 풋옵션이다.
+
+```{mermaid}
+%%| layout-align: center
+flowchart LR
+A(주식회사) -- 전환사채증권 --> B(투자자)
+B -- 납입 --> A
+```
+
+이로서 납입금은 회사의 부채로 인식된다.
