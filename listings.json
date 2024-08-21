@@ -3,11 +3,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/Kubeconfig.html",
-      "/posts/Automata.html",
-      "/posts/Doom.html",
       "/posts/GitPrompt.html",
-      "/posts/Entrepreneurship.html",
-      "/posts/CB.html",
       "/posts/Git.html",
       "/posts/Tmux.html"
     ]
