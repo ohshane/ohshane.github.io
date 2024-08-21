@@ -1,0 +1,19 @@
+---
+title: Entropy
+subtitle: The amount of uncertainty
+description: ""
+author: Shane Oh
+date: 2023-04-14
+image: false
+bibliography: Entropy.bib
+categories:
+  - ML
+---
+
+## The amount of uncertainty
+
+What is uncertainty?
+
+Are random things uncertain? What are random things anyway?
+
+In statistics, a random variable if a mathematical formalization of a quantity or object which depends on random events.
