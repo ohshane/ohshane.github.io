@@ -8,6 +8,16 @@ categories:
   - Math
 ---
 
+```{=html}
+<style>
+.dot figure svg {
+  width: 100% !important;
+  max-width: 400px !important;
+  max-height: 300px !important;
+  background: red;
+}
+</style>
+```
 When adding up terms in a sequence with a specific pattern,
 such as a geometric sequence, using a formula or recognizing a pattern can make the process much easier.
 
@@ -43,11 +53,37 @@ $$
 This can be easily seen when counting nodes in a complete binary tree
 or calculating the moving average of a gradient using the momentum.
 
+::: {.dot}
 ```{dot}
+//| fig-cap: A complete binary tree 
 graph binaryTree {
+  rankdir=TB
   1 -- 2
   1 -- 3
   2 -- 4
-  
 }
 ```
+:::
+<!-- 
+digraph dfa {
+  rankdir=LR
+
+  "" [shape=none, width=0, height=0]
+  A [shape=circle]
+  B [shape=circle]
+  C [shape=circle]
+  D [shape=doublecircle]
+
+  "" -> A
+  A -> C [label=" 1 "]
+  C -> A [label=" 1 "]
+
+  A -> B [label=" 0 "]
+  B -> A [label=" 0 "]
+
+  B -> D [label=" 1 "]
+  D -> B [label=" 1 "]
+
+  C -> D [label=" 0 "]
+  D -> C [label=" 0 "]
+} -->
