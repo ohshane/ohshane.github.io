@@ -1,0 +1,18 @@
+---
+title: Huffman Coding
+subtitle: Lossless data compression
+description: ""
+author: Shane Oh
+date: 2023-04-14
+image: false
+categories:
+  - Information Theory
+---
+
+Huffman coding is a popular algorithm used in lossless data compression.
+It was developed by David A. Huffman while he was a Ph.D. student at MIT,
+and it is widely used in various compression formats, including ZIP files and image formats like JPEG.
+
+## Concepts
+
+Huffman coding is a type of **variable-length prefix coding** that assigns shorter codes to more frequent symbols and longer code to less frequent symbols.

@@ -5,15 +5,14 @@ description: ""
 author: Shane Oh
 date: 2023-04-14
 image: false
-bibliography: Entropy.bib
 categories:
   - ML
 ---
 
-## The amount of uncertainty
+## The amount of information
 
-What is uncertainty?
+Claude Shannon, often regarded as the father of information theory, sought to 
+quantify information in a measureable way.
 
-Are random things uncertain? What are random things anyway?
+> Gibberish requires more information than a great literature.
 
-In statistics, a random variable if a mathematical formalization of a quantity or object which depends on random events.
