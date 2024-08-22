@@ -2,7 +2,7 @@
 title: Geometric Seuqnece
 subtitle: Adding up terms in a sequence with a pattern
 author: Shane Oh
-date: 2023-04-14
+date: 2024-08-22
 image: false
 categories:
   - Math

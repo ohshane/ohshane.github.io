@@ -1,12 +1,12 @@
 ---
-title: Huffman Coding
-subtitle: Lossless data compression
+title: huffman coding
+subtitle: lossless data compression
 description: ""
-author: Shane Oh
+author: shane oh
 date: 2023-04-14
 image: false
 categories:
-  - Information Theory
+  - information theory
 ---
 
 Huffman coding is a popular algorithm used in lossless data compression.

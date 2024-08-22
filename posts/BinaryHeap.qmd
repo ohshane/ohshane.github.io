@@ -1,0 +1,11 @@
+---
+title: Binary Heap
+subtitle: For better priority queuing
+description: ""
+author: Shane Oh
+date: 2023-04-14
+image: false
+categories:
+  - Algorithms
+---
+
