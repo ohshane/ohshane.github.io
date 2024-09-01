@@ -1,0 +1,46 @@
+---
+title: Geometric Seuqnece
+subtitle: Adding up terms in a sequence with a pattern
+author: Shane Oh
+date: 2024-08-22
+image: false
+categories:
+  - Math
+---
+
+```{=html}
+<style>
+  .dot figure svg {
+    width: 100% !important;
+    max-height: 300px !important;
+  }
+</style>
+```
+When adding up terms in a sequence with a specific pattern,
+such as a geometric sequence, using a formula or recognizing a pattern can make the process much easier.
+
+Let's see how it works.
+
+$$
+a, ar, ar^2, ar^3, \cdots, ar^n
+$$
+
+The sequence above is an arbitrary geometric sequence,
+where each character denotes the following:
+
+- $a$: the first term
+- $r$: the common ratio
+
+The sum from the first term to the n-th term can be calculated using the following formula.
+
+$$
+\begin{align*}
+S_n &= a + ar + ar^2 + \cdots + ar^{n-1} \\
+rS_n &= ar + ar^2 + ar^3 \cdots + ar^n \\
+rS_n - S_n &= ar^n - a \\
+S_n &= \dfrac{a(r^n - 1)}{r-1}
+\end{align*}
+$$
+
+This formula can be easily seen when counting nodes in a complete binary tree
+or calculating the moving average of a gradient using the momentum.

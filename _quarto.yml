@@ -5,7 +5,6 @@ project:
     - "!*_.qmd"
   preview: 
     port: 8888
-
 website:
   title: Shane
   open-graph: true
@@ -18,7 +17,7 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-
+  draft-mode: visible
 format:
   html:
     theme: cosmo

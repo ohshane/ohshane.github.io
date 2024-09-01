@@ -1,0 +1,18 @@
+---
+title: Entropy
+subtitle: The amount of uncertainty
+description: ""
+author: Shane Oh
+date: 2023-04-14
+image: false
+categories:
+  - ML
+---
+
+## The amount of information
+
+Claude Shannon, often regarded as the father of information theory, sought to 
+quantify information in a measureable way.
+
+> Gibberish requires more information than a great literature.
+
