@@ -9,3 +9,188 @@ categories:
   - Algorithms
 ---
 
+Check out a [video](https://youtu.be/HqPJF2L5h9U?si=i0OFnjbWOS4cKNoU) by Abdul Bari.
+
+## Represent a binary tree in array
+
+```{mermaid}
+%%| fig-align: center 
+flowchart TB
+  A --- B
+  A --- C
+  B --- D
+  B --- E
+  C --- F
+  C --- G
+```
+
+```{=html}
+<div id="btree-in-array">
+  <div class="item"></div>
+  <div class="item"></div>
+  <div class="item box">A</div>
+  <div class="item box">B</div>
+  <div class="item box">C</div>
+  <div class="item box">D</div>
+  <div class="item box">E</div>
+  <div class="item box">F</div>
+  <div class="item box">G</div>
+
+  <div class="item">idx</div>
+  <div class="item">0</div>
+  <div class="item">1</div>
+  <div class="item">2</div>
+  <div class="item">3</div>
+  <div class="item">4</div>
+  <div class="item">5</div>
+  <div class="item">6</div>
+  <div class="item">7</div>
+</div>
+
+<style scoped>
+  #btree-in-array {
+    font-family: monospace;
+    font-size: 0.9rem;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(9, 2rem);
+    grid-template-rows: repeat(2, 2rem);
+    gap: 0 10px;
+  }
+  .item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .box {
+    border: none;
+    background: var(--mermaid-node-bg-color);
+    color: var(--mermaid-label-fg-color);
+    border: 1px solid black;
+  }
+</style>
+```
+
+::: {.callout-note}
+If a node is at index $i$,
+
+- left child: $2i$
+- right child: $2i + 1$
+- parent: $\lfloor \frac{i}{2} \rfloor$
+:::
+
+The definition of an (almost) complete binary tree becomes clearer when we represent
+tree structure as an array. _We should not allow any null values between the elements._
+
+Now you may be thinking about the difference between binary trees and heaps.
+Actually, while all heaps are binary trees, not all binary trees are heaps.
+You must fulfill the **heap property**. So what is it?
+
+## Heap property
+
+```{=html}
+<div id="venn">
+  <div class="set set-1">
+    Tree
+    <div class="set set-2">
+      Binary tree
+      <div class="set set-3">
+        Almost complete binary tree
+        <div class="set set-4">
+          Heap
+          <div class="label">
+            Min-heap / Max-heap
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #venn {
+    /* border: 1px solid black; */
+    box-sizing: content-box;
+    margin: 20px;
+  }
+
+  #venn > * {
+    potision: relative
+    box-sizing: border-box;
+    font-size: 0.9rem;
+  }
+
+  .set {
+    margin: 10px;
+    padding: 2px;
+    border-radius: 10px;
+    border: 1px solid black;
+    text-align: center;
+  }
+
+  .set-1 {
+    margin: 0 auto;
+    height: 100%;
+    width: 80%;
+    max-width: 400px;
+  }
+
+  .set-4 {
+    border-radius: 50%;
+    background: #e9f2fc;
+  }
+
+  .label {
+    margin: 20px 0 35px 0;
+  }
+</style>
+```
+The heap property dictates the relationship between a parent node and its children in a binary tree.
+It can be defined in two ways, leading to two different types of heaps:
+
+- Min-heap property
+$$A[\lfloor \frac{i}{2} \rfloor] \leq A[i]$$
+
+- Max-heap property
+$$A[\lfloor \frac{i}{2} \rfloor] \geq A[i]$$
+
+If you have an array $A$ with no null values between elements,
+you are already satisfying the almost complete binary tree property
+and are halfway ready to be a heap structure. How cool is that!
+
+The remaining half of the process is called **heapifying**.
+
+## Heapify
+
+Thankfully, the tree is balanced from the very start,
+which makes it easier for us to maintain the $O(\log n)$-like performance.
+
+And as written above, _we are only curious about
+the relationship between a parent and its children nodes_.
+With that in mind, let's keep the tree shape itself and _heapify
+by swapping the values_ between the children and the parent node
+where it does not fulfill the min or max property.
+
+We will take a close look at the max-heap since
+the min-heap and max-heap are basically the same.
+
+\begin{align*}
+  A &=
+  \begin{bmatrix}
+    2 & 12 & 5 & 15 & 16 & 2 & 6 & 9 & 1 & 4
+  \end{bmatrix} \\
+
+  \text{Max-Heapify}(A) &=
+  \begin{bmatrix}
+    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4
+  \end{bmatrix}
+\end{align*}
+
+So, do we start heapifying from the top or the bottom?
+
+
+
+Think of a heap as a pile of apples in a grocery store,
+stacked in the shape of a pyramid.
+The apples with the best quality are arranged from top to bottom,
+so that people can pick them one by one starting from the top.
