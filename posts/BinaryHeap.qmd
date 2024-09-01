@@ -11,22 +11,21 @@ categories:
 
 Check out a [video](https://youtu.be/HqPJF2L5h9U?si=i0OFnjbWOS4cKNoU) by Abdul Bari.
 
-## Represent a binary tree in array
+## Represent a binary tree in an array
 
 ```{mermaid}
 %%| fig-align: center 
 flowchart TB
-  A --- B
-  A --- C
-  B --- D
-  B --- E
-  C --- F
-  C --- G
+  A(1: A) --- B(2: B)
+  A --- C(3: C)
+  B --- D(4: D)
+  B --- E(5: E)
+  C --- F(6: F)
+  C --- G(7: G)
 ```
 
 ```{=html}
 <div id="btree-in-array">
-  <div class="item"></div>
   <div class="item"></div>
   <div class="item box">A</div>
   <div class="item box">B</div>
@@ -37,7 +36,6 @@ flowchart TB
   <div class="item box">G</div>
 
   <div class="item">idx</div>
-  <div class="item">0</div>
   <div class="item">1</div>
   <div class="item">2</div>
   <div class="item">3</div>
@@ -53,7 +51,7 @@ flowchart TB
     font-size: 0.9rem;
     display: grid;
     justify-content: center;
-    grid-template-columns: repeat(9, 2rem);
+    grid-template-columns: repeat(8, 2rem);
     grid-template-rows: repeat(2, 2rem);
     gap: 0 10px;
   }
@@ -72,11 +70,19 @@ flowchart TB
 ```
 
 ::: {.callout-note}
-If a node is at index $i$,
+To represent a binary tree in an array, you can follow these rules:
 
-- left child: $2i$
-- right child: $2i + 1$
-- parent: $\lfloor \frac{i}{2} \rfloor$
+- If the root of the tree is at index `1` <- easier to remember
+- For a node at index $i$:
+  - The left child is at index $2i$.
+  - The right child is at index $2i+1$.
+  - The parent is at index $\lfloor \frac{i}{2} \rfloor$.
+
+- If the root of the tree is at index `0` <- when implementing
+- For a node at index $i$:
+  - The left child is at index $2i+1$.
+  - The right child is at index $2i+2$.
+  - The parent is at index $\lfloor \frac{i - 1}{2} \rfloor$.
 :::
 
 The definition of an (almost) complete binary tree becomes clearer when we represent
@@ -175,22 +181,169 @@ We will take a close look at the max-heap since
 the min-heap and max-heap are basically the same.
 
 \begin{align*}
-  A &=
+  A &\quad
   \begin{bmatrix}
     2 & 12 & 5 & 15 & 16 & 2 & 6 & 9 & 1 & 4
   \end{bmatrix} \\
 
-  \text{Max-Heapify}(A) &=
+  \text{Max-Heapify}(A) &\quad
   \begin{bmatrix}
     16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4
   \end{bmatrix}
 \end{align*}
 
+::: {.callout-note}
+# Heapifying and heap sorting
+Heapifying and heap sorting are a bit different.
+
+It is guaranteed that the first element (or the root) of a heap
+is the minimum or maximum value (which is why a heap can be used as a priority queue),
+but the rest is not yet sorted in a single 
+sequence (although the path from the root to the leaf is sorted).
+
+Think of heapifying as an intermediate stage before heap sorting.
+:::
+
 So, do we start heapifying from the top or the bottom?
 
+The answer is from the bottom. Take a look at the implemented code.
+
+```{.go filename="maxheapify.go"}
+// MaxHeap constructs a max-heap from an unordered array
+// `i` starts from 0 in this code
+// We are basically bubble sorting from node `i` to the leaf node
+// while iterating `i` from n to 0.
+func BuildMaxHeap(arr []int, n int) {
+	// Start from the last non-leaf node and heapify each node
+	for i := n/2 - 1; i >= 0; i-- { // <1>
+		MaxHeapify(arr, n, i)
+	}
+}
+
+// MaxHeapify ensures the subtree rooted at index i is a max-heap
+//      i
+//    /   \
+// left   right
+func MaxHeapify(arr []int, n, i int) {
+	largest := i       // Initialize largest as root
+	left := 2*i + 1    // left child index
+	right := 2*i + 2   // right child index
+
+	// If left child is larger than root
+	if left < n && arr[left] > arr[largest] {
+		largest = left
+	}
+
+	// If right child is larger than the largest so far
+	if right < n && arr[right] > arr[largest] {
+		largest = right
+	}
+
+	// If largest is not root
+	if largest != i {
+		arr[i], arr[largest] = arr[largest], arr[i]  // Swap
+
+		// Recursively heapify the affected subtree
+		MaxHeapify(arr, n, largest)
+	}
+}
+```
+1. The `for` loop can be iterated from `n` to `0`. However, since half of the 
+elements (which are leaf nodes) are already part of a heap, 
+we can start from the node that is not a leaf.
+
+Congratulations! You now have a beautiful max-heap ready. 
+Let's utilize this as a priority queue.
+
+## Inserting and popping elements in the queue
+
+Insert from the **right**, pop from the **left**.
+
+Inserting from the right helps us to maintain the almost complete binary tree property,
+but the max-heap property is broken.
+
+\begin{align*}
+  A_\text{max-heap} &\quad
+  \begin{bmatrix}
+    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4
+  \end{bmatrix}\\
+
+  A_\text{broken-max-heap} &\quad
+  \begin{bmatrix}
+    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4 & 100
+  \end{bmatrix}\\
+
+  &\quad
+  \begin{bmatrix}
+    16 & 15 & 6 & 9 & 100 & 2 & 5 & 2 & 1 & 4 & 12
+  \end{bmatrix}\\
+
+  &\quad
+  \begin{bmatrix}
+    16 & 100 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4 & 12
+  \end{bmatrix}\\
+
+  A_\text{max-heap} &\quad
+  \begin{bmatrix}
+    100 & 16 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4 & 12
+  \end{bmatrix}\\
+\end{align*}
+
+The solution is to check the integrity from the inserted leaf node to the root.
+Simply compare with the parent node and propagate upward to the top. 
+In the array representation, it seems like hopping to the left for $\log n$ times.
+
+Popping is done by removing the root and replacing it with the last leaf node.
+To preserve the max-heap property, we propagate downward from the root to the bottom.
 
 
-Think of a heap as a pile of apples in a grocery store,
-stacked in the shape of a pyramid.
-The apples with the best quality are arranged from top to bottom,
-so that people can pick them one by one starting from the top.
+\begin{align*}
+  A_\text{max-heap} &\quad
+  \begin{bmatrix}
+    100 & 16 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4 & 12
+  \end{bmatrix}\\
+
+  A_\text{broken-max-heap} &\quad
+  \begin{bmatrix}
+    12 & 16 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4
+  \end{bmatrix}\\
+
+  &\quad
+  \begin{bmatrix}
+    16 & 12 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4
+  \end{bmatrix}\\
+
+  A_\text{max-heap} &\quad
+  \begin{bmatrix}
+    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4
+  \end{bmatrix}\\
+
+\end{align*}
+
+Notice that the root node always holds the maximum value of the entire tree.
+This characteristic enables **sorting**; you simply keep popping the root until the heap is empty.
+
+## Heap sort
+
+Why do we need to create a dedicated paragraph for sorting when it is so straightforward?
+There is a fun little idea behind heap sorting in an array that makes it more elegant.
+
+```{.go filename="heapsort.go"}
+func HeapSort(arr []int, n int) {
+	BuildMaxHeap(arr) // <1>
+	for m := n - 1; m >= 0; m-- { // <2>
+		arr[0], arr[m] = arr[m], arr[0] // <3>
+		MaxHeapify(arr, m, 0) // <3>
+	}
+}
+```
+1. First, create a max-heap.
+2. Instead of popping and stacking the elements into a new empty array,
+we utilize the original array. After popping,
+there is a spare index because the size of the heap is reduced.
+3. By marking the end of the max-heap with `m`,
+we can swap the root value with the leaf at the very end.
+The popped value will be stacked from the end of the array,
+and eventually, the array will become a sorted array in ascending order.
+
+
