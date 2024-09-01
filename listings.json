@@ -3,7 +3,11 @@
     "listing": "/index.html",
     "items": [
       "/posts/Kubeconfig.html",
+      "/posts/BinaryHeap.html",
+      "/posts/Entropy.html",
+      "/posts/GeometricSequence.html",
       "/posts/GitPrompt.html",
+      "/posts/HuffmanCoding.html",
       "/posts/Git.html",
       "/posts/Tmux.html"
     ]

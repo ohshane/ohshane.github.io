@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2023-08-23">
+<meta name="dcterms.date" content="2024-08-22">
 
-<title>.kube/config – Shane</title>
+<title>Geometric Seuqnece – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -108,11 +74,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content=".kube/config – Shane">
-<meta property="og:description" content="with KubeContext">
-<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/6/67/Kubernetes_logo.svg">
+<meta property="og:title" content="Geometric Seuqnece – Shane">
+<meta property="og:description" content="Adding up terms in a sequence with a pattern">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -160,10 +154,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">.kube/config</h1>
-<p class="subtitle lead">with KubeContext</p>
+<h1 class="title">Geometric Seuqnece</h1>
+<p class="subtitle lead">Adding up terms in a sequence with a pattern</p>
   <div class="quarto-categories">
-    <div class="quarto-category">K8s</div>
+    <div class="quarto-category">Math</div>
   </div>
   </div>
 
@@ -181,7 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 23, 2023</p>
+      <p class="date">August 22, 2024</p>
     </div>
   </div>
   
@@ -193,45 +187,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.</p>
-<p>Below is an example of the configured .kube/config file:</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>.kube/config</strong></pre>
-</div>
-<div class="sourceCode" id="cb1" data-filename=".kube/config"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> v1</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">clusters</span><span class="kw">:</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">certificate-authority-data</span><span class="kw">:</span><span class="at"> LS0...LS0tCg==</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">server</span><span class="kw">:</span><span class="at"> https://kubernetes.docker.internal:6443</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> docker-desktop</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">insecure-skip-tls-verify</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">server</span><span class="kw">:</span><span class="at"> https://121.135.111.111:6443</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> raspberrypi</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">certificate-authority</span><span class="kw">:</span><span class="at"> /Users/shane/.minikube/ca.crt</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">extensions</span><span class="kw">:</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">extension</span><span class="kw">:</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">last-update</span><span class="kw">:</span><span class="at"> Sun, 20 Aug 2023 17:04:00 KST</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">version</span><span class="kw">:</span><span class="at"> v1.30.1</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">provider</span><span class="kw">:</span><span class="at"> minikube.sigs.k8s.io</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">name</span><span class="kw">:</span><span class="at"> cluster_info</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">server</span><span class="kw">:</span><span class="at"> https://127.0.0.1:60544</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> minikube</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>The above configuration file defines three clusters:</p>
+<style>
+  .dot figure svg {
+    width: 100% !important;
+    max-height: 300px !important;
+  }
+</style>
+<p>When adding up terms in a sequence with a specific pattern, such as a geometric sequence, using a formula or recognizing a pattern can make the process much easier.</p>
+<p>Let’s see how it works.</p>
+<p><span class="math display">\[
+a, ar, ar^2, ar^3, \cdots, ar^n
+\]</span></p>
+<p>The sequence above is an arbitrary geometric sequence, where each character denotes the following:</p>
 <ul>
-<li>docker-desktop</li>
-<li>raspberrypi (the Raspberry Pi cluster at home, with the server address <code>https://121.135.111.111:6443</code>)</li>
-<li>minikube</li>
+<li><span class="math inline">\(a\)</span>: the first term</li>
+<li><span class="math inline">\(r\)</span>: the common ratio</li>
 </ul>
-<p>With this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> config use-context raspberrypi</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>To bypass the process of verifying the SSL certificate as a public certificate, use the following command:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">cluster</span><span class="kw">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">insecure-skip-tls-verify</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The sum from the first term to the n-th term can be calculated using the following formula.</p>
+<p><span class="math display">\[
+\begin{align*}
+S_n &amp;= a + ar + ar^2 + \cdots + ar^{n-1} \\
+rS_n &amp;= ar + ar^2 + ar^3 \cdots + ar^n \\
+rS_n - S_n &amp;= ar^n - a \\
+S_n &amp;= \dfrac{a(r^n - 1)}{r-1}
+\end{align*}
+\]</span></p>
+<p>This formula can be easily seen when counting nodes in a complete binary tree or calculating the moving average of a gradient using the momentum.</p>
 
 
 

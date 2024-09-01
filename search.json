@@ -56,34 +56,6 @@
     "text": "git revert\nrevert is a command that creates a new commit that undoes the changes made by a previous commit. This means that instead of deleting or altering past commits, git revert adds a new commit on top of the branch.\nWhen HEAD is on the merge commit,\ngit revert HEAD -m 1\ngit revert HEAD -m 2 \nThe number (index) of a parent can be checked with the command git cat-file -p HEAD."
   },
   {
-    "objectID": "posts/Kubeconfig.html",
-    "href": "posts/Kubeconfig.html",
-    "title": ".kube/config",
-    "section": "",
-    "text": "I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.\nBelow is an example of the configured .kube/config file:\n\n\n.kube/config\n\n\napiVersion: v1\nclusters:\n- cluster:\n    certificate-authority-data: LS0...LS0tCg==\n    server: https://kubernetes.docker.internal:6443\n  name: docker-desktop\n- cluster:\n    insecure-skip-tls-verify: true\n    server: https://121.135.111.111:6443\n  name: raspberrypi\n- cluster:\n    certificate-authority: /Users/shane/.minikube/ca.crt\n    extensions:\n    - extension:\n        last-update: Sun, 20 Aug 2023 17:04:00 KST\n        version: v1.30.1\n        provider: minikube.sigs.k8s.io\n      name: cluster_info\n    server: https://127.0.0.1:60544\n  name: minikube\n\nThe above configuration file defines three clusters:\n\ndocker-desktop\nraspberrypi (the Raspberry Pi cluster at home, with the server address https://121.135.111.111:6443)\nminikube\n\nWith this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:\nkubectl config use-context raspberrypi\nTo bypass the process of verifying the SSL certificate as a public certificate, use the following command:\n- cluster:\n    insecure-skip-tls-verify: true"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Posts",
-    "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\n.kube/config\n\n\nwith KubeContext\n\n\n2 min\n\n\n\nK8s\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 23, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGit Prompt\n\n\nCheck the branch you are working on\n\n\n1 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 18, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLocal Git Commands\n\n\nEver thought of Git graphs as linked lists?\n\n\n7 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTmux\n\n\nTerminal multiplexer\n\n\n5 min\n\n\n\nLinux\n\n\n\n\n\n\n\nShane Oh\n\n\nJun 5, 2023\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Made with ♥ by Shane Oh"
-  },
-  {
-    "objectID": "posts/GitPrompt.html",
-    "href": "posts/GitPrompt.html",
-    "title": "Git Prompt",
-    "section": "",
-    "text": "Turn this  user@host gitrepo $  into this  user@host gitrepo (main) $ .\nDownload the git-prompt.sh with the curl command.\ncurl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh\nThen add the following lines in the .zshrc file.\n\n\n.zshrc\n\nsource ~/.git-prompt.sh\nsetopt PROMPT_SUBST\nPS1='%n@%m %c%F{green}$(__git_ps1 \" (%s)\")%f \\$ '"
-  },
-  {
     "objectID": "posts/Tmux.html",
     "href": "posts/Tmux.html",
     "title": "Tmux",
@@ -124,5 +96,110 @@
     "title": "Tmux",
     "section": "Configurations",
     "text": "Configurations\nFeeling comfortable with the keybindings? I hope not. The default keybindings can put significant stress on your left pinky. This brings us to the .tmux.conf file for some configuration.\n\n\n~/.tmux.conf\n\nunbind-key C-b\nset -g prefix C-a\n1bind-key C-a send-prefix\n\n2set -g mouse on\n3set -g base-index 1\nset -g renumber-windows on\nset -g default-terminal \"tmux-256color\"\n\n4bind r source-file ~/.tmux.conf \\; display-message \".tmux.conf reloaded!\"\n\n5bind '\\' split-window -h -c \"#{pane_current_path}\"\n6bind - split-window -v -c \"#{pane_current_path}\"\n\n7bind h select-pane -L\nbind j select-pane -D\nbind k select-pane -U\nbind l select-pane -R\n\n8bind x kill-pane\n9bind X kill-window\n\n\n1\n\nReplace the prefix key from Ctrl-bCtrl-b to Ctrl-aCtrl-a. When you are using a keyboard like HHKB, this will come in pretty handy. Let’s talk more about HHKB in some other posts.\n\n2\n\nPretty straight forward. Helps you navigate split panes with a mouse.\n\n3\n\nThe default is 0. For me, 0 key is a bit far for everyday use.\n\n4\n\nReload the .tmux.conf file and display a message when done — similar to something like source .bashrc.\n\n5\n\nSplit the window horizontally using the current pane’s path.\n\n6\n\nSplit the window vertically using the current pane’s path.\n\n7\n\nMove between panes using Vim-style keybindings.\n\n8\n\nKill the current pane.\n\n9\n\nKill the current window.\n\n\nPersonal preference on the following one.\n\n\n.zshrc\n\ntmux() {\n    if [ \"$#\" -eq 0 ]; then\n1        command tmux new-session -A -s default\n    else\n        command tmux \"$@\"\n    fi\n}\n\n\n1\n\nAttach a session named default when tmux is typed."
+  },
+  {
+    "objectID": "posts/Kubeconfig.html",
+    "href": "posts/Kubeconfig.html",
+    "title": ".kube/config",
+    "section": "",
+    "text": "I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.\nBelow is an example of the configured .kube/config file:\n\n\n.kube/config\n\n\napiVersion: v1\nclusters:\n- cluster:\n    certificate-authority-data: LS0...LS0tCg==\n    server: https://kubernetes.docker.internal:6443\n  name: docker-desktop\n- cluster:\n    insecure-skip-tls-verify: true\n    server: https://121.135.111.111:6443\n  name: raspberrypi\n- cluster:\n    certificate-authority: /Users/shane/.minikube/ca.crt\n    extensions:\n    - extension:\n        last-update: Sun, 20 Aug 2023 17:04:00 KST\n        version: v1.30.1\n        provider: minikube.sigs.k8s.io\n      name: cluster_info\n    server: https://127.0.0.1:60544\n  name: minikube\n\nThe above configuration file defines three clusters:\n\ndocker-desktop\nraspberrypi (the Raspberry Pi cluster at home, with the server address https://121.135.111.111:6443)\nminikube\n\nWith this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:\nkubectl config use-context raspberrypi\nTo bypass the process of verifying the SSL certificate as a public certificate, use the following command:\n- cluster:\n    insecure-skip-tls-verify: true"
+  },
+  {
+    "objectID": "posts/GitPrompt.html",
+    "href": "posts/GitPrompt.html",
+    "title": "Git Prompt",
+    "section": "",
+    "text": "Turn this  user@host gitrepo $  into this  user@host gitrepo (main) $ .\nDownload the git-prompt.sh with the curl command.\ncurl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh\nThen add the following lines in the .zshrc file.\n\n\n.zshrc\n\nsource ~/.git-prompt.sh\nsetopt PROMPT_SUBST\nPS1='%n@%m %c%F{green}$(__git_ps1 \" (%s)\")%f \\$ '"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Posts",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\n.kube/config\n\n\nwith KubeContext\n\n\n2 min\n\n\n\nK8s\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 23, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBinary Heap\n\n\nFor better priority queuing\n\n\n9 min\n\n\n\nAlgorithms\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nEntropy\n\n\nThe amount of uncertainty\n\n\n1 min\n\n\n\nML\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric Seuqnece\n\n\nAdding up terms in a sequence with a pattern\n\n\n1 min\n\n\n\nMath\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 22, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGit Prompt\n\n\nCheck the branch you are working on\n\n\n1 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 18, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nHuffman Coding\n\n\nLossless data compression\n\n\n1 min\n\n\n\nInformation Theory\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLocal Git Commands\n\n\nEver thought of Git graphs as linked lists?\n\n\n7 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTmux\n\n\nTerminal multiplexer\n\n\n5 min\n\n\n\nLinux\n\n\n\n\n\n\n\nShane Oh\n\n\nJun 5, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Made with ♥ by Shane Oh"
+  },
+  {
+    "objectID": "posts/Entropy.html",
+    "href": "posts/Entropy.html",
+    "title": "Entropy",
+    "section": "",
+    "text": "Claude Shannon, often regarded as the father of information theory, sought to quantify information in a measureable way.\n\nGibberish requires more information than a great literature."
+  },
+  {
+    "objectID": "posts/Entropy.html#the-amount-of-information",
+    "href": "posts/Entropy.html#the-amount-of-information",
+    "title": "Entropy",
+    "section": "",
+    "text": "Claude Shannon, often regarded as the father of information theory, sought to quantify information in a measureable way.\n\nGibberish requires more information than a great literature."
+  },
+  {
+    "objectID": "posts/HuffmanCoding.html",
+    "href": "posts/HuffmanCoding.html",
+    "title": "Huffman Coding",
+    "section": "",
+    "text": "Huffman coding is a popular algorithm used in lossless data compression. It was developed by David A. Huffman while he was a Ph.D. student at MIT, and it is widely used in various compression formats, including ZIP files and image formats like JPEG."
+  },
+  {
+    "objectID": "posts/HuffmanCoding.html#concepts",
+    "href": "posts/HuffmanCoding.html#concepts",
+    "title": "Huffman Coding",
+    "section": "Concepts",
+    "text": "Concepts\nHuffman coding is a type of variable-length prefix coding that assigns shorter codes to more frequent symbols and longer code to less frequent symbols."
+  },
+  {
+    "objectID": "posts/GeometricSequence.html",
+    "href": "posts/GeometricSequence.html",
+    "title": "Geometric Seuqnece",
+    "section": "",
+    "text": "When adding up terms in a sequence with a specific pattern, such as a geometric sequence, using a formula or recognizing a pattern can make the process much easier.\nLet’s see how it works.\n\\[\na, ar, ar^2, ar^3, \\cdots, ar^n\n\\]\nThe sequence above is an arbitrary geometric sequence, where each character denotes the following:\n\n\\(a\\): the first term\n\\(r\\): the common ratio\n\nThe sum from the first term to the n-th term can be calculated using the following formula.\n\\[\n\\begin{align*}\nS_n &= a + ar + ar^2 + \\cdots + ar^{n-1} \\\\\nrS_n &= ar + ar^2 + ar^3 \\cdots + ar^n \\\\\nrS_n - S_n &= ar^n - a \\\\\nS_n &= \\dfrac{a(r^n - 1)}{r-1}\n\\end{align*}\n\\]\nThis formula can be easily seen when counting nodes in a complete binary tree or calculating the moving average of a gradient using the momentum."
+  },
+  {
+    "objectID": "posts/BinaryHeap.html",
+    "href": "posts/BinaryHeap.html",
+    "title": "Binary Heap",
+    "section": "",
+    "text": "Check out a video by Abdul Bari."
+  },
+  {
+    "objectID": "posts/BinaryHeap.html#represent-a-binary-tree-in-an-array",
+    "href": "posts/BinaryHeap.html#represent-a-binary-tree-in-an-array",
+    "title": "Binary Heap",
+    "section": "Represent a binary tree in an array",
+    "text": "Represent a binary tree in an array\n\n\n\n\n\nflowchart TB\n  A(1: A) --- B(2: B)\n  A --- C(3: C)\n  B --- D(4: D)\n  B --- E(5: E)\n  C --- F(6: F)\n  C --- G(7: G)\n\n\n\n\n\n\n\n  \n  A\n  B\n  C\n  D\n  E\n  F\n  G\n\n  idx\n  1\n  2\n  3\n  4\n  5\n  6\n  7\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nTo represent a binary tree in an array, you can follow these rules:\n\nIf the root of the tree is at index 1 &lt;- easier to remember\nFor a node at index \\(i\\):\n\nThe left child is at index \\(2i\\).\nThe right child is at index \\(2i+1\\).\nThe parent is at index \\(\\lfloor \\frac{i}{2} \\rfloor\\).\n\nIf the root of the tree is at index 0 &lt;- when implementing\nFor a node at index \\(i\\):\n\nThe left child is at index \\(2i+1\\).\nThe right child is at index \\(2i+2\\).\nThe parent is at index \\(\\lfloor \\frac{i - 1}{2} \\rfloor\\).\n\n\n\n\nThe definition of an (almost) complete binary tree becomes clearer when we represent tree structure as an array. We should not allow any null values between the elements.\nNow you may be thinking about the difference between binary trees and heaps. Actually, while all heaps are binary trees, not all binary trees are heaps. You must fulfill the heap property. So what is it?"
+  },
+  {
+    "objectID": "posts/BinaryHeap.html#heap-property",
+    "href": "posts/BinaryHeap.html#heap-property",
+    "title": "Binary Heap",
+    "section": "Heap property",
+    "text": "Heap property\n\n  \n    Tree\n    \n      Binary tree\n      \n        Almost complete binary tree\n        \n          Heap\n          \n            Min-heap / Max-heap\n          \n        \n      \n    \n  \n\n\n\nThe heap property dictates the relationship between a parent node and its children in a binary tree. It can be defined in two ways, leading to two different types of heaps:\n\nMin-heap property \\[A[\\lfloor \\frac{i}{2} \\rfloor] \\leq A[i]\\]\nMax-heap property \\[A[\\lfloor \\frac{i}{2} \\rfloor] \\geq A[i]\\]\n\nIf you have an array \\(A\\) with no null values between elements, you are already satisfying the almost complete binary tree property and are halfway ready to be a heap structure. How cool is that!\nThe remaining half of the process is called heapifying."
+  },
+  {
+    "objectID": "posts/BinaryHeap.html#heapify",
+    "href": "posts/BinaryHeap.html#heapify",
+    "title": "Binary Heap",
+    "section": "Heapify",
+    "text": "Heapify\nThankfully, the tree is balanced from the very start, which makes it easier for us to maintain the \\(O(\\log n)\\)-like performance.\nAnd as written above, we are only curious about the relationship between a parent and its children nodes. With that in mind, let’s keep the tree shape itself and heapify by swapping the values between the children and the parent node where it does not fulfill the min or max property.\nWe will take a close look at the max-heap since the min-heap and max-heap are basically the same.\n\\[\\begin{align*}\n  A &\\quad\n  \\begin{bmatrix}\n    2 & 12 & 5 & 15 & 16 & 2 & 6 & 9 & 1 & 4\n  \\end{bmatrix} \\\\\n\n  \\text{Max-Heapify}(A) &\\quad\n  \\begin{bmatrix}\n    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4\n  \\end{bmatrix}\n\\end{align*}\\]\n\n\n\n\n\n\nHeapifying and heap sorting\n\n\n\nHeapifying and heap sorting are a bit different.\nIt is guaranteed that the first element (or the root) of a heap is the minimum or maximum value (which is why a heap can be used as a priority queue), but the rest is not yet sorted in a single sequence (although the path from the root to the leaf is sorted).\nThink of heapifying as an intermediate stage before heap sorting.\n\n\nSo, do we start heapifying from the top or the bottom?\nThe answer is from the bottom. Take a look at the implemented code.\n\n\nmaxheapify.go\n\n// MaxHeap constructs a max-heap from an unordered array\n// `i` starts from 0 in this code\n// We are basically bubble sorting from node `i` to the leaf node\n// while iterating `i` from n to 0.\nfunc BuildMaxHeap(arr []int, n int) {\n    // Start from the last non-leaf node and heapify each node\n1    for i := n/2 - 1; i &gt;= 0; i-- {\n        MaxHeapify(arr, n, i)\n    }\n}\n\n// MaxHeapify ensures the subtree rooted at index i is a max-heap\n//      i\n//    /   \\\n// left   right\nfunc MaxHeapify(arr []int, n, i int) {\n    largest := i       // Initialize largest as root\n    left := 2*i + 1    // left child index\n    right := 2*i + 2   // right child index\n\n    // If left child is larger than root\n    if left &lt; n && arr[left] &gt; arr[largest] {\n        largest = left\n    }\n\n    // If right child is larger than the largest so far\n    if right &lt; n && arr[right] &gt; arr[largest] {\n        largest = right\n    }\n\n    // If largest is not root\n    if largest != i {\n        arr[i], arr[largest] = arr[largest], arr[i]  // Swap\n\n        // Recursively heapify the affected subtree\n        MaxHeapify(arr, n, largest)\n    }\n}\n\n\n1\n\nThe for loop can be iterated from n to 0. However, since half of the elements (which are leaf nodes) are already part of a heap, we can start from the node that is not a leaf.\n\n\nCongratulations! You now have a beautiful max-heap ready. Let’s utilize this as a priority queue."
+  },
+  {
+    "objectID": "posts/BinaryHeap.html#inserting-and-popping-elements-in-the-queue",
+    "href": "posts/BinaryHeap.html#inserting-and-popping-elements-in-the-queue",
+    "title": "Binary Heap",
+    "section": "Inserting and popping elements in the queue",
+    "text": "Inserting and popping elements in the queue\nInsert from the right, pop from the left.\nInserting from the right helps us to maintain the almost complete binary tree property, but the max-heap property is broken.\n\\[\\begin{align*}\n  A_\\text{max-heap} &\\quad\n  \\begin{bmatrix}\n    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4\n  \\end{bmatrix}\\\\\n\n  A_\\text{broken-max-heap} &\\quad\n  \\begin{bmatrix}\n    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4 & 100\n  \\end{bmatrix}\\\\\n\n  &\\quad\n  \\begin{bmatrix}\n    16 & 15 & 6 & 9 & 100 & 2 & 5 & 2 & 1 & 4 & 12\n  \\end{bmatrix}\\\\\n\n  &\\quad\n  \\begin{bmatrix}\n    16 & 100 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4 & 12\n  \\end{bmatrix}\\\\\n\n  A_\\text{max-heap} &\\quad\n  \\begin{bmatrix}\n    100 & 16 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4 & 12\n  \\end{bmatrix}\\\\\n\\end{align*}\\]\nThe solution is to check the integrity from the inserted leaf node to the root. Simply compare with the parent node and propagate upward to the top. In the array representation, it seems like hopping to the left for \\(\\log n\\) times.\nPopping is done by removing the root and replacing it with the last leaf node. To preserve the max-heap property, we propagate downward from the root to the bottom.\n\\[\\begin{align*}\n  A_\\text{max-heap} &\\quad\n  \\begin{bmatrix}\n    100 & 16 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4 & 12\n  \\end{bmatrix}\\\\\n\n  A_\\text{broken-max-heap} &\\quad\n  \\begin{bmatrix}\n    12 & 16 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4\n  \\end{bmatrix}\\\\\n\n  &\\quad\n  \\begin{bmatrix}\n    16 & 12 & 6 & 9 & 15 & 2 & 5 & 2 & 1 & 4\n  \\end{bmatrix}\\\\\n\n  A_\\text{max-heap} &\\quad\n  \\begin{bmatrix}\n    16 & 15 & 6 & 9 & 12 & 2 & 5 & 2 & 1 & 4\n  \\end{bmatrix}\\\\\n\n\\end{align*}\\]\nNotice that the root node always holds the maximum value of the entire tree. This characteristic enables sorting; you simply keep popping the root until the heap is empty."
+  },
+  {
+    "objectID": "posts/BinaryHeap.html#heap-sort",
+    "href": "posts/BinaryHeap.html#heap-sort",
+    "title": "Binary Heap",
+    "section": "Heap sort",
+    "text": "Heap sort\nWhy do we need to create a dedicated paragraph for sorting when it is so straightforward? There is a fun little idea behind heap sorting in an array that makes it more elegant.\n\n\nheapsort.go\n\nfunc HeapSort(arr []int, n int) {\n1    BuildMaxHeap(arr)\n2    for m := n - 1; m &gt;= 0; m-- {\n3        arr[0], arr[m] = arr[m], arr[0]\n        MaxHeapify(arr, m, 0)\n    }\n}\n\n\n1\n\nFirst, create a max-heap.\n\n2\n\nInstead of popping and stacking the elements into a new empty array, we utilize the original array. After popping, there is a spare index because the size of the heap is reduced.\n\n3\n\nBy marking the end of the max-heap with m, we can swap the root value with the leaf at the very end. The popped value will be stacked from the end of the array, and eventually, the array will become a sorted array in ascending order."
   }
 ]
