@@ -105,25 +105,18 @@
     "text": "I have set up Minikube on my MacBook for an easy development environment, and at home, I have a Raspberry Pi cluster set up for my homelab. These configurations allow me to access and manage my clusters from anywhere. Specifically, I have properly configured the .kube/config file to enable remote access to the cluster at home.\nBelow is an example of the configured .kube/config file:\n\n\n.kube/config\n\n\napiVersion: v1\nclusters:\n- cluster:\n    certificate-authority-data: LS0...LS0tCg==\n    server: https://kubernetes.docker.internal:6443\n  name: docker-desktop\n- cluster:\n    insecure-skip-tls-verify: true\n    server: https://121.135.111.111:6443\n  name: raspberrypi\n- cluster:\n    certificate-authority: /Users/shane/.minikube/ca.crt\n    extensions:\n    - extension:\n        last-update: Sun, 20 Aug 2023 17:04:00 KST\n        version: v1.30.1\n        provider: minikube.sigs.k8s.io\n      name: cluster_info\n    server: https://127.0.0.1:60544\n  name: minikube\n\nThe above configuration file defines three clusters:\n\ndocker-desktop\nraspberrypi (the Raspberry Pi cluster at home, with the server address https://121.135.111.111:6443)\nminikube\n\nWith this configuration file, you can easily access various clusters using the kubectl command. For example, to access the Raspberry Pi cluster, you can use the following command:\nkubectl config use-context raspberrypi\nTo bypass the process of verifying the SSL certificate as a public certificate, use the following command:\n- cluster:\n    insecure-skip-tls-verify: true"
   },
   {
-    "objectID": "posts/GitPrompt.html",
-    "href": "posts/GitPrompt.html",
-    "title": "Git Prompt",
+    "objectID": "posts/GoConcurrency.html",
+    "href": "posts/GoConcurrency.html",
+    "title": "Go Concurrency",
     "section": "",
-    "text": "Turn this  user@host gitrepo $  into this  user@host gitrepo (main) $ .\nDownload the git-prompt.sh with the curl command.\ncurl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh\nThen add the following lines in the .zshrc file.\n\n\n.zshrc\n\nsource ~/.git-prompt.sh\nsetopt PROMPT_SUBST\nPS1='%n@%m %c%F{green}$(__git_ps1 \" (%s)\")%f \\$ '"
+    "text": "I recently started learning Go (Golang) and I find it easy to pick up. There isn’t much magic involved, which gives me a solid, reliable feeling when working with it.\nLet’s get right into the concurrency world of Go."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Posts",
-    "section": "",
-    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\n.kube/config\n\n\nwith KubeContext\n\n\n2 min\n\n\n\nK8s\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 23, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBinary Heap\n\n\nFor better priority queuing\n\n\n9 min\n\n\n\nAlgorithms\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nEntropy\n\n\nThe amount of uncertainty\n\n\n1 min\n\n\n\nML\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric Seuqnece\n\n\nAdding up terms in a sequence with a pattern\n\n\n1 min\n\n\n\nMath\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 22, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGit Prompt\n\n\nCheck the branch you are working on\n\n\n1 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 18, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nHuffman Coding\n\n\nLossless data compression\n\n\n1 min\n\n\n\nInformation Theory\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLocal Git Commands\n\n\nEver thought of Git graphs as linked lists?\n\n\n7 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTmux\n\n\nTerminal multiplexer\n\n\n5 min\n\n\n\nLinux\n\n\n\n\n\n\n\nShane Oh\n\n\nJun 5, 2023\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Made with ♥ by Shane Oh"
+    "objectID": "posts/GoConcurrency.html#sync.waitgroup",
+    "href": "posts/GoConcurrency.html#sync.waitgroup",
+    "title": "Go Concurrency",
+    "section": "sync.WaitGroup",
+    "text": "sync.WaitGroup\nSo, what is a WaitGroup?\nA WaitGroup waits for a collection of goroutines to finish. The main goroutine calls Add to set the number of goroutines to wait for. Each of the goroutines runs and calls Done when finished. We make sure to call Done with a defer keyword. At the same time, you can use Wait to block until all goroutines have finished.\npackage main\n\nimport (\n    \"fmt\"\n    \"sync\"\n)\n\nfunc main() {\n    names := []string{\n        \"Alice\",\n        \"Bob\",\n        \"Chuck\",\n        \"Dan\",\n        \"Ed\",\n        \"Fred\",\n        \"Greg\",\n    }\n\n    var wg sync.WaitGroup\n\n    for _, name := range names {\n        go func() {\n            defer wg.Done()\n            wg.Add(1)\n            sayHello(name)\n        }()\n    }\n    wg.Wait()\n}\n\nfunc sayHello(name string) {\n    fmt.Printf(\"Hello %v\\n\", name)\n}\nHello Greg\nHello Ed\nHello Fred\nHello Alice\nHello Chuck\nHello Dan\nHello Bob\n\n\n\n\n\n\nNote\n\n\n\nThink of wg as a counter. The counter increments with the values passed into Add and decreases by one with the Done method."
   },
   {
     "objectID": "posts/Entropy.html",
@@ -138,6 +131,27 @@
     "title": "Entropy",
     "section": "",
     "text": "Claude Shannon, often regarded as the father of information theory, sought to quantify information in a measureable way.\n\nGibberish requires more information than a great literature."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Made with ♥ by Shane Oh"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Posts",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Author\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\n.kube/config\n\n\nwith KubeContext\n\n\n2 min\n\n\n\nK8s\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 23, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nBinary Heap\n\n\nFor better priority queuing\n\n\n9 min\n\n\n\nAlgorithms\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nEntropy\n\n\nThe amount of uncertainty\n\n\n1 min\n\n\n\nML\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nGeometric Seuqnece\n\n\nAdding up terms in a sequence with a pattern\n\n\n1 min\n\n\n\nMath\n\n\n\n\n\n\n\nShane Oh\n\n\nAug 22, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGit Prompt\n\n\nCheck the branch you are working on\n\n\n1 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 18, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nGo Concurrency\n\n\nChannel, waitgroup, mutex\n\n\n1 min\n\n\n\nGo\n\n\n\n\n\n\n\nShane Oh\n\n\nSep 4, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHuffman Coding\n\n\nLossless data compression\n\n\n1 min\n\n\n\nInformation Theory\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLocal Git Commands\n\n\nEver thought of Git graphs as linked lists?\n\n\n7 min\n\n\n\nGit\n\n\n\n\n\n\n\nShane Oh\n\n\nApr 14, 2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nTmux\n\n\nTerminal multiplexer\n\n\n5 min\n\n\n\nLinux\n\n\n\n\n\n\n\nShane Oh\n\n\nJun 5, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/GitPrompt.html",
+    "href": "posts/GitPrompt.html",
+    "title": "Git Prompt",
+    "section": "",
+    "text": "Turn this  user@host gitrepo $  into this  user@host gitrepo (main) $ .\nDownload the git-prompt.sh with the curl command.\ncurl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh\nThen add the following lines in the .zshrc file.\n\n\n.zshrc\n\nsource ~/.git-prompt.sh\nsetopt PROMPT_SUBST\nPS1='%n@%m %c%F{green}$(__git_ps1 \" (%s)\")%f \\$ '"
   },
   {
     "objectID": "posts/HuffmanCoding.html",
