@@ -1,0 +1,161 @@
+---
+title: Go Concurrency
+subtitle: Channel, waitgroup, mutex
+description: ""
+author: Shane Oh
+date: 2024-09-04
+image: false
+categories:
+  - Go
+draft: true
+---
+
+Checkout the [video](https://youtu.be/5Z8skvm4g64?si=RdiUHiuJ3Q9OQMai) by Ben Davis. Great explanation!
+
+I recently started learning Go (Golang) and I find it easy to pick up.
+There isn't much magic involved, which gives me a solid, reliable feeling
+when working with it.
+
+Let's get right into the concurrency world of Go.
+
+## Wait Group
+
+So, what is a `WaitGroup`?
+
+A `WaitGroup` waits for a collection of goroutines to finish.
+The main goroutine calls `Add` to set the number of goroutines to wait for.
+Each of the goroutines runs and calls `Done` when finished.
+We make sure to call `Done` with a `defer` keyword.
+At the same time, you can use `Wait` to block until all goroutines have finished.
+
+```{.go}
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	names := []string{
+		"Alice",
+		"Bob",
+		"Chuck",
+		"Dan",
+		"Ed",
+		"Fred",
+		"Greg",
+	}
+
+	var wg sync.WaitGroup
+
+	for _, name := range names {
+		wg.Add(1)
+		go func(name string) {
+			defer wg.Done()
+			sayHello(name)
+		}(name)
+	}
+	wg.Wait()
+}
+
+func sayHello(name string) {
+	fmt.Printf("Hello %v\n", name)
+}
+```
+```
+Hello Greg
+Hello Ed
+Hello Fred
+Hello Alice
+Hello Chuck
+Hello Dan
+Hello Bob
+```
+::: {.callout-note}
+Think of `wg` as a counter. The counter increments with the values passed into `Add` and decreases by one with the `Done` method.
+:::
+
+## Channels
+
+```{.go}
+package main
+
+import "fmt"
+
+func main() {
+	ch := make(chan int) // <1>
+
+	go func() {
+		ch <- 1
+		ch <- 2
+		ch <- 3
+		close(ch) // <2>
+	}()
+
+	fmt.Println(<-ch)
+	fmt.Println(<-ch)
+	fmt.Println(<-ch)
+	fmt.Println(<-ch) // <3>
+}
+```
+1. A new channel is spawned with a `make` function.
+2. We need to close the channel with `close` function,
+otherwise the fourth `<-ch` will cause a dead lock since all goroutines are asleep.
+3. Receiving from a closed channel does not cause a panic or runtime error. In this case, `0` is printed.
+
+```
+1
+2
+3
+0
+```
+
+```{.go}
+package main
+
+import "fmt"
+
+func main() {
+	ch := make(chan int)
+	value := make(chan int)
+
+	go func() {
+		for i := 1; i < 4; i++ {
+			ch <- i
+		}
+		close(ch)
+	}()
+
+	go sum(ch, value)
+
+	fmt.Println(<-value) // <1>
+}
+
+func sum(ch, value chan int) {
+	total := 0
+
+	for { // <2>
+		select { // <2>
+		case num, ok := <-ch: // <3>
+			fmt.Println(num, ok)
+			if !ok {
+				value <- total
+				return
+			}
+			total += num
+		}
+	}
+}
+```
+1. This line waits for all the goroutines to be finished.
+2. Syntactic sugar with `for` and `select`. You can `select` from multiple channels like this.
+3. The second return value is a boolean which indicates the channel is open or not.
+
+```
+1 true
+2 true
+3 true
+0 false
+6
+```
