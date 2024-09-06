@@ -157,7 +157,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#sync.waitgroup" id="toc-sync.waitgroup" class="nav-link active" data-scroll-target="#sync.waitgroup"><code>sync.WaitGroup</code></a></li>
+  <li><a href="#wait-group" id="toc-wait-group" class="nav-link active" data-scroll-target="#wait-group">Wait Group</a></li>
+  <li><a href="#channels" id="toc-channels" class="nav-link" data-scroll-target="#channels">Channels</a></li>
   </ul>
 </nav>
     </div>
@@ -199,10 +200,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>Checkout the <a href="https://youtu.be/5Z8skvm4g64?si=RdiUHiuJ3Q9OQMai">video</a> by Ben Davis. Great explanation!</p>
 <p>I recently started learning Go (Golang) and I find it easy to pick up. There isn’t much magic involved, which gives me a solid, reliable feeling when working with it.</p>
 <p>Let’s get right into the concurrency world of Go.</p>
-<section id="sync.waitgroup" class="level2">
-<h2 class="anchored" data-anchor-id="sync.waitgroup"><code>sync.WaitGroup</code></h2>
+<section id="wait-group" class="level2">
+<h2 class="anchored" data-anchor-id="wait-group">Wait Group</h2>
 <p>So, what is a <code>WaitGroup</code>?</p>
 <p>A <code>WaitGroup</code> waits for a collection of goroutines to finish. The main goroutine calls <code>Add</code> to set the number of goroutines to wait for. Each of the goroutines runs and calls <code>Done</code> when finished. We make sure to call <code>Done</code> with a <code>defer</code> keyword. At the same time, you can use <code>Wait</code> to block until all goroutines have finished.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode go code-with-copy"><code class="sourceCode go"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
@@ -258,6 +260,100 @@ Note
 <p>Think of <code>wg</code> as a counter. The counter increments with the values passed into <code>Add</code> and decreases by one with the <code>Done</code> method.</p>
 </div>
 </div>
+</section>
+<section id="channels" class="level2">
+<h2 class="anchored" data-anchor-id="channels">Channels</h2>
+<div class="sourceCode" id="annotated-cell-3"><pre class="sourceCode go code-annotation-code code-with-copy code-annotated"><code class="sourceCode go"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-3"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="st">"fmt"</span></span>
+<span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-6" class="code-annotation-target"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">:=</span> <span class="bu">make</span><span class="op">(</span><span class="kw">chan</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-8"><a href="#annotated-cell-3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">go</span> <span class="kw">func</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="annotated-cell-3-9"><a href="#annotated-cell-3-9" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">&lt;-</span> <span class="dv">1</span></span>
+<span id="annotated-cell-3-10"><a href="#annotated-cell-3-10" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">&lt;-</span> <span class="dv">2</span></span>
+<span id="annotated-cell-3-11"><a href="#annotated-cell-3-11" aria-hidden="true" tabindex="-1"></a>        ch <span class="op">&lt;-</span> <span class="dv">3</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-3-12" class="code-annotation-target"><a href="#annotated-cell-3-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">close</span><span class="op">(</span>ch<span class="op">)</span></span>
+<span id="annotated-cell-3-13"><a href="#annotated-cell-3-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">}()</span></span>
+<span id="annotated-cell-3-14"><a href="#annotated-cell-3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-3-15"><a href="#annotated-cell-3-15" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">.</span>Println<span class="op">(&lt;-</span>ch<span class="op">)</span></span>
+<span id="annotated-cell-3-16"><a href="#annotated-cell-3-16" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">.</span>Println<span class="op">(&lt;-</span>ch<span class="op">)</span></span>
+<span id="annotated-cell-3-17"><a href="#annotated-cell-3-17" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">.</span>Println<span class="op">(&lt;-</span>ch<span class="op">)</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-3-18" class="code-annotation-target"><a href="#annotated-cell-3-18" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">.</span>Println<span class="op">(&lt;-</span>ch<span class="op">)</span></span>
+<span id="annotated-cell-3-19"><a href="#annotated-cell-3-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="6" data-code-annotation="1">A new channel is spawned with a <code>make</code> function.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="12" data-code-annotation="2">We need to close the channel with <code>close</code> function, otherwise the fourth <code>&lt;-ch</code> will cause a dead lock since all goroutines are asleep.</span>
+</dd>
+<dt data-target-cell="annotated-cell-3" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-3" data-code-lines="18" data-code-annotation="3">Receiving from a closed channel does not cause a panic or runtime error. In this case, <code>0</code> is printed.</span>
+</dd>
+</dl>
+<pre><code>1
+2
+3
+0</code></pre>
+<div class="sourceCode" id="annotated-cell-5"><pre class="sourceCode go code-annotation-code code-with-copy code-annotated"><code class="sourceCode go"><span id="annotated-cell-5-1"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> main</span>
+<span id="annotated-cell-5-2"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="st">"fmt"</span></span>
+<span id="annotated-cell-5-4"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-5"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> main<span class="op">()</span> <span class="op">{</span></span>
+<span id="annotated-cell-5-6"><a href="#annotated-cell-5-6" aria-hidden="true" tabindex="-1"></a>    ch <span class="op">:=</span> <span class="bu">make</span><span class="op">(</span><span class="kw">chan</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-hidden="true" tabindex="-1"></a>    value <span class="op">:=</span> <span class="bu">make</span><span class="op">(</span><span class="kw">chan</span> <span class="dt">int</span><span class="op">)</span></span>
+<span id="annotated-cell-5-8"><a href="#annotated-cell-5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-9"><a href="#annotated-cell-5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">go</span> <span class="kw">func</span><span class="op">()</span> <span class="op">{</span></span>
+<span id="annotated-cell-5-10"><a href="#annotated-cell-5-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="op">:=</span> <span class="dv">1</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">4</span><span class="op">;</span> i<span class="op">++</span> <span class="op">{</span></span>
+<span id="annotated-cell-5-11"><a href="#annotated-cell-5-11" aria-hidden="true" tabindex="-1"></a>            ch <span class="op">&lt;-</span> i</span>
+<span id="annotated-cell-5-12"><a href="#annotated-cell-5-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="annotated-cell-5-13"><a href="#annotated-cell-5-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">close</span><span class="op">(</span>ch<span class="op">)</span></span>
+<span id="annotated-cell-5-14"><a href="#annotated-cell-5-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">}()</span></span>
+<span id="annotated-cell-5-15"><a href="#annotated-cell-5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-16"><a href="#annotated-cell-5-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">go</span> sum<span class="op">(</span>ch<span class="op">,</span> value<span class="op">)</span></span>
+<span id="annotated-cell-5-17"><a href="#annotated-cell-5-17" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-18" class="code-annotation-target"><a href="#annotated-cell-5-18" aria-hidden="true" tabindex="-1"></a>    fmt<span class="op">.</span>Println<span class="op">(&lt;-</span>value<span class="op">)</span></span>
+<span id="annotated-cell-5-19"><a href="#annotated-cell-5-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="annotated-cell-5-20"><a href="#annotated-cell-5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-21"><a href="#annotated-cell-5-21" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> sum<span class="op">(</span>ch<span class="op">,</span> value <span class="kw">chan</span> <span class="dt">int</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="annotated-cell-5-22"><a href="#annotated-cell-5-22" aria-hidden="true" tabindex="-1"></a>    total <span class="op">:=</span> <span class="dv">0</span></span>
+<span id="annotated-cell-5-23"><a href="#annotated-cell-5-23" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-24" class="code-annotation-target"><a href="#annotated-cell-5-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">{</span></span>
+<span id="annotated-cell-5-25"><a href="#annotated-cell-5-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">select</span> <span class="op">{</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-5-26" class="code-annotation-target"><a href="#annotated-cell-5-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">case</span> num<span class="op">,</span> ok <span class="op">:=</span> <span class="op">&lt;-</span>ch<span class="op">:</span></span>
+<span id="annotated-cell-5-27"><a href="#annotated-cell-5-27" aria-hidden="true" tabindex="-1"></a>            fmt<span class="op">.</span>Println<span class="op">(</span>num<span class="op">,</span> ok<span class="op">)</span></span>
+<span id="annotated-cell-5-28"><a href="#annotated-cell-5-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="op">!</span>ok <span class="op">{</span></span>
+<span id="annotated-cell-5-29"><a href="#annotated-cell-5-29" aria-hidden="true" tabindex="-1"></a>                value <span class="op">&lt;-</span> total</span>
+<span id="annotated-cell-5-30"><a href="#annotated-cell-5-30" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span></span>
+<span id="annotated-cell-5-31"><a href="#annotated-cell-5-31" aria-hidden="true" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="annotated-cell-5-32"><a href="#annotated-cell-5-32" aria-hidden="true" tabindex="-1"></a>            total <span class="op">+=</span> num</span>
+<span id="annotated-cell-5-33"><a href="#annotated-cell-5-33" aria-hidden="true" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="annotated-cell-5-34"><a href="#annotated-cell-5-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="annotated-cell-5-35"><a href="#annotated-cell-5-35" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="18" data-code-annotation="1">This line waits for all the goroutines to be finished.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="24,25" data-code-annotation="2">Syntactic sugar with <code>for</code> and <code>select</code>. You can <code>select</code> from multiple channels like this.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="26" data-code-annotation="3">The second return value is a boolean which indicates the channel is open or not.</span>
+</dd>
+</dl>
+<pre><code>1 true
+2 true
+3 true
+0 false
+6</code></pre>
 
 
 </section>
