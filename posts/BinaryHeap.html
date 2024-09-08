@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2023-04-14">
+<meta name="dcterms.date" content="2023-09-07">
 
 <title>Binary Heap – Shane</title>
 <style>
@@ -223,7 +223,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 14, 2023</p>
+      <p class="date">September 7, 2023</p>
     </div>
   </div>
   
@@ -392,8 +392,10 @@ Note
 <li><p>Min-heap property <span class="math display">\[A[\lfloor \frac{i}{2} \rfloor] \leq A[i]\]</span></p></li>
 <li><p>Max-heap property <span class="math display">\[A[\lfloor \frac{i}{2} \rfloor] \geq A[i]\]</span></p></li>
 </ul>
+<p>I find defining the property with the relationship of a current node <span class="math inline">\(i\)</span> and the parent node <span class="math inline">\(\lfloor \dfrac{i}{2} \rfloor\)</span> is more simple (since it can handle the root condition).</p>
 <p>If you have an array <span class="math inline">\(A\)</span> with no null values between elements, you are already satisfying the almost complete binary tree property and are halfway ready to be a heap structure. How cool is that!</p>
-<p>The remaining half of the process is called <strong>heapifying</strong>.</p>
+<p>The remaining half of the process is called <strong>build-heap</strong>. We <strong>build-heap</strong> by <strong>heapifying</strong> <span class="math inline">\(n\)</span> times.</p>
+<p>From now on, we will take a close look at the max-heap since the min-heap and max-heap are basically the same.</p>
 </section>
 <section id="heapify" class="level2">
 <h2 class="anchored" data-anchor-id="heapify">Heapify</h2>
@@ -431,28 +433,13 @@ Note
     2 &amp; 12 &amp; 5 &amp; 15 &amp; 16 &amp; 2 &amp; 6 &amp; 9 &amp; 1 &amp; 4
   \end{bmatrix} \\
 
-  \text{Max-Heapify}(A) &amp;\quad
+  \text{Build-Max-Heap}(A) &amp;\quad
   \begin{bmatrix}
     16 &amp; 15 &amp; 6 &amp; 9 &amp; 12 &amp; 2 &amp; 5 &amp; 2 &amp; 1 &amp; 4
   \end{bmatrix}
 \end{align*}\]</span></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Heapifying and heap sorting
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Heapifying and heap sorting are a bit different.</p>
-<p>It is guaranteed that the first element (or the root) of a heap is the minimum or maximum value (which is why a heap can be used as a priority queue), but the rest is not yet sorted in a single sequence (although the path from the root to the leaf is sorted).</p>
-<p>Think of heapifying as an intermediate stage before heap sorting.</p>
-</div>
-</div>
-<p>So, do we start heapifying from the top or the bottom?</p>
-<p>The answer is from the bottom. Take a look at the implemented code.</p>
+<p>At first glance, it might seem intuitive that repeatedly heapifying the array <span class="math inline">\(n\)</span> times, starting from the right (or bottom), will transform <span class="math inline">\(A\)</span> into a heap.</p>
+<p>Would it be surprising to you if I told you that the time complexity of the build-heap algorithm is actually <span class="math inline">\(O(n)\)</span> instead of <span class="math inline">\(O(n \log n)\)</span>?</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>maxheapify.go</strong></pre>
@@ -508,22 +495,6 @@ Heapifying and heap sorting
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-What is the range of leaf nodes?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The parent of the last element can be considered the last node that is not a leaf node.</p>
-<p><span class="math display">\[
-A[\lfloor \dfrac{n}{2} \rfloor + 1:n]
-\]</span></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
 Levels and heights of binary trees
 </div>
 </div>
@@ -555,7 +526,23 @@ Level 3    8   9  10   11 12   13 14   15   Height 0</code></pre>
 &amp;= O(N)
 \end{align*}
 \]</span></p>
-<p>The talor series is useful when explaining this.</p>
+<p>The talor series is useful when explaining this. Check out the [post] if you are interested.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What is the range of leaf nodes?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The parent of the last element can be considered the last node that is not a leaf node.</p>
+<p><span class="math display">\[
+A[\lfloor \dfrac{n}{2} \rfloor + 1:n]
+\]</span></p>
+</div>
+</div>
 <p>Congratulations! You now have a beautiful max-heap ready. Let’s utilize this as a priority queue.</p>
 </section>
 <section id="inserting-and-popping-elements-in-the-queue" class="level2">
