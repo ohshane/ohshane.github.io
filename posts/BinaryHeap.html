@@ -191,6 +191,7 @@ window.Quarto = {
   <li><a href="#represent-a-binary-tree-in-an-array" id="toc-represent-a-binary-tree-in-an-array" class="nav-link active" data-scroll-target="#represent-a-binary-tree-in-an-array">Represent a binary tree in an array</a></li>
   <li><a href="#heap-property" id="toc-heap-property" class="nav-link" data-scroll-target="#heap-property">Heap property</a></li>
   <li><a href="#heapify" id="toc-heapify" class="nav-link" data-scroll-target="#heapify">Heapify</a></li>
+  <li><a href="#build-heap" id="toc-build-heap" class="nav-link" data-scroll-target="#build-heap">Build heap</a></li>
   <li><a href="#inserting-and-popping-elements-in-the-queue" id="toc-inserting-and-popping-elements-in-the-queue" class="nav-link" data-scroll-target="#inserting-and-popping-elements-in-the-queue">Inserting and popping elements in the queue</a></li>
   <li><a href="#heap-sort" id="toc-heap-sort" class="nav-link" data-scroll-target="#heap-sort">Heap sort</a></li>
   </ul>
@@ -396,9 +397,34 @@ Note
 </section>
 <section id="heapify" class="level2">
 <h2 class="anchored" data-anchor-id="heapify">Heapify</h2>
-<p>Thankfully, the tree is balanced from the very start, which makes it easier for us to maintain the <span class="math inline">\(O(\log n)\)</span>-like performance.</p>
-<p>And as written above, <em>we are only curious about the relationship between a parent and its children nodes</em>. With that in mind, let’s keep the tree shape itself and <em>heapify by swapping the values</em> between the children and the parent node where it does not fulfill the min or max property.</p>
-<p>We will take a close look at the max-heap since the min-heap and max-heap are basically the same.</p>
+<p>Check out the <a href="https://youtu.be/cuL8gXCSA58?si=iFOBARlCficaix_o">video</a> by Techdose helps!</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+  A(  ) -.- 10
+  A(  ) -.- B(  )
+  10 --- 8
+  10 --- 12
+  8 -.- C(  )
+  8 -.- D(  )
+  12 -.- E(  )
+  12 -.- F(  )
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Let’s examine the tree above (with node <code>10</code> as root). Assert that the subtrees under node <code>10</code> are max-heaps. By recursively sifting down (similar to bubble sorting) on node <code>10</code>, the entire tree will eventually become a max-heap.</p>
+<p>The time complexity of heapifying is the same as the height of the heapifying index. Thankfully, the tree is balanced from the very start, which makes it <span class="math inline">\(O(\log n)\)</span>. Obvious, right?</p>
+</section>
+<section id="build-heap" class="level2">
+<h2 class="anchored" data-anchor-id="build-heap">Build heap</h2>
+<p>Thanks again for the <a href="https://youtu.be/VkKmmwzfIG4?si=Q0QJnGykFcj3wkRR">video</a>!</p>
+<p>Let’s transform an arbitrary array <span class="math inline">\(A\)</span> into a <strong>heap</strong> using the <strong>build-heap</strong> process.</p>
 <p><span class="math display">\[\begin{align*}
   A &amp;\quad
   \begin{bmatrix}
@@ -476,6 +502,60 @@ Heapifying and heap sorting
 <span data-code-cell="annotated-cell-1" data-code-lines="7" data-code-annotation="1">The <code>for</code> loop can be iterated from <code>n</code> to <code>0</code>. However, since half of the elements (which are leaf nodes) are already part of a heap, we can start from the node that is not a leaf.</span>
 </dd>
 </dl>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What is the range of leaf nodes?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The parent of the last element can be considered the last node that is not a leaf node.</p>
+<p><span class="math display">\[
+A[\lfloor \dfrac{n}{2} \rfloor + 1:n]
+\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Levels and heights of binary trees
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<pre><code>Level 0                  1                  Height 3
+                        / \                         
+Level 1          2               3          Height 2
+                / \             / \                 
+Level 2      4       5       6       7      Height 1
+            / \     / \     / \     / \             
+Level 3    8   9  10   11 12   13 14   15   Height 0</code></pre>
+<p>Try to imagine a complete binary tree with a large number of levels. Pick any level you desire in between and set it as <span class="math inline">\(l\)</span>.</p>
+<ul>
+<li>The <strong>indices</strong> of the first elements at each level are <span class="math inline">\(2^l\)</span> and the <strong>level</strong> of a certain index is <span class="math inline">\(\lfloor \log_{2} i \rfloor\)</span>.</li>
+<li>There are <span class="math inline">\(2^{l}-1\)</span> nodes in the whole tree just before level <span class="math inline">\(l\)</span>.</li>
+<li>There are <span class="math inline">\(2^{l}\)</span> nodes at level <span class="math inline">\(l\)</span>.</li>
+<li>There are <span class="math inline">\(2^{l+1}\)</span> nodes at the next level, <span class="math inline">\(l+1\)</span>, which is twice as many.</li>
+<li>At <strong>height</strong> <span class="math inline">\(h\)</span>, there are a maximum of <span class="math inline">\(\lceil \frac{N}{2^{h+1}} \rceil\)</span> nodes.</li>
+</ul>
+</div>
+</div>
+<p>The nodes at height <span class="math inline">\(h\)</span> needs to be heapified by sifting down <span class="math inline">\(h\)</span> times and there are <span class="math inline">\(\lceil \frac{N}{2^{h+1}} \rceil\)</span> nodes max at each height <span class="math inline">\(h\)</span> which makes,</p>
+<p><span class="math display">\[
+\begin{align*}
+\sum_{h=0}^{\lfloor \log_2 N \rfloor} \lceil \dfrac{N}{2^{h+1}} \rceil O(h)
+&amp;&lt; O \left( \sum_{h=0}^{\infty} \dfrac{N}{2^{h+1}} C h \right) \\
+&amp;= O \left( \dfrac{CN}{2} \sum_{h=0}^{\infty} \dfrac{h}{2^{h}} \right) \\
+&amp;= O \left( \dfrac{CN}{2} 2 \right) \\
+&amp;= O(N)
+\end{align*}
+\]</span></p>
+<p>The talor series is useful when explaining this.</p>
 <p>Congratulations! You now have a beautiful max-heap ready. Let’s utilize this as a priority queue.</p>
 </section>
 <section id="inserting-and-popping-elements-in-the-queue" class="level2">
