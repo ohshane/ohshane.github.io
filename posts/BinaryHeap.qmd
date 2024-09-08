@@ -3,7 +3,7 @@ title: Binary Heap
 subtitle: For better priority queuing
 description: ""
 author: Shane Oh
-date: 2023-04-14
+date: 2023-09-07
 image: false
 categories:
   - Algorithms
@@ -261,16 +261,6 @@ elements (which are leaf nodes) are already part of a heap,
 we can start from the node that is not a leaf.
 
 ::: {.callout-note}
-# What is the range of leaf nodes?
-
-The parent of the last element can be considered the last node that is not a leaf node.
-
-$$
-A[\lfloor \dfrac{n}{2} \rfloor + 1:n]
-$$
-:::
-
-::: {.callout-note}
 # Levels and heights of binary trees
 
 ```
@@ -307,6 +297,18 @@ $$
 $$
 
 The talor series is useful when explaining this.
+Check out the [post] if you are interested.
+
+::: {.callout-note}
+# What is the range of leaf nodes?
+
+The parent of the last element can be considered the last node that is not a leaf node.
+
+$$
+A[\lfloor \dfrac{n}{2} \rfloor + 1:n]
+$$
+:::
+
 
 Congratulations! You now have a beautiful max-heap ready. 
 Let's utilize this as a priority queue.
