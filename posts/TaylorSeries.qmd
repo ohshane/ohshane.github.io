@@ -1,0 +1,10 @@
+---
+title: Taylor Series
+subtitle: For better priority queuing
+description: ""
+author: Shane Oh
+date: 2023-09-08
+image: false
+categories:
+  - Math
+---
