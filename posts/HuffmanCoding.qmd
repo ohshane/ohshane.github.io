@@ -4,15 +4,183 @@ subtitle: Lossless data compression
 description: ""
 author: Shane Oh
 date: 2023-04-14
-image: false
+# image: false
 categories:
   - Information Theory
+  - Data Compression
+  - Algorithms
 ---
-
-Huffman coding is a popular algorithm used in lossless data compression.
-It was developed by David A. Huffman while he was a Ph.D. student at MIT,
-and it is widely used in various compression formats, including ZIP files and image formats like JPEG.
 
 ## Concepts
 
-Huffman coding is a type of **variable-length prefix coding** that assigns shorter codes to more frequent symbols and longer code to less frequent symbols.
+Huffman coding is a type of **variable-length prefix coding** that assigns
+shorter codes to more frequent symbols and longer codes to less frequent
+symbols. Formal definitions aren't very useful when dealing with other
+concepts, in this case, entropy.
+
+Well, keep this in mind: **_lossless_**.
+
+Huffman coding is one of the lossless
+compression methods. In terms of compression, you cannot compress
+data smaller than the limit defined by entropy.
+
+Huffman is a bottom-up approach to compression which is optimal, while Shannon 
+entropy defines the theoretical limit, a lower bound.
+
+Examples first.
+
+## ASCII
+ASCII is a character encoding developed in the '60s by ANSI.
+It uses 7 bits for character representation.
+However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.
+
+Let's take a look at the 8-bit encoded sentence.
+
+```{python}
+#| echo: false
+def c2b(c):
+    return format(ord(c), '08b')
+
+def show(s):
+    print(s, end='\n\n')
+
+    l = 0
+    bits = 0
+    for c in s:
+        b = c2b(c)
+        print(b, end=' ')
+        l += len(b) + 1
+        bits += len(b)
+        if l > 71:
+            l = 0
+            print()
+
+    print(f"\n\n{bits} bits / {bits/8:.1f} bytes")
+    print(f"compression rate: {(1 - (bits/8) / len(s))*100:.1f}%")
+
+s = "AN APPLE A DAY KEEPS THE DOCTOR AWAY"
+show(s)
+```
+You can easily determine the total number of bits in this sentence
+by simply multiplying the number of characters (including spaces) by the **fixed** encoding size.
+
+## Compress it!
+The more **frequently** a character appears, the **shorter** its encoded length becomes.
+
+The phrase `AN APPLE A DAY KEEPS THE DOCTOR AWAY` uses `A` to rhyme which makes the example more fun.
+
+Similar to max-heap, we build a Huffman tree using the frequency.
+
+### Huffman tree
+We **build the tree from the bottom** using the **less frequent characters**.
+Eventually, the less frequent ones are placed at deeper levels.
+The deeper a character is, the longer the traversal route from the root,
+which results in a longer encoding length.
+
+Check the code below.
+
+```{python}
+from collections import Counter
+
+class Node:
+    def __init__(self, char='', freq=0, left=None, right=None):
+        self.char  = char
+        self.freq  = freq
+        self.left  = left
+        self.right = right
+    
+    @property
+    def is_leaf(self):
+        return self.left is None or self.right is None
+    
+    def __str__(self):
+        if self.is_leaf:
+            return f"'{self.char}': {self.freq}"
+        return str(self.freq)
+    
+    def __lt__(self, other):
+        return self.freq < other
+
+    def __gt__(self, other):
+        return self.freq > other
+        
+class HuffmanTree:
+    def __init__(self, freq_table):
+        self.freq_table = freq_table
+        self.encoded_table = {}
+        self.root = None
+
+        self.build()
+        self.encode()
+    
+    def build(self):
+        nodes = [Node(char, freq) for char, freq in self.freq_table.items()]
+        while len(nodes) > 1:
+            node1 = nodes.pop(nodes.index(min(nodes)))
+            node2 = nodes.pop(nodes.index(min(nodes)))
+            node  = Node(freq=node1.freq+node2.freq,
+                         left=node2,
+                         right=node1)
+            nodes.append(node)
+            self.root = node
+    
+    def encode(self):
+        def dfs(node, path=''):
+            if node.is_leaf: # <1>
+                self.encoded_table[node.char] = path # <1>
+                return
+            dfs(node.left,  path+'0') # <2>
+            dfs(node.right, path+'1') # <2>
+
+        dfs(self.root)
+
+tree = HuffmanTree(Counter("AN APPLE A DAY KEEPS THE DOCTOR AWAY"))
+```
+1. Characters are only at the leaf nodes.
+2. Use `0` for the left and `1` for the right. The path from the root to the 
+   leaf node represents the encoded result.
+
+```{python}
+#| echo: false
+#| output: asis 
+
+print("```{mermaid}") 
+print("graph RL")
+
+queue = [tree.root]
+visited = []
+while queue:
+    node = queue.pop(0)
+    if node not in visited:
+        print(f"{id(node)}[{str(node)}]")
+        if not node.is_leaf:
+            queue.append(node.left)
+            queue.append(node.right)
+            print(f"{id(node)} -- 0 --> {id(node.left)}")
+            print(f"{id(node)} -- 1 --> {id(node.right)}")
+        visited.append(node)
+
+print("```") 
+```
+
+### Huffman code
+
+Finally, the Huffman coded result is below.
+
+```{python}
+#| echo: false
+def c2b(c):
+    return tree.encoded_table[c]
+
+show(s)
+```
+You might be familiar with the pangram `THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG`.
+It contains all the letters from `A` to `Z`, which makes it harder to compress.
+
+```{python}
+#| echo: false
+
+s = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
+tree = HuffmanTree(Counter(s))
+show(s)
+```
