@@ -4,7 +4,7 @@ subtitle: Lossless data compression
 description: ""
 author: Shane Oh
 date: 2023-04-14
-# image: false
+image: false
 categories:
   - Information Theory
   - Data Compression
@@ -106,7 +106,7 @@ class Node:
         
 class HuffmanTree:
     def __init__(self, freq_table):
-        self.freq_table = freq_table
+        self.freq_table = dict(freq_table)
         self.encoded_table = {}
         self.root = None
 
@@ -183,4 +183,42 @@ It contains all the letters from `A` to `Z`, which makes it harder to compress.
 s = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
 tree = HuffmanTree(Counter(s))
 show(s)
+```
+
+Just for fun, let's work with the images too.
+
+```{python}
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap: 
+#|   - Mondriaan
+#|   - Monet
+from PIL import Image
+import matplotlib.pyplot as plt
+import numpy as np
+
+mondriaan = Image.open('HuffmanCoding/images/mondriaan.jpg').convert("L").resize((100,100))
+monet     = Image.open('HuffmanCoding/images/monet.jpg').convert("L").resize((100,100))
+
+s = np.array(mondriaan).flatten().tolist()
+tree = HuffmanTree(Counter(s))
+bits = 0
+for k, v in tree.encoded_table.items():
+    bits += len(v) * tree.freq_table[k]
+
+plt.imshow(mondriaan, cmap='binary_r')
+plt.title(f"compression rate: {(1 - (bits/8) / len(s))*100:.1f}%")
+plt.axis('off')
+plt.show()
+
+s = np.array(monet).flatten().tolist()
+tree = HuffmanTree(Counter(s))
+bits = 0
+for k, v in tree.encoded_table.items():
+    bits += len(v) * tree.freq_table[k]
+
+plt.imshow(monet, cmap='binary_r')
+plt.title(f"compression rate: {(1 - (bits/8) / len(s))*100:.1f}%")
+plt.axis('off')
+plt.show()
 ```
