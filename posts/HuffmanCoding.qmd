@@ -82,6 +82,7 @@ uses `A` to rhyme which makes the example more fun.""")
 ```
 
 ### Huffman tree {#sec-huffman-tree}
+### Huffman tree {#sec-huffman-tree}
 We **build the tree from the bottom** using the **less frequent characters**.
 Eventually, the less frequent ones are placed at deeper levels.
 The deeper a character is, the longer the traversal route from the root,
@@ -133,6 +134,8 @@ class HuffmanTree:
     def build(self):
         nodes = [Node(char, freq) for char, freq in self.freq_table.items()]
         while len(nodes) > 1:
+            node1 = nodes.pop(nodes.index(min(nodes))) # <3>
+            node2 = nodes.pop(nodes.index(min(nodes))) # <3>
             node1 = nodes.pop(nodes.index(min(nodes))) # <3>
             node2 = nodes.pop(nodes.index(min(nodes))) # <3>
             node  = Node(freq=node1.freq+node2.freq,
@@ -233,6 +236,67 @@ It contains all the letters from `A` to `Z`, which makes it harder to compress."
 #| echo: false
 show_hc(s_quick, tree_quick)
 ```
+
+Just for fun, let's apply Huffman coding for images too.
+
+```{python}
+#| echo: false
+#| layout-ncol: 2
+#| label: fig-image-compression
+#| fig-cap: Image compression
+#| fig-subcap:
+#|   - Mondriaan
+#|   - Monet
+from PIL import Image
+import matplotlib.pyplot as plt
+import numpy as np
+
+mondriaan = Image.open('HuffmanCoding/images/mondriaan.jpg').convert("L").resize((100,100))
+monet     = Image.open('HuffmanCoding/images/monet.jpg').convert("L").resize((100,100))
+
+s = np.array(mondriaan).flatten().tolist()
+tree = HuffmanTree(Counter(s))
+bits = 0
+for k, v in tree.encoded_table.items():
+    bits += len(v) * tree.freq_table[k]
+
+mondriaan_bytes = bits/8
+
+plt.imshow(mondriaan, cmap='binary_r')
+plt.axis('off')
+plt.show()
+
+s = np.array(monet).flatten().tolist()
+tree = HuffmanTree(Counter(s))
+bits = 0
+for k, v in tree.encoded_table.items():
+    bits += len(v) * tree.freq_table[k]
+
+monet_bytes = bits/8
+
+plt.imshow(monet, cmap='binary_r')
+plt.axis('off')
+plt.show()
+```
+Both @fig-image-compression-1 and @fig-image-compression-2 are resized to 100x100 greyscale images.
+Each pixel is represented by the intensity of light from `0` to `255` which corresponds to one byte of information.
+This results in `10000` bytes for each image.
+
+```{python}
+#| echo: false 
+#| output: asis
+print(f"""After applying Huffman coding to each image,
+each is compressed to `{mondriaan_bytes:.1f}` bytes
+and `{monet_bytes:.1f}` bytes, respectively.""")
+```
+
+So, why do we think @fig-image-compression-1 is easier to draw?
+Why is it easier to remember pop music notes than those of bebop jazz?
+
+It becomes clear when explained using data compression.
+Since it has a higher compression rate,
+it can be described verbally or communicated with a shorter and more compact explanation.
+
 
 ## Average length per character ($L$)
 
