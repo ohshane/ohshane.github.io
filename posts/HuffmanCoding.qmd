@@ -11,6 +11,12 @@ categories:
   - Algorithms
 ---
 
+```{python}
+#| echo: false
+s_apple = "AN APPLE A DAY KEEPS THE DOCTOR AWAY" # higher compression
+s_quick = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG" # pangram
+```
+
 Thanks to Pizzey Technology for the wonderful [video](https://youtu.be/iEm1NRyEe5c?si=SvWMcYR6AZraymSd).
 
 ## Concepts
@@ -43,7 +49,7 @@ Let's take a look at the 8-bit encoded sentence.
 def c2b(c):
     return format(ord(c), '08b')
 
-def show(s):
+def show_b(s):
     print(s, end='\n\n')
 
     l = 0
@@ -60,8 +66,7 @@ def show(s):
     print(f"\n\n{bits} bits / {bits/8:.1f} bytes")
     print(f"compression rate: {(1 - (bits/8) / len(s))*100:.1f}%")
 
-s = "AN APPLE A DAY KEEPS THE DOCTOR AWAY"
-show(s)
+show_b(s_apple)
 ```
 You can easily determine the total number of bits in this sentence
 by simply multiplying the number of characters (including spaces) by the **fixed** encoding size.
@@ -69,7 +74,12 @@ by simply multiplying the number of characters (including spaces) by the **fixed
 ## Compress it!
 The more **frequently** a character appears, the **shorter** its encoded length becomes.
 
-The phrase `AN APPLE A DAY KEEPS THE DOCTOR AWAY` uses `A` to rhyme which makes the example more fun.
+```{python}
+# | echo: false
+# | output: asis
+print(f"""The phrase `{s_apple}`
+uses `A` to rhyme which makes the example more fun.""")
+```
 
 ### Huffman tree {#sec-huffman-tree}
 We **build the tree from the bottom** using the **less frequent characters**.
@@ -91,7 +101,7 @@ class Node:
     
     @property
     def is_leaf(self):
-        return self.left is None or self.right is None
+        return self.left is None and self.right is None
     
     def __str__(self):
         if self.is_leaf:
@@ -112,6 +122,13 @@ class HuffmanTree:
 
         self.build()
         self.encode()
+
+    @property
+    def L(self):
+        total = 0
+        for char, freq in self.freq_table.items():
+            total += len(self.encoded_table[char]) * freq
+        return total / sum(self.freq_table.values())
     
     def build(self):
         nodes = [Node(char, freq) for char, freq in self.freq_table.items()]
@@ -133,8 +150,6 @@ class HuffmanTree:
             dfs(node.right, path+'1') # <2>
 
         dfs(self.root)
-
-tree = HuffmanTree(Counter("AN APPLE A DAY KEEPS THE DOCTOR AWAY"))
 ```
 1. Characters are only at the leaf nodes.
 This property ensures that each encoded value is not a substring of another and keeps the unique decodability. This is also called as the **prefix-free coding**.
@@ -144,26 +159,35 @@ leaf node represents the encoded result.
 from the list `nodes`, the built tree is not unique but preserves optimality.
 
 ```{python}
+#| echo: false 
+tree_apple = HuffmanTree(Counter(s_apple))
+tree_quick = HuffmanTree(Counter(s_quick))
+```
+
+```{python}
 #| echo: false
 #| output: asis 
 
-print("```{mermaid}") 
-print("graph RL")
+def show_ht(tree):
+    print("```{mermaid}") 
+    print("graph RL")
 
-queue = [tree.root]
-visited = []
-while queue:
-    node = queue.pop(0)
-    if node not in visited:
-        print(f"{id(node)}[{str(node)}]")
-        if not node.is_leaf:
-            queue.append(node.left)
-            queue.append(node.right)
-            print(f"{id(node)} -- 0 --> {id(node.left)}")
-            print(f"{id(node)} -- 1 --> {id(node.right)}")
-        visited.append(node)
+    queue = [tree.root]
+    visited = []
+    while queue:
+        node = queue.pop(0)
+        if node not in visited:
+            print(f"{id(node)}[{str(node)}]")
+            if not node.is_leaf:
+                queue.append(node.left)
+                queue.append(node.right)
+                print(f"{id(node)} -- 0 --> {id(node.left)}")
+                print(f"{id(node)} -- 1 --> {id(node.right)}")
+            visited.append(node)
 
-print("```") 
+    print("```") 
+
+show_ht(tree_apple)
 ```
 
 ### Huffman code
@@ -172,78 +196,56 @@ Finally, the Huffman coded result is below.
 
 ```{python}
 #| echo: false
-def c2b(c):
+def c2hc(c, tree):
     return tree.encoded_table[c]
 
-show(s)
+def show_hc(s, tree):
+    print(s, end='\n\n')
+
+    l = 0
+    bits = 0
+    for c in s:
+        b = c2hc(c, tree)
+        print(b, end=' ')
+        l += len(b) + 1
+        bits += len(b)
+        if l > 71:
+            l = 0
+            print()
+
+    print(f"\n\n{bits} bits / {bits/8:.1f} bytes")
+    print(f"compression rate: {(1 - (bits/8) / len(s))*100:.1f}%")
 ```
-You might be familiar with the pangram `THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG`.
-It contains all the letters from `A` to `Z`, which makes it harder to compress.
 
 ```{python}
 #| echo: false
-
-s = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"
-tree = HuffmanTree(Counter(s))
-show(s)
+show_hc(s_apple, tree_apple)
 ```
-
-Just for fun, let's apply Huffman coding for images too.
 
 ```{python}
 #| echo: false
-#| layout-ncol: 2
-#| label: fig-image-compression
-#| fig-cap: Image compression
-#| fig-subcap:
-#|   - Mondriaan
-#|   - Monet
-from PIL import Image
-import matplotlib.pyplot as plt
-import numpy as np
-
-mondriaan = Image.open('HuffmanCoding/images/mondriaan.jpg').convert("L").resize((100,100))
-monet     = Image.open('HuffmanCoding/images/monet.jpg').convert("L").resize((100,100))
-
-s = np.array(mondriaan).flatten().tolist()
-tree = HuffmanTree(Counter(s))
-bits = 0
-for k, v in tree.encoded_table.items():
-    bits += len(v) * tree.freq_table[k]
-
-mondriaan_bytes = bits/8
-
-plt.imshow(mondriaan, cmap='binary_r')
-plt.axis('off')
-plt.show()
-
-s = np.array(monet).flatten().tolist()
-tree = HuffmanTree(Counter(s))
-bits = 0
-for k, v in tree.encoded_table.items():
-    bits += len(v) * tree.freq_table[k]
-
-monet_bytes = bits/8
-
-plt.imshow(monet, cmap='binary_r')
-plt.axis('off')
-plt.show()
+#| output: asis 
+print(f"""You might be familiar with the pangram `{s_quick}`.
+It contains all the letters from `A` to `Z`, which makes it harder to compress.""") 
 ```
-Both @fig-image-compression-1 and @fig-image-compression-2 are resized to 100x100 greyscale images.
-Each pixel is represented by the intensity of light from `0` to `255` which corresponds to one byte of information.
-This results in `10000` bytes for each image.
 
 ```{python}
-#| echo: false 
-#| output: asis
-print(f"""After applying Huffman coding to each image,
-each is compressed to `{mondriaan_bytes:.1f}` bytes
-and `{monet_bytes:.1f}` bytes, respectively.""")
+#| echo: false
+show_hc(s_quick, tree_quick)
 ```
 
-So, why do we think @fig-image-compression-1 is easier to draw?
-Why is it easier to remember pop music notes than those of bebop jazz?
+## Average length per character ($L$)
 
-It becomes clear when explained using data compression.
-Since it has a higher compression rate,
-it can be described verbally or communicated with a shorter and more compact explanation.
+Let's use some notations from now on.
+
+$$
+L \triangleq \mathbb E [l(x)] = \sum_{x \in \mathcal X} p(x) l(x)
+$$
+
+```{python}
+#| echo: false
+#| output: asis 
+print(f"""
+For the phrase `{s_apple}`, $L$ is {tree_apple.L:.2f} with the unit of bits.
+""") 
+```
