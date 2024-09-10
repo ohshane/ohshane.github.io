@@ -246,7 +246,7 @@ $$
 #| echo: false
 #| output: asis 
 print(f"""
-For the phrase `{s_apple}`, $L$ is {tree_apple.L:.2f} with the unit of bits.
+For the phrase `{s_apple}`, $L$ is {tree_apple.L:.2f} with the unit in bits.
 """) 
 ```
 
