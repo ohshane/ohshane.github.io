@@ -69,8 +69,6 @@ The more **frequently** a character appears, the **shorter** its encoded length 
 
 The phrase `AN APPLE A DAY KEEPS THE DOCTOR AWAY` uses `A` to rhyme which makes the example more fun.
 
-Similar to max-heap, we build a Huffman tree using the frequency.
-
 ### Huffman tree
 We **build the tree from the bottom** using the **less frequent characters**.
 Eventually, the less frequent ones are placed at deeper levels.
@@ -185,12 +183,14 @@ tree = HuffmanTree(Counter(s))
 show(s)
 ```
 
-Just for fun, let's work with the images too.
+Just for fun, let's apply Huffman coding for images too.
 
 ```{python}
 #| echo: false
 #| layout-ncol: 2
-#| fig-cap: 
+#| label: fig-image-compression
+#| fig-cap: Image compression
+#| fig-subcap:
 #|   - Mondriaan
 #|   - Monet
 from PIL import Image
@@ -206,8 +206,9 @@ bits = 0
 for k, v in tree.encoded_table.items():
     bits += len(v) * tree.freq_table[k]
 
+mondriaan_bytes = bits/8
+
 plt.imshow(mondriaan, cmap='binary_r')
-plt.title(f"compression rate: {(1 - (bits/8) / len(s))*100:.1f}%")
 plt.axis('off')
 plt.show()
 
@@ -217,8 +218,25 @@ bits = 0
 for k, v in tree.encoded_table.items():
     bits += len(v) * tree.freq_table[k]
 
+monet_bytes = bits/8
+
 plt.imshow(monet, cmap='binary_r')
-plt.title(f"compression rate: {(1 - (bits/8) / len(s))*100:.1f}%")
 plt.axis('off')
 plt.show()
 ```
+Both @fig-image-compression-1 and @fig-image-compression-2 are resized to 100x100 greyscale images.
+Each pixel is represented by the intensity of light from `0` to `255` which corresponds to one byte of information.
+This results in `10000` bytes for each image.
+
+```{python}
+#| echo: false 
+#| output: asis
+print(f"""After applying Huffman coding to each image,
+each is compressed to `{mondriaan_bytes:.1f}` bytes
+and `{monet_bytes:.1f}` bytes, respectively.""")
+```
+
+So, why do we think @fig-image-compression-1 is easier to draw?
+It becomes clear when explained using data compression.
+Since it has a higher compression rate,
+it can be described verbally or communicated with a shorter and more compact explanation.
