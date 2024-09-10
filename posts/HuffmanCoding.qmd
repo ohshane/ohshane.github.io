@@ -11,6 +11,8 @@ categories:
   - Algorithms
 ---
 
+Thanks to Pizzey Technology for the wonderful [video](https://youtu.be/iEm1NRyEe5c?si=SvWMcYR6AZraymSd).
+
 ## Concepts
 
 Huffman coding is a type of **variable-length prefix coding** that assigns
