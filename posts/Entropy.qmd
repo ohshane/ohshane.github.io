@@ -6,13 +6,24 @@ author: Shane Oh
 date: 2023-04-14
 image: false
 categories:
-  - ML
+  - Information Theory
+  - Data Compression
 ---
 
-## The amount of information
+I highly recommend taking a look at the [Huffman Coding](HuffmanCoding.qmd) post first.
+Huffman coding provides an optimal compression solution for a given data distribution,
+whereas Shannon-Fano coding does not.
 
-Claude Shannon, often regarded as the father of information theory, sought to 
-quantify information in a measureable way.
+It may be easier for us to first learn Huffman coding (a bottom-up approach to building the tree)
+in the algorithms class and then move on to Shannon-Fano coding (a top-down approach).
 
-> Gibberish requires more information than a great literature.
+Take a look at the [video](https://youtu.be/B3y0RsVCyrw?si=ikWennqSHzgY9pfn).
 
+::: {.callout-note}
+# Historical Context: Shannon's Entropy and Huffman Coding
+After Claude Shannon introduced entropy in 1948, which defines the theoretical limit for
+optimal data compression, David A. Huffman built on this in 1952 by creating Huffman coding
+during his Ph.D.
+:::
+
+## Optimal lossless compresison
