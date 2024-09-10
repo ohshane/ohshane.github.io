@@ -221,7 +221,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="e6fe010d" class="cell" data-execution_count="1">
+<div id="d32f71bc" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -241,12 +241,11 @@ compression rate: 0.0%</code></pre>
 <h2 class="anchored" data-anchor-id="compress-it">Compress it!</h2>
 <p>The more <strong>frequently</strong> a character appears, the <strong>shorter</strong> its encoded length becomes.</p>
 <p>The phrase <code>AN APPLE A DAY KEEPS THE DOCTOR AWAY</code> uses <code>A</code> to rhyme which makes the example more fun.</p>
-<p>Similar to max-heap, we build a Huffman tree using the frequency.</p>
 <section id="huffman-tree" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="8f8aba77" class="cell" data-execution_count="2">
+<div id="704e0343" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
@@ -321,67 +320,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-139995535622800[36]
-139995535622800 -- 0 --&gt; 139995535638032
-139995535622800 -- 1 --&gt; 139995535624848
-139995535638032[21]
-139995535638032 -- 0 --&gt; 139995535631120
-139995535638032 -- 1 --&gt; 139995535636688
-139995535624848[15]
-139995535624848 -- 0 --&gt; 139995535632208
-139995535624848 -- 1 --&gt; 139995535637840
-139995535631120[13]
-139995535631120 -- 0 --&gt; 139995535626448
-139995535631120 -- 1 --&gt; 139994868596240
-139995535636688[8]
-139995535636688 -- 0 --&gt; 139995535632784
-139995535636688 -- 1 --&gt; 139995535625104
-139995535632208[8]
-139995535632208 -- 0 --&gt; 139995535623888
-139995535632208 -- 1 --&gt; 139995535634064
-139995535637840[7]
-139995535637840 -- 0 --&gt; 139995535627856
-139995535637840 -- 1 --&gt; 139995535627792
-139995535626448[' ': 7]
-139994868596240['A': 6]
-139995535632784[4]
-139995535632784 -- 0 --&gt; 139995535637456
-139995535632784 -- 1 --&gt; 139995535637072
-139995535625104[4]
-139995535625104 -- 0 --&gt; 139995535637200
-139995535625104 -- 1 --&gt; 139994647085648
-139995535623888[4]
-139995535623888 -- 0 --&gt; 139995535624464
-139995535623888 -- 1 --&gt; 139995535624336
-139995535634064[4]
-139995535634064 -- 0 --&gt; 139995535627664
-139995535634064 -- 1 --&gt; 139995535628112
-139995535627856['E': 4]
-139995535627792['P': 3]
-139995535637456[2]
-139995535637456 -- 0 --&gt; 139995535637648
-139995535637456 -- 1 --&gt; 139995535625168
-139995535637072[2]
-139995535637072 -- 0 --&gt; 139995535624272
-139995535637072 -- 1 --&gt; 139995535624912
-139995535637200[2]
-139995535637200 -- 0 --&gt; 139995535627536
-139995535637200 -- 1 --&gt; 139995535624016
-139994647085648[2]
-139994647085648 -- 0 --&gt; 139995535627600
-139994647085648 -- 1 --&gt; 139995535627088
-139995535624464['O': 2]
-139995535624336['T': 2]
-139995535627664['Y': 2]
-139995535628112['D': 2]
-139995535637648['W': 1]
-139995535625168['R': 1]
-139995535624272['C': 1]
-139995535624912['H': 1]
-139995535627536['S': 1]
-139995535624016['K': 1]
-139995535627600['L': 1]
-139995535627088['N': 1]
+140115265278672[36]
+140115265278672 -- 0 --&gt; 140115265285136
+140115265278672 -- 1 --&gt; 140115265279760
+140115265285136[21]
+140115265285136 -- 0 --&gt; 140115265280720
+140115265285136 -- 1 --&gt; 140115265273936
+140115265279760[15]
+140115265279760 -- 0 --&gt; 140115265283536
+140115265279760 -- 1 --&gt; 140115265284432
+140115265280720[13]
+140115265280720 -- 0 --&gt; 140114610181776
+140115265280720 -- 1 --&gt; 140115265456720
+140115265273936[8]
+140115265273936 -- 0 --&gt; 140115265285520
+140115265273936 -- 1 --&gt; 140115265285648
+140115265283536[8]
+140115265283536 -- 0 --&gt; 140115265285712
+140115265283536 -- 1 --&gt; 140115265286736
+140115265284432[7]
+140115265284432 -- 0 --&gt; 140115267289872
+140115265284432 -- 1 --&gt; 140114635482576
+140114610181776[' ': 7]
+140115265456720['A': 6]
+140115265285520[4]
+140115265285520 -- 0 --&gt; 140115265274384
+140115265285520 -- 1 --&gt; 140115265274896
+140115265285648[4]
+140115265285648 -- 0 --&gt; 140114599461776
+140115265285648 -- 1 --&gt; 140114627707344
+140115265285712[4]
+140115265285712 -- 0 --&gt; 140115267289936
+140115265285712 -- 1 --&gt; 140115267289616
+140115265286736[4]
+140115265286736 -- 0 --&gt; 140115267297680
+140115265286736 -- 1 --&gt; 140115267290256
+140115267289872['E': 4]
+140114635482576['P': 3]
+140115265274384[2]
+140115265274384 -- 0 --&gt; 140114627717840
+140115265274384 -- 1 --&gt; 140114627717776
+140115265274896[2]
+140115265274896 -- 0 --&gt; 140114627716944
+140115265274896 -- 1 --&gt; 140115267290384
+140114599461776[2]
+140114599461776 -- 0 --&gt; 140115267289360
+140114599461776 -- 1 --&gt; 140115267290064
+140114627707344[2]
+140114627707344 -- 0 --&gt; 140115267292496
+140114627707344 -- 1 --&gt; 140115265458704
+140115267289936['O': 2]
+140115267289616['T': 2]
+140115267297680['Y': 2]
+140115267290256['D': 2]
+140114627717840['W': 1]
+140114627717776['R': 1]
+140114627716944['C': 1]
+140115267290384['H': 1]
+140115267289360['S': 1]
+140115267290064['K': 1]
+140115267292496['L': 1]
+140115265458704['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -392,7 +391,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="c8096745" class="cell" data-execution_count="4">
+<div id="56726269" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -405,7 +404,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="6139123e" class="cell" data-execution_count="5">
+<div id="58f5371d" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
@@ -418,30 +417,46 @@ compression rate: 54.2%</code></pre>
 compression rate: 44.2%</code></pre>
 </div>
 </div>
-<p>Just for fun, let’s work with the images too.</p>
-<div>
-
-</div>
-<div id="be71ef00" class="cell quarto-layout-panel" data-layout-ncol="2" data-execution_count="6">
+<p>Just for fun, let’s apply Huffman coding for images too.</p>
+<div id="fig-image-compression" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-image-compression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="HuffmanCoding_files/figure-html/cell-7-output-1.png" width="389" height="409" class="figure-img"></p>
-<figcaption>Mondriaan</figcaption>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-image-compression" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-image-compression-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-image-compression-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HuffmanCoding_files/figure-html/fig-image-compression-output-1.png" data-ref-parent="fig-image-compression" width="389" height="389" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-image-compression-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Mondriaan
+</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="HuffmanCoding_files/figure-html/cell-7-output-2.png" width="389" height="409" class="figure-img"></p>
-<figcaption>Monet</figcaption>
+<div class="cell-output cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-image-compression" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-image-compression-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-image-compression-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HuffmanCoding_files/figure-html/fig-image-compression-output-2.png" data-ref-parent="fig-image-compression" width="389" height="389" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-image-compression-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Monet
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-image-compression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Image compression
+</figcaption>
+</figure>
+</div>
+<p>Both <a href="#fig-image-compression-1" class="quarto-xref">Figure&nbsp;1 (a)</a> and <a href="#fig-image-compression-2" class="quarto-xref">Figure&nbsp;1 (b)</a> are resized to 100x100 greyscale images. Each pixel is represented by the intensity of light from <code>0</code> to <code>255</code> which corresponds to one byte of information. This results in <code>10000</code> bytes for each image.</p>
+<p>After applying Huffman coding to each image, each is compressed to <code>7903.6</code> bytes and <code>8354.9</code> bytes, respectively.</p>
+<p>So, why do we think <a href="#fig-image-compression-1" class="quarto-xref">Figure&nbsp;1 (a)</a> is easier to draw? Why is it easier to remember pop music notes than those of bebop jazz?</p>
+<p>It becomes clear when explained using data compression. Since it has a higher compression rate, it can be described verbally or communicated with a shorter and more compact explanation.</p>
 
 
 </section>
