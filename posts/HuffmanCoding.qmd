@@ -249,3 +249,9 @@ print(f"""
 For the phrase `{s_apple}`, $L$ is {tree_apple.L:.2f} with the unit of bits.
 """) 
 ```
+
+The objective of making good prefix codes is to minimize $\mathbb E [l(x)]$ which leads to the property below.
+
+$$
+p(x_1) \gt p(x_2) \implies l(x_1) \leq l(x_2)
+$$
