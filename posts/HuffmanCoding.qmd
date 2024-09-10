@@ -82,7 +82,6 @@ uses `A` to rhyme which makes the example more fun.""")
 ```
 
 ### Huffman tree {#sec-huffman-tree}
-### Huffman tree {#sec-huffman-tree}
 We **build the tree from the bottom** using the **less frequent characters**.
 Eventually, the less frequent ones are placed at deeper levels.
 The deeper a character is, the longer the traversal route from the root,
@@ -134,8 +133,6 @@ class HuffmanTree:
     def build(self):
         nodes = [Node(char, freq) for char, freq in self.freq_table.items()]
         while len(nodes) > 1:
-            node1 = nodes.pop(nodes.index(min(nodes))) # <3>
-            node2 = nodes.pop(nodes.index(min(nodes))) # <3>
             node1 = nodes.pop(nodes.index(min(nodes))) # <3>
             node2 = nodes.pop(nodes.index(min(nodes))) # <3>
             node  = Node(freq=node1.freq+node2.freq,
@@ -237,7 +234,7 @@ It contains all the letters from `A` to `Z`, which makes it harder to compress."
 show_hc(s_quick, tree_quick)
 ```
 
-Just for fun, let's apply Huffman coding for images too.
+Just for fun, let's apply Huffman coding to images.
 
 ```{python}
 #| echo: false
