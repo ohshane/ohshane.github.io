@@ -137,7 +137,7 @@ class HuffmanTree:
 tree = HuffmanTree(Counter("AN APPLE A DAY KEEPS THE DOCTOR AWAY"))
 ```
 1. Characters are only at the leaf nodes.
-This property ensures that each encoded value is not a substring of another and keeps the unique decodability.
+This property ensures that each encoded value is not a substring of another and keeps the unique decodability. This is also called as the **prefix-free coding**.
 2. Use `0` for the left and `1` for the right. The path from the root to the 
 leaf node represents the encoded result.
 
