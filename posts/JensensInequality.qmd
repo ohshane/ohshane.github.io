@@ -56,6 +56,7 @@ $$
 $$
 
 Jensen's inequality also can be applied under weighted average conditions.
+Weighted average of $\varphi(x_i)$ can reside in the dashed quardrangle (including the dashed line).
 
 ### Examples
 
