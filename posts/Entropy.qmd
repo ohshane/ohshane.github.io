@@ -1,6 +1,6 @@
 ---
 title: Entropy
-subtitle: The amount of uncertainty
+subtitle: The lower bound of $\bar \lambda$
 description: ""
 author: Shane Oh
 date: 2023-04-14
@@ -26,4 +26,67 @@ optimal data compression, David A. Huffman built on this in 1952 by creating Huf
 during his Ph.D.
 :::
 
-## Optimal lossless compresison
+## Recall of Huffman coding
+
+In the last [post](HuffmanCoding.qmd), we derived the average codeword length
+of Huffman coding.
+
+$$
+\bar \lambda = \mathbb E [ \lambda ] = \sum_{i=1}^N p(x_i) \lambda_i
+$$
+
+One thing we had a hard time deriving was $\lambda$.
+We needed to check the frequency (or probability) of each character and
+aggregate them into a binary tree structure.
+After that, we traced the path from the root node to each leaf,
+encoding every character into a binary codeword.
+Finally, we mapped all of the codewords to the function `len` to obtain our most desired value,
+the length of each codeword.
+
+The value $\lambda$ can be interpreted as the number of bits (information) required to
+losslessly represent an arbitrary group (such as a character or color) within
+the given data. As you can feel from the word group, we were working on a discrete random variable.
+
+We can guarantee the optimality of $\lambda$ only with the given data distribution.
+If different data is provided, the frequency (probability) changes,
+causing the entire Huffman tree to differ from before.
+
+::: {.callout-note}
+# What if we provide a data only with the most frequent character from the existing Huffman tree?
+This will reduce $\bar \lambda$ exceptionally but not with an optimal length.
+If all characters are the same, the optimal length for the given data
+will be 0 because the leaf node will also be the root.
+:::
+
+## Entropy as a lower bound of $\bar \lambda$
+
+What if I say we don't need all of the cumbersome processes mentioned above?
+Take a look at the formula below.
+
+$$
+H(X) = \mathbb E[I(X)] = \sum_{i=1}^N p(x_i) \log_2 \dfrac{1}{p(x_i)}
+$$
+
+Is entropy just another form of average codeword length?
+
+The answer is no. This works as the theoretical **lower bound** for any data distribution
+(both **discrete** and **continuous**) when compressing.
+We can not get below this bound if we are performing a lossless compression.
+
+We can see that the $\lambda_i$ has turned into a $\log$ form with a probability.
+Since $x_i$ is the only parameter, we can define **$H$ as a scalar funciton for any random vaiable $X$**.
+As the probability of $x_i$ increases
+we can compress the information into a smaller, more compact $I(x_i)$.
+
+We can set a theoretical lower bound for $\bar \lambda$ as below.
+
+$$
+H(X) \leq \bar \lambda
+$$
+
+Let's prove this!
+
+## Proofing the lower bound
+
+I can't express enough about how much this meant to me.
+
