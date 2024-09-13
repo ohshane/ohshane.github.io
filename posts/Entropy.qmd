@@ -3,7 +3,7 @@ title: Entropy
 subtitle: The lower bound of $\bar \lambda$
 description: ""
 author: Shane Oh
-date: 2023-04-14
+date: 2023-09-14
 image: false
 categories:
   - Information Theory
@@ -26,7 +26,7 @@ optimal data compression, David A. Huffman built on this in 1952 by creating Huf
 during his Ph.D.
 :::
 
-## Recall of Huffman coding
+## Recap of Huffman coding
 
 In the last [post](HuffmanCoding.qmd), we derived the average codeword length
 of Huffman coding.
@@ -78,7 +78,7 @@ Since $x_i$ is the only parameter, we can define **$H$ as a scalar funciton for 
 As the probability of $x_i$ increases
 we can compress the information into a smaller, more compact $I(x_i)$.
 
-We can set a theoretical lower bound for $\bar \lambda$ as below.
+We can set the theoretical lower bound for $\bar \lambda$ as below.
 
 $$
 H(X) \leq \bar \lambda
@@ -86,7 +86,22 @@ $$
 
 Let's prove this!
 
-## Proofing the lower bound
+## Proofing the lower bound of $\bar \lambda$
 
 I can't express enough about how much this meant to me.
 
+We need to know some basics of Jensen's inequality to prove this.
+Check out the [post](JensensInequality.qmd) to see more.
+
+$$
+\begin{align*}
+H(X) - \bar{\lambda}
+&= \sum_{i=1}^N \left( p(x_i) \dfrac{1}{\log_2 p(x_i)} - p(x_i) \lambda_i \right) \\[10pt]
+&= \sum_{i=1}^N p(x_i) \left( \dfrac{1}{\log_2 p(x_i)} - \lambda_i \right) \\[10pt]
+&= \sum_{i=1}^N p(x_i) \left( \dfrac{1}{\log_2 p(x_i)} \log_2 2^{-\lambda_i} \right) \\[10pt]
+&= \sum_{i=1}^N p(x_i) \log_2 \left( \dfrac{2^{-\lambda_i}}{p(x_i)} \right)
+   \leq \log_2 \sum_{i=1}^N p(x_i) \dfrac{2^{-\lambda_i}}{p(x_i)} &\cdots \text{Jensen's inequality} \\[10pt]
+&= \log_2 \sum_{i=1}^N 2^{-\lambda_i} \leq \log_2 1 &\cdots \text{Kraft inequality} \\[10pt]
+&= 0
+\end{align*}
+$$
