@@ -1,0 +1,24 @@
+---
+title: Internally Dividing Point
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2024-09-13
+image: false
+categories:
+  - Math
+---
+
+::: {#fig-internally-dividing-point}
+![](InternallyDividingPoint/internallyDividingPoint.svg){height=150px}
+
+Internally dividing point
+:::
+
+$$
+\begin{align*}
+z &= (y-x) \cdot \dfrac{a}{a+b} + x \\[10pt]
+&= \dfrac{ay - ax + ax + bx}{a+b} \\[10pt]
+&= \dfrac{bx + ay}{a+b}
+\end{align*}
+$$
