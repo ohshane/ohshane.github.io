@@ -124,7 +124,7 @@ class HuffmanTree:
         self.encode()
 
     @property
-    def L(self):
+    def l_bar(self):
         total = 0
         for char, freq in self.freq_table.items():
             total += len(self.encoded_table[char]) * freq
@@ -295,24 +295,21 @@ Since it has a higher compression rate,
 it can be described verbally or communicated with a shorter and more compact explanation.
 
 
-## Average length per character ($L$)
+## Average length per character ($\bar{\lambda}$)
 
 Let's use some notations from now on.
 
 $$
-L \triangleq \mathbb E [l(x)] = \sum_{x \in \mathcal X} p(x) l(x)
+\bar \lambda = \mathbb E [\lambda] = \sum_{i=1}^N \lambda_i p(x_i)
 $$
+
+- $\lambda_i$: codeword length for the character $x_i$
+- $p(x_i)$: probability of the character $x_i$ occurring
 
 ```{python}
 #| echo: false
 #| output: asis 
-print(f"""
-For the phrase `{s_apple}`, $L$ is {tree_apple.L:.2f} with the unit in bits.
+print(rf"""
+For the phrase `{s_apple}`, $\bar \lambda$ is {tree_apple.l_bar:.3f} with the unit in bits.
 """) 
 ```
-
-The objective of making good prefix codes is to minimize $\mathbb E [l(x)]$ which leads to the property below.
-
-$$
-p(x_1) \gt p(x_2) \implies l(x_1) \leq l(x_2)
-$$
