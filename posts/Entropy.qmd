@@ -32,7 +32,9 @@ In the last [post](HuffmanCoding.qmd), we derived the average codeword length
 of Huffman coding.
 
 $$
-\bar \lambda = \mathbb E [ \lambda ] = \sum_{i=1}^N p(x_i) \lambda_i
+\bar \lambda = \mathbb E [ \lambda ]
+= \sum_{i=1}^N p(x_i) \lambda_i
+= \sum_{i=1}^N p(x_i) \lceil \log_2 \dfrac{1}{p(x_i)} \rceil
 $$
 
 One thing we had a hard time deriving was $\lambda$.
@@ -88,10 +90,9 @@ Let's prove this!
 
 ## Proofing the lower bound of $\bar \lambda$
 
-I can't express enough about how much this meant to me.
-
-We need to know some basics of Jensen's inequality to prove this.
-Check out the [post](JensensInequality.qmd) to see more.
+We need to know some basics of Jensen's inequality and Kraft-McMillan inequality to prove this.
+Check out the [Jensen's inequality](JensensInequality.qmd),
+[Kraft-McMillan inequality](HuffmanCoding.qmd#sec-kraft-mcmillan-inequality) posts to see more.
 
 $$
 \begin{align*}
@@ -101,7 +102,32 @@ H(X) - \bar{\lambda}
 &= \sum_{i=1}^N p(x_i) \left( \dfrac{1}{\log_2 p(x_i)} \log_2 2^{-\lambda_i} \right) \\[10pt]
 &= \sum_{i=1}^N p(x_i) \log_2 \left( \dfrac{2^{-\lambda_i}}{p(x_i)} \right)
    \leq \log_2 \sum_{i=1}^N p(x_i) \dfrac{2^{-\lambda_i}}{p(x_i)} &\cdots \text{Jensen's inequality} \\[10pt]
-&= \log_2 \sum_{i=1}^N 2^{-\lambda_i} \leq \log_2 1 &\cdots \text{Kraft inequality} \\[10pt]
+&= \log_2 \sum_{i=1}^N 2^{-\lambda_i} \leq \log_2 1 &\cdots \text{Kraft-McMillan inequality} \\[10pt]
 &= 0
 \end{align*}
 $$
+
+Well, that's it! For fun, let's take a look at the graph below.
+
+::: {#fig-lower-bound}
+![](Entropy/entropy.svg){width=80%}
+
+Lower bound of lambda bar
+:::
+
+Think $\varphi(x)$ as $-\log_2 p(x)$.
+You can clearly see that entropy (the blue cross) is working as a lower bound.
+
+We have not talked about the upper bound of $\bar \lambda$.
+
+$$
+H(X) \leq \bar \lambda \lt H(X)+1
+$$
+
+The red and blue crosses are the weighted averages of each function's outputs. 
+Try ripping the crosses apart from each other. Can you make it greater than 1? 
+Probably not. Infinitely approaching all $p(x_i)$ to values near powers of 2 from 
+the left-hand side is the most probable way, but you won't be able to get there. 
+
+If you do get there, it means you are allowing all $x_i$ to have an extra bit, 
+which is not optimal in the first place.
