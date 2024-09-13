@@ -1,0 +1,67 @@
+---
+title: Jensen's Inequality
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2024-09-13
+image: false
+categories:
+  - Math
+  - Probability Theory
+---
+
+Checkout this [post](InternallyDividingPoint.qmd) to see the background behind this.
+
+::: {#fig-jensens-inequality}
+![](JensensInequality/jensensInequality-01.svg){height=300px}
+
+Jensen's inequality
+:::
+
+Jensen's inequality generalizes the statement that
+the secant line of a **convex function** lies above the graph of the function[^wiki-01].
+
+[^wiki-01]: [Jensen's inequality - Wikipedia](https://en.wikipedia.org/wiki/Jensen's_inequality)
+
+$f:\mathbb R \to \mathbb R$ is convex when,
+
+$$
+\forall t \in [0,1], f(tx_1 + (1-t)x_2) \leq tf(x_1)+(1-t)f(x_2)
+$$
+
+## Jensen's inequality with probability theory
+
+::: {#fig-jensens-inequality-E}
+![](JensensInequality/jensensInequality-02.svg){height=300px}
+
+Jensen's inequality with probability theory
+:::
+
+When $\varphi: \mathbb R \to \mathbb R$ is a convex function,
+
+$$
+\begin{align*}
+\varphi(\mathbb E [X]) &\leq \mathbb E [\varphi(X)] \\[10pt]
+\varphi \left( \sum p(x_i) \ x_i \right) &\leq \sum p(x_i) \varphi(x_i) \\
+\end{align*}
+$$
+
+
+### Finite form
+
+When $\varphi: \mathbb R \to \mathbb R$ is a convex function,
+
+$$
+\varphi \left( \dfrac{\sum a_i x_i}{\sum a_i} \right) \leq \dfrac{\sum a_i \varphi(x_i)}{\sum a_i}
+$$
+
+Jensen's inequality also can be applied under weighted average conditions.
+
+### Examples
+
+$$
+\mathrm{Var}[X] = \mathbb E[X^2] - \mathbb E[X]^2
+$$
+
+When $\varphi: x \mapsto x^2$, $\varphi$ is convex, which makes $\mathbb E[X]^2 \leq \mathbb E[X^2]$.
+This is correct because the variance of random variables cannot be negative.
