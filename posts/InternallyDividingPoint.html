@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2023-09-14">
+<meta name="dcterms.date" content="2024-09-13">
 
-<title>Entropy – Shane</title>
+<title>Internally Dividing Point – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -105,8 +105,8 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Entropy – Shane">
-<meta property="og:description" content="The lower bound of \(\bar \lambda\)">
+<meta property="og:title" content="Internally Dividing Point – Shane">
+<meta property="og:description" content="">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -146,27 +146,17 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#recap-of-huffman-coding" id="toc-recap-of-huffman-coding" class="nav-link active" data-scroll-target="#recap-of-huffman-coding">Recap of Huffman coding</a></li>
-  <li><a href="#entropy-as-a-lower-bound-of-bar-lambda" id="toc-entropy-as-a-lower-bound-of-bar-lambda" class="nav-link" data-scroll-target="#entropy-as-a-lower-bound-of-bar-lambda">Entropy as a lower bound of <span class="math inline">\(\bar \lambda\)</span></a></li>
-  <li><a href="#proofing-the-lower-bound-of-bar-lambda" id="toc-proofing-the-lower-bound-of-bar-lambda" class="nav-link" data-scroll-target="#proofing-the-lower-bound-of-bar-lambda">Proofing the lower bound of <span class="math inline">\(\bar \lambda\)</span></a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Entropy</h1>
-<p class="subtitle lead">The lower bound of <span class="math inline">\(\bar \lambda\)</span></p>
+<h1 class="title">Internally Dividing Point</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Information Theory</div>
-    <div class="quarto-category">Data Compression</div>
+    <div class="quarto-category">Math</div>
   </div>
   </div>
 
@@ -184,7 +174,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 14, 2023</p>
+      <p class="date">September 13, 2024</p>
     </div>
   </div>
   
@@ -196,98 +186,25 @@ window.Quarto = {
 </header>
 
 
-<p>I highly recommend taking a look at the <a href="../posts/HuffmanCoding.html">Huffman Coding</a> post first. Huffman coding provides an optimal compression solution for a given data distribution, whereas Shannon-Fano coding does not.</p>
-<p>It may be easier for us to first learn Huffman coding (a bottom-up approach to building the tree) in the algorithms class and then move on to Shannon-Fano coding (a top-down approach).</p>
-<p>Take a look at the <a href="https://youtu.be/B3y0RsVCyrw?si=ikWennqSHzgY9pfn">video</a>.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Historical Context: Shannon’s Entropy and Huffman Coding
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>After Claude Shannon introduced entropy in 1948, which defines the theoretical limit for optimal data compression, David A. Huffman built on this in 1952 by creating Huffman coding during his Ph.D.</p>
-</div>
-</div>
-<section id="recap-of-huffman-coding" class="level2">
-<h2 class="anchored" data-anchor-id="recap-of-huffman-coding">Recap of Huffman coding</h2>
-<p>In the last <a href="../posts/HuffmanCoding.html">post</a>, we derived the average codeword length of Huffman coding.</p>
-<p><span class="math display">\[
-\bar \lambda = \mathbb E [ \lambda ]
-= \sum_{i=1}^N p(x_i) \lambda_i
-= \sum_{i=1}^N p(x_i) \lceil \log_2 \dfrac{1}{p(x_i)} \rceil
-\]</span></p>
-<p>One thing we had a hard time deriving was <span class="math inline">\(\lambda\)</span>. We needed to check the frequency (or probability) of each character and aggregate them into a binary tree structure. After that, we traced the path from the root node to each leaf, encoding every character into a binary codeword. Finally, we mapped all of the codewords to the function <code>len</code> to obtain our most desired value, the length of each codeword.</p>
-<p>The value <span class="math inline">\(\lambda\)</span> can be interpreted as the number of bits (information) required to losslessly represent an arbitrary group (such as a character or color) within the given data. As you can feel from the word group, we were working on a discrete random variable.</p>
-<p>We can guarantee the optimality of <span class="math inline">\(\lambda\)</span> only with the given data distribution. If different data is provided, the frequency (probability) changes, causing the entire Huffman tree to differ from before.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-What if we provide a data only with the most frequent character from the existing Huffman tree?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>This will reduce <span class="math inline">\(\bar \lambda\)</span> exceptionally but not with an optimal length. If all characters are the same, the optimal length for the given data will be 0 because the leaf node will also be the root.</p>
-</div>
-</div>
-</section>
-<section id="entropy-as-a-lower-bound-of-bar-lambda" class="level2">
-<h2 class="anchored" data-anchor-id="entropy-as-a-lower-bound-of-bar-lambda">Entropy as a lower bound of <span class="math inline">\(\bar \lambda\)</span></h2>
-<p>What if I say we don’t need all of the cumbersome processes mentioned above? Take a look at the formula below.</p>
-<p><span class="math display">\[
-H(X) = \mathbb E[I(X)] = \sum_{i=1}^N p(x_i) \log_2 \dfrac{1}{p(x_i)}
-\]</span></p>
-<p>Is entropy just another form of average codeword length?</p>
-<p>The answer is no. This works as the theoretical <strong>lower bound</strong> for any data distribution (both <strong>discrete</strong> and <strong>continuous</strong>) when compressing. We can not get below this bound if we are performing a lossless compression.</p>
-<p>We can see that the <span class="math inline">\(\lambda_i\)</span> has turned into a <span class="math inline">\(\log\)</span> form with a probability. Since <span class="math inline">\(x_i\)</span> is the only parameter, we can define <strong><span class="math inline">\(H\)</span> as a scalar funciton for any random vaiable <span class="math inline">\(X\)</span></strong>. As the probability of <span class="math inline">\(x_i\)</span> increases we can compress the information into a smaller, more compact <span class="math inline">\(I(x_i)\)</span>.</p>
-<p>We can set the theoretical lower bound for <span class="math inline">\(\bar \lambda\)</span> as below.</p>
-<p><span class="math display">\[
-H(X) \leq \bar \lambda
-\]</span></p>
-<p>Let’s prove this!</p>
-</section>
-<section id="proofing-the-lower-bound-of-bar-lambda" class="level2">
-<h2 class="anchored" data-anchor-id="proofing-the-lower-bound-of-bar-lambda">Proofing the lower bound of <span class="math inline">\(\bar \lambda\)</span></h2>
-<p>We need to know some basics of Jensen’s inequality and Kraft-McMillan inequality to prove this. Check out the <a href="../posts/JensensInequality.html">Jensen’s inequality</a>, <a href="../posts/HuffmanCoding.html#sec-kraft-mcmillan-inequality">Kraft-McMillan inequality</a> posts to see more.</p>
-<p><span class="math display">\[
-\begin{align*}
-H(X) - \bar{\lambda}
-&amp;= \sum_{i=1}^N \left( p(x_i) \dfrac{1}{\log_2 p(x_i)} - p(x_i) \lambda_i \right) \\[10pt]
-&amp;= \sum_{i=1}^N p(x_i) \left( \dfrac{1}{\log_2 p(x_i)} - \lambda_i \right) \\[10pt]
-&amp;= \sum_{i=1}^N p(x_i) \left( \dfrac{1}{\log_2 p(x_i)} \log_2 2^{-\lambda_i} \right) \\[10pt]
-&amp;= \sum_{i=1}^N p(x_i) \log_2 \left( \dfrac{2^{-\lambda_i}}{p(x_i)} \right)
-   \leq \log_2 \sum_{i=1}^N p(x_i) \dfrac{2^{-\lambda_i}}{p(x_i)} &amp;\cdots \text{Jensen's inequality} \\[10pt]
-&amp;= \log_2 \sum_{i=1}^N 2^{-\lambda_i} \leq \log_2 1 &amp;\cdots \text{Kraft-McMillan inequality} \\[10pt]
-&amp;= 0
-\end{align*}
-\]</span></p>
-<p>Well, that’s it! For fun, let’s take a look at the graph below.</p>
-<div id="fig-lower-bound" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-internally-dividing-point" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-lower-bound-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="Entropy/entropy.svg" class="img-fluid figure-img" style="width:80.0%">
+<div aria-describedby="fig-internally-dividing-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="InternallyDividingPoint/internallyDividingPoint.svg" height="150" class="figure-img">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lower-bound-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Lower bound of lambda bar
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-internally-dividing-point-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Internally dividing point
 </figcaption>
 </figure>
 </div>
-<p>Think <span class="math inline">\(\varphi(x)\)</span> as <span class="math inline">\(-\log_2 p(x)\)</span>. You can clearly see that entropy (the blue cross) is working as a lower bound.</p>
-<p>We have not talked about the upper bound of <span class="math inline">\(\bar \lambda\)</span>.</p>
 <p><span class="math display">\[
-H(X) \leq \bar \lambda \lt H(X)+1
+\begin{align*}
+z &amp;= (y-x) \cdot \dfrac{a}{a+b} + x \\[10pt]
+&amp;= \dfrac{ay - ax + ax + bx}{a+b} \\[10pt]
+&amp;= \dfrac{bx + ay}{a+b}
+\end{align*}
 \]</span></p>
-<p>The red and blue crosses are the weighted averages of each function’s outputs. Try ripping the crosses apart from each other. Can you make it greater than 1? Probably not. Infinitely approaching all <span class="math inline">\(p(x_i)\)</span> to values near powers of 2 from the left-hand side is the most probable way, but you won’t be able to get there.</p>
-<p>If you do get there, it means you are allowing all <span class="math inline">\(x_i\)</span> to have an extra bit, which is not optimal in the first place.</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

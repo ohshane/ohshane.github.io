@@ -111,6 +111,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
 <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="Huffman Coding – Shane">
@@ -163,9 +192,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ascii" id="toc-ascii" class="nav-link" data-scroll-target="#ascii">ASCII</a></li>
   <li><a href="#compress-it" id="toc-compress-it" class="nav-link" data-scroll-target="#compress-it">Compress it!</a>
   <ul class="collapse">
-  <li><a href="#huffman-tree" id="toc-huffman-tree" class="nav-link" data-scroll-target="#huffman-tree">Huffman tree</a></li>
+  <li><a href="#sec-huffman-tree" id="toc-sec-huffman-tree" class="nav-link" data-scroll-target="#sec-huffman-tree">Huffman tree</a></li>
   <li><a href="#huffman-code" id="toc-huffman-code" class="nav-link" data-scroll-target="#huffman-code">Huffman code</a></li>
   </ul></li>
+  <li><a href="#average-codeword-length-per-character-barlambda" id="toc-average-codeword-length-per-character-barlambda" class="nav-link" data-scroll-target="#average-codeword-length-per-character-barlambda">Average codeword length per character (<span class="math inline">\(\bar{\lambda}\)</span>)</a></li>
+  <li><a href="#sec-kraft-mcmillan-inequality" id="toc-sec-kraft-mcmillan-inequality" class="nav-link" data-scroll-target="#sec-kraft-mcmillan-inequality">Kraft-McMillan inequality</a></li>
   </ul>
 </nav>
     </div>
@@ -209,6 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>Thanks to Pizzey Technology for the wonderful <a href="https://youtu.be/iEm1NRyEe5c?si=SvWMcYR6AZraymSd">video</a>.</p>
 <section id="concepts" class="level2">
 <h2 class="anchored" data-anchor-id="concepts">Concepts</h2>
 <p>Huffman coding is a type of <strong>variable-length prefix coding</strong> that assigns shorter codes to more frequent symbols and longer codes to less frequent symbols. Formal definitions aren’t very useful when dealing with other concepts, in this case, entropy.</p>
@@ -221,7 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="d32f71bc" class="cell" data-execution_count="1">
+<div id="bbf1e169" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -241,11 +273,11 @@ compression rate: 0.0%</code></pre>
 <h2 class="anchored" data-anchor-id="compress-it">Compress it!</h2>
 <p>The more <strong>frequently</strong> a character appears, the <strong>shorter</strong> its encoded length becomes.</p>
 <p>The phrase <code>AN APPLE A DAY KEEPS THE DOCTOR AWAY</code> uses <code>A</code> to rhyme which makes the example more fun.</p>
-<section id="huffman-tree" class="level3">
-<h3 class="anchored" data-anchor-id="huffman-tree">Huffman tree</h3>
+<section id="sec-huffman-tree" class="level3">
+<h3 class="anchored" data-anchor-id="sec-huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="704e0343" class="cell" data-execution_count="2">
+<div id="00b276c3" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
@@ -257,7 +289,7 @@ compression rate: 0.0%</code></pre>
 <span id="annotated-cell-1-9"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
 <span id="annotated-cell-1-11"><a href="#annotated-cell-1-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> is_leaf(<span class="va">self</span>):</span>
-<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.left <span class="kw">is</span> <span class="va">None</span> <span class="kw">or</span> <span class="va">self</span>.right <span class="kw">is</span> <span class="va">None</span></span>
+<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.left <span class="kw">is</span> <span class="va">None</span> <span class="kw">and</span> <span class="va">self</span>.right <span class="kw">is</span> <span class="va">None</span></span>
 <span id="annotated-cell-1-13"><a href="#annotated-cell-1-13" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="annotated-cell-1-14"><a href="#annotated-cell-1-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
 <span id="annotated-cell-1-15"><a href="#annotated-cell-1-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.is_leaf:</span>
@@ -278,38 +310,47 @@ compression rate: 0.0%</code></pre>
 <span id="annotated-cell-1-30"><a href="#annotated-cell-1-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-31"><a href="#annotated-cell-1-31" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.build()</span>
 <span id="annotated-cell-1-32"><a href="#annotated-cell-1-32" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encode()</span>
-<span id="annotated-cell-1-33"><a href="#annotated-cell-1-33" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> build(<span class="va">self</span>):</span>
-<span id="annotated-cell-1-35"><a href="#annotated-cell-1-35" aria-hidden="true" tabindex="-1"></a>        nodes <span class="op">=</span> [Node(char, freq) <span class="cf">for</span> char, freq <span class="kw">in</span> <span class="va">self</span>.freq_table.items()]</span>
-<span id="annotated-cell-1-36"><a href="#annotated-cell-1-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="bu">len</span>(nodes) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
-<span id="annotated-cell-1-37"><a href="#annotated-cell-1-37" aria-hidden="true" tabindex="-1"></a>            node1 <span class="op">=</span> nodes.pop(nodes.index(<span class="bu">min</span>(nodes)))</span>
-<span id="annotated-cell-1-38"><a href="#annotated-cell-1-38" aria-hidden="true" tabindex="-1"></a>            node2 <span class="op">=</span> nodes.pop(nodes.index(<span class="bu">min</span>(nodes)))</span>
-<span id="annotated-cell-1-39"><a href="#annotated-cell-1-39" aria-hidden="true" tabindex="-1"></a>            node  <span class="op">=</span> Node(freq<span class="op">=</span>node1.freq<span class="op">+</span>node2.freq,</span>
-<span id="annotated-cell-1-40"><a href="#annotated-cell-1-40" aria-hidden="true" tabindex="-1"></a>                         left<span class="op">=</span>node2,</span>
-<span id="annotated-cell-1-41"><a href="#annotated-cell-1-41" aria-hidden="true" tabindex="-1"></a>                         right<span class="op">=</span>node1)</span>
-<span id="annotated-cell-1-42"><a href="#annotated-cell-1-42" aria-hidden="true" tabindex="-1"></a>            nodes.append(node)</span>
-<span id="annotated-cell-1-43"><a href="#annotated-cell-1-43" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.root <span class="op">=</span> node</span>
-<span id="annotated-cell-1-44"><a href="#annotated-cell-1-44" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="annotated-cell-1-45"><a href="#annotated-cell-1-45" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encode(<span class="va">self</span>):</span>
-<span id="annotated-cell-1-46"><a href="#annotated-cell-1-46" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> dfs(node, path<span class="op">=</span><span class="st">''</span>):</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-47" class="code-annotation-target"><a href="#annotated-cell-1-47" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> node.is_leaf:</span>
-<span id="annotated-cell-1-48"><a href="#annotated-cell-1-48" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.encoded_table[node.char] <span class="op">=</span> path</span>
-<span id="annotated-cell-1-49"><a href="#annotated-cell-1-49" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-50" class="code-annotation-target"><a href="#annotated-cell-1-50" aria-hidden="true" tabindex="-1"></a>            dfs(node.left,  path<span class="op">+</span><span class="st">'0'</span>)</span>
-<span id="annotated-cell-1-51"><a href="#annotated-cell-1-51" aria-hidden="true" tabindex="-1"></a>            dfs(node.right, path<span class="op">+</span><span class="st">'1'</span>)</span>
-<span id="annotated-cell-1-52"><a href="#annotated-cell-1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-53"><a href="#annotated-cell-1-53" aria-hidden="true" tabindex="-1"></a>        dfs(<span class="va">self</span>.root)</span>
-<span id="annotated-cell-1-54"><a href="#annotated-cell-1-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-55"><a href="#annotated-cell-1-55" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> HuffmanTree(Counter(<span class="st">"AN APPLE A DAY KEEPS THE DOCTOR AWAY"</span>))</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="annotated-cell-1-33"><a href="#annotated-cell-1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-34"><a href="#annotated-cell-1-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="annotated-cell-1-35"><a href="#annotated-cell-1-35" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> l_bar(<span class="va">self</span>):</span>
+<span id="annotated-cell-1-36"><a href="#annotated-cell-1-36" aria-hidden="true" tabindex="-1"></a>        total <span class="op">=</span> <span class="dv">0</span></span>
+<span id="annotated-cell-1-37"><a href="#annotated-cell-1-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> char, freq <span class="kw">in</span> <span class="va">self</span>.freq_table.items():</span>
+<span id="annotated-cell-1-38"><a href="#annotated-cell-1-38" aria-hidden="true" tabindex="-1"></a>            total <span class="op">+=</span> <span class="bu">len</span>(<span class="va">self</span>.encoded_table[char]) <span class="op">*</span> freq</span>
+<span id="annotated-cell-1-39"><a href="#annotated-cell-1-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> total <span class="op">/</span> <span class="bu">sum</span>(<span class="va">self</span>.freq_table.values())</span>
+<span id="annotated-cell-1-40"><a href="#annotated-cell-1-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="annotated-cell-1-41"><a href="#annotated-cell-1-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> build(<span class="va">self</span>):</span>
+<span id="annotated-cell-1-42"><a href="#annotated-cell-1-42" aria-hidden="true" tabindex="-1"></a>        nodes <span class="op">=</span> [Node(char, freq) <span class="cf">for</span> char, freq <span class="kw">in</span> <span class="va">self</span>.freq_table.items()]</span>
+<span id="annotated-cell-1-43"><a href="#annotated-cell-1-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> <span class="bu">len</span>(nodes) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-44" class="code-annotation-target"><a href="#annotated-cell-1-44" aria-hidden="true" tabindex="-1"></a>            node1 <span class="op">=</span> nodes.pop(nodes.index(<span class="bu">min</span>(nodes)))</span>
+<span id="annotated-cell-1-45"><a href="#annotated-cell-1-45" aria-hidden="true" tabindex="-1"></a>            node2 <span class="op">=</span> nodes.pop(nodes.index(<span class="bu">min</span>(nodes)))</span>
+<span id="annotated-cell-1-46"><a href="#annotated-cell-1-46" aria-hidden="true" tabindex="-1"></a>            node  <span class="op">=</span> Node(freq<span class="op">=</span>node1.freq<span class="op">+</span>node2.freq,</span>
+<span id="annotated-cell-1-47"><a href="#annotated-cell-1-47" aria-hidden="true" tabindex="-1"></a>                         left<span class="op">=</span>node2,</span>
+<span id="annotated-cell-1-48"><a href="#annotated-cell-1-48" aria-hidden="true" tabindex="-1"></a>                         right<span class="op">=</span>node1)</span>
+<span id="annotated-cell-1-49"><a href="#annotated-cell-1-49" aria-hidden="true" tabindex="-1"></a>            nodes.append(node)</span>
+<span id="annotated-cell-1-50"><a href="#annotated-cell-1-50" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.root <span class="op">=</span> node</span>
+<span id="annotated-cell-1-51"><a href="#annotated-cell-1-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="annotated-cell-1-52"><a href="#annotated-cell-1-52" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encode(<span class="va">self</span>):</span>
+<span id="annotated-cell-1-53"><a href="#annotated-cell-1-53" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> dfs(node, path<span class="op">=</span><span class="st">''</span>):</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-54" class="code-annotation-target"><a href="#annotated-cell-1-54" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> node.is_leaf:</span>
+<span id="annotated-cell-1-55"><a href="#annotated-cell-1-55" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.encoded_table[node.char] <span class="op">=</span> path</span>
+<span id="annotated-cell-1-56"><a href="#annotated-cell-1-56" aria-hidden="true" tabindex="-1"></a>                <span class="cf">return</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-57" class="code-annotation-target"><a href="#annotated-cell-1-57" aria-hidden="true" tabindex="-1"></a>            dfs(node.left,  path<span class="op">+</span><span class="st">'0'</span>)</span>
+<span id="annotated-cell-1-58"><a href="#annotated-cell-1-58" aria-hidden="true" tabindex="-1"></a>            dfs(node.right, path<span class="op">+</span><span class="st">'1'</span>)</span>
+<span id="annotated-cell-1-59"><a href="#annotated-cell-1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-60"><a href="#annotated-cell-1-60" aria-hidden="true" tabindex="-1"></a>        dfs(<span class="va">self</span>.root)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="47,48" data-code-annotation="1">Characters are only at the leaf nodes.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="54,55" data-code-annotation="1">Characters are only at the leaf nodes. This property ensures that each encoded value is not a substring of another and keeps the unique decodability. This is also called as the <strong>prefix-free coding</strong>.</span>
 </dd>
 <dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="50,51" data-code-annotation="2">Use <code>0</code> for the left and <code>1</code> for the right. The path from the root to the leaf node represents the encoded result.</span>
+<span data-code-cell="annotated-cell-1" data-code-lines="57,58" data-code-annotation="2">Use <code>0</code> for the left and <code>1</code> for the right. The path from the root to the leaf node represents the encoded result.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="44,45" data-code-annotation="3">As the function <code>min</code> returns the index of the first occurring minimum value (<code>node.freq</code>) from the list <code>nodes</code>, the built tree is not unique but preserves optimality.</span>
 </dd>
 </dl>
 </div>
@@ -320,67 +361,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-140115265278672[36]
-140115265278672 -- 0 --&gt; 140115265285136
-140115265278672 -- 1 --&gt; 140115265279760
-140115265285136[21]
-140115265285136 -- 0 --&gt; 140115265280720
-140115265285136 -- 1 --&gt; 140115265273936
-140115265279760[15]
-140115265279760 -- 0 --&gt; 140115265283536
-140115265279760 -- 1 --&gt; 140115265284432
-140115265280720[13]
-140115265280720 -- 0 --&gt; 140114610181776
-140115265280720 -- 1 --&gt; 140115265456720
-140115265273936[8]
-140115265273936 -- 0 --&gt; 140115265285520
-140115265273936 -- 1 --&gt; 140115265285648
-140115265283536[8]
-140115265283536 -- 0 --&gt; 140115265285712
-140115265283536 -- 1 --&gt; 140115265286736
-140115265284432[7]
-140115265284432 -- 0 --&gt; 140115267289872
-140115265284432 -- 1 --&gt; 140114635482576
-140114610181776[' ': 7]
-140115265456720['A': 6]
-140115265285520[4]
-140115265285520 -- 0 --&gt; 140115265274384
-140115265285520 -- 1 --&gt; 140115265274896
-140115265285648[4]
-140115265285648 -- 0 --&gt; 140114599461776
-140115265285648 -- 1 --&gt; 140114627707344
-140115265285712[4]
-140115265285712 -- 0 --&gt; 140115267289936
-140115265285712 -- 1 --&gt; 140115267289616
-140115265286736[4]
-140115265286736 -- 0 --&gt; 140115267297680
-140115265286736 -- 1 --&gt; 140115267290256
-140115267289872['E': 4]
-140114635482576['P': 3]
-140115265274384[2]
-140115265274384 -- 0 --&gt; 140114627717840
-140115265274384 -- 1 --&gt; 140114627717776
-140115265274896[2]
-140115265274896 -- 0 --&gt; 140114627716944
-140115265274896 -- 1 --&gt; 140115267290384
-140114599461776[2]
-140114599461776 -- 0 --&gt; 140115267289360
-140114599461776 -- 1 --&gt; 140115267290064
-140114627707344[2]
-140114627707344 -- 0 --&gt; 140115267292496
-140114627707344 -- 1 --&gt; 140115265458704
-140115267289936['O': 2]
-140115267289616['T': 2]
-140115267297680['Y': 2]
-140115267290256['D': 2]
-140114627717840['W': 1]
-140114627717776['R': 1]
-140114627716944['C': 1]
-140115267290384['H': 1]
-140115267289360['S': 1]
-140115267290064['K': 1]
-140115267292496['L': 1]
-140115265458704['N': 1]
+140609847754512[36]
+140609847754512 -- 0 --&gt; 140609847748688
+140609847754512 -- 1 --&gt; 140609847744528
+140609847748688[21]
+140609847748688 -- 0 --&gt; 140609847745232
+140609847748688 -- 1 --&gt; 140609847745552
+140609847744528[15]
+140609847744528 -- 0 --&gt; 140609847748112
+140609847744528 -- 1 --&gt; 140609847742480
+140609847745232[13]
+140609847745232 -- 0 --&gt; 140609847659152
+140609847745232 -- 1 --&gt; 140608899618448
+140609847745552[8]
+140609847745552 -- 0 --&gt; 140609847538512
+140609847745552 -- 1 --&gt; 140609847537360
+140609847748112[8]
+140609847748112 -- 0 --&gt; 140609847538960
+140609847748112 -- 1 --&gt; 140609847525968
+140609847742480[7]
+140609847742480 -- 0 --&gt; 140609847666576
+140609847742480 -- 1 --&gt; 140609847660240
+140609847659152[' ': 7]
+140608899618448['A': 6]
+140609847538512[4]
+140609847538512 -- 0 --&gt; 140609847532816
+140609847538512 -- 1 --&gt; 140609847531664
+140609847537360[4]
+140609847537360 -- 0 --&gt; 140609847657488
+140609847537360 -- 1 --&gt; 140609847656848
+140609847538960[4]
+140609847538960 -- 0 --&gt; 140609847668048
+140609847538960 -- 1 --&gt; 140609847671440
+140609847525968[4]
+140609847525968 -- 0 --&gt; 140609847659600
+140609847525968 -- 1 --&gt; 140609847670608
+140609847666576['E': 4]
+140609847660240['P': 3]
+140609847532816[2]
+140609847532816 -- 0 --&gt; 140609847669008
+140609847532816 -- 1 --&gt; 140609847670160
+140609847531664[2]
+140609847531664 -- 0 --&gt; 140609847670032
+140609847531664 -- 1 --&gt; 140609847669456
+140609847657488[2]
+140609847657488 -- 0 --&gt; 140609847663120
+140609847657488 -- 1 --&gt; 140609847668432
+140609847656848[2]
+140609847656848 -- 0 --&gt; 140609847667344
+140609847656848 -- 1 --&gt; 140609847662544
+140609847668048['O': 2]
+140609847671440['T': 2]
+140609847659600['Y': 2]
+140609847670608['D': 2]
+140609847669008['W': 1]
+140609847670160['R': 1]
+140609847670032['C': 1]
+140609847669456['H': 1]
+140609847663120['S': 1]
+140609847668432['K': 1]
+140609847667344['L': 1]
+140609847662544['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -391,7 +432,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="56726269" class="cell" data-execution_count="4">
+<div id="0ace4ce8" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -404,7 +445,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="58f5371d" class="cell" data-execution_count="5">
+<div id="c0640d9b" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
@@ -417,7 +458,7 @@ compression rate: 54.2%</code></pre>
 compression rate: 44.2%</code></pre>
 </div>
 </div>
-<p>Just for fun, let’s apply Huffman coding for images too.</p>
+<p>Just for fun, let’s apply Huffman coding to images.</p>
 <div id="fig-image-compression" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-image-compression-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -457,12 +498,77 @@ Figure&nbsp;1: Image compression
 <p>After applying Huffman coding to each image, each is compressed to <code>7903.6</code> bytes and <code>8354.9</code> bytes, respectively.</p>
 <p>So, why do we think <a href="#fig-image-compression-1" class="quarto-xref">Figure&nbsp;1 (a)</a> is easier to draw? Why is it easier to remember pop music notes than those of bebop jazz?</p>
 <p>It becomes clear when explained using data compression. Since it has a higher compression rate, it can be described verbally or communicated with a shorter and more compact explanation.</p>
+</section>
+</section>
+<section id="average-codeword-length-per-character-barlambda" class="level2">
+<h2 class="anchored" data-anchor-id="average-codeword-length-per-character-barlambda">Average codeword length per character (<span class="math inline">\(\bar{\lambda}\)</span>)</h2>
+<p>Let’s use some notations from now on.</p>
+<p><span class="math display">\[
+\bar \lambda = \mathbb E [\lambda] = \sum_{i=1}^N p(x_i) \lambda_i
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\lambda_i\)</span>: codeword length for the character <span class="math inline">\(x_i\)</span></li>
+<li><span class="math inline">\(p(x_i)\)</span>: probability of the character <span class="math inline">\(x_i\)</span> occurring</li>
+</ul>
+<p>For the phrase <code>AN APPLE A DAY KEEPS THE DOCTOR AWAY</code>, <span class="math inline">\(\bar \lambda\)</span> is 3.667 with the unit in bits.</p>
+</section>
+<section id="sec-kraft-mcmillan-inequality" class="level2">
+<h2 class="anchored" data-anchor-id="sec-kraft-mcmillan-inequality">Kraft-McMillan inequality</h2>
+<p>In coding theory, the Kraft–McMillan inequality gives a necessary and sufficient condition for the existence of a prefix code<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>Before diving into this, let’s discuss the upper bound of <span class="math inline">\(\lambda\)</span>. When all the probabilities <span class="math inline">\(p(x_i)\)</span> are powers of two (<span class="math inline">\(\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \cdots\)</span>), <span class="math inline">\(\lambda\)</span> will be integers (<span class="math inline">\(1, 2, 3, \cdots\)</span>), which can be derived from <span class="math inline">\(\log_2 \frac{1}{p(x_i)}\)</span>. However, most of the time, the expression will not result in an integer. In such cases, we can account for this by using the ceiling function, giving extra freedom. This is still useful when calculating <span class="math inline">\(\bar \lambda\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Basically, ceiling <span class="math inline">\(\lambda_i\)</span> is same as flooring <span class="math inline">\(p(x_i)\)</span> to the nearest <span class="math inline">\(2^{-\lambda_i}\)</span>.</p>
+</div>
+</div>
+<p>From now on, we will define <span class="math inline">\(\lambda_i\)</span> like below.</p>
+<p><span class="math display">\[
+\lambda_i \triangleq \lceil \log_2 \dfrac{1}{p(x_i)} \rceil
+\]</span></p>
+<p>This will give us some insights.</p>
+<p><span class="math display">\[
+\begin{align*}
+\lambda_i &amp;\geq \log_2 \dfrac{1}{p(x_i)} = -\log_2 p(x_i) \\[10pt]
+-\lambda_i &amp;\leq \log_2 p(x_i) \\[10pt]
+2^{-\lambda_i} &amp;\leq p(x_i) \\[10pt]
+\sum_{i=1}^N 2^{-\lambda_i} &amp;\leq \sum_{i=1}^N p(x_i)
+\end{align*}
+\]</span></p>
+<p>Adding all the probability is equal to <span class="math inline">\(1\)</span> which leads to the final form of Kraft-McMillan inequality.</p>
+<p><span class="math display">\[
+\sum_{i=1}^N 2^{-\lambda_i} \leq 1
+\]</span></p>
+<p>We can represent this in a figure like below.</p>
+<div id="fig-kraft-mcmillan" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-kraft-mcmillan-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="HuffmanCoding/kraftMcMillan.svg" class="img-fluid figure-img" style="width:80.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-kraft-mcmillan-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Kraft-McMillan inequality
+</figcaption>
+</figure>
+</div>
+<p>In <a href="#fig-kraft-mcmillan" class="quarto-xref">Figure&nbsp;2</a>, all <span class="math inline">\(\lambda_i\)</span> are integers. We are assigning the total width of <span class="math inline">\(1\)</span> by the power of 2 for each codewords.</p>
 
 
 </section>
-</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p><a href="https://en.wikipedia.org/wiki/Kraft–McMillan_inequality">Kraft-McMillan inequality - Wikipedia</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
