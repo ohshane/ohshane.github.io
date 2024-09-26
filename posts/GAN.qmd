@@ -1,0 +1,49 @@
+---
+title: GAN
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2024-09-26
+image: false
+categories:
+  - ML
+  - Generative Models
+bibliography: GAN/references.bib
+---
+
+There is an interactive playground available at [GAN Lab](https://poloclub.github.io/ganlab/). 
+Feel free to explore it.
+
+## Zero-sum game of a Generator and a Discriminator
+
+A standard (vanilla) GAN consists of two models: a generator and a discriminator.
+
+The generator and discriminator engage in a zero-sum game, where the generator 
+tries to produce data that fools the discriminator, while the discriminator aims 
+to correctly identify real versus generated (fake) data. This interaction can be 
+expressed mathematically with the following objective:
+
+$$
+\min_G \max_D V(D,G)
+= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)}[\log D(\mathbf x)]
++ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D(G(\mathbf z)))]
+$$
+
+In this setup, the two players are the generator ($G$) and the discriminator ($D$).
+The generator takes a latent variable $\mathbf z$ as input and outputs generated data 
+$\mathbf x$. The discriminator takes data $\mathbf x$ as input and outputs a probability 
+$y$, representing whether the data is real or fake.
+
+$$
+\begin{align*}
+G &:\mathbf z \to \mathbf x \\
+D &:\mathbf x \to y
+\end{align*}
+$$
+
+The input $\mathbf z$ is a sample from a prior distribution in the latent space, 
+typically drawn from Gaussian noise. The generator ($G$) tries to produce data 
+($\mathbf x$) that appears real to the discriminator. Meanwhile, the discriminator 
+($D$) tries to correctly classify whether $\mathbf x$ is real ($1$) or fake ($0$).
+
+@goodfellow2014generativeadversarialnetworks
