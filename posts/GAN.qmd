@@ -86,7 +86,26 @@ $$
 \rbrace
 $$
 
-## Theoretical Bound
-![Fig](GAN/images/fig-01.jpg)
+Since $D$ is trained with negative BCE loss,
+$\theta_\text d$ is updated with gradient ascending and
+gradient descending for $\theta_\text g$. 
 
-@goodfellow2014generativeadversarialnetworks
+
+## Theoretical Bound
+![Training GANs](GAN/images/fig-01.jpg){#fig-training-gans}
+
+The figure above is from @goodfellow2014generativeadversarialnetworks. 
+The genuine data distribution $p_\text{data}$ is represented by a
+<span style="border-bottom: 2px dotted;">black dotted line</span>. 
+and <span style="color: green;">green</span> denotes the generated distribution $p_\text{g}$,
+and lastly the color <span style="color: blue;">blue</span> denotes the discriminated distribution, 
+
+As mentioned above, the output of $D$ is the probability that the data is genuine, 
+so the height of the <span style="color: blue;">blue</span> bar represents the corresponding value between $[0, 1]$.
+The value of the <span style="color: blue;">blue</span> distribution is one-half on $x$, 
+where $x$ represents the intersection of the <span style="border-bottom: 2px dotted;">black</span> and <span style="color: blue;">blue</span> lines.
+
+As a result, $D$ converges to $D^{*}(\mathbf x) = \frac{ p_\text{data}(\mathbf x) }{ p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x) }$.
+As you can see in (d) of @fig-training-gans, there is a point where we reach a point
+which both $D$ and $G$ cannot improve because $D(\mathbf x) = \frac{1}{2}$.
+
