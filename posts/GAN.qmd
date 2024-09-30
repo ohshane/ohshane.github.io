@@ -32,7 +32,7 @@ $$
 In this setup, the two players are the generator ($G$) and the discriminator ($D$).
 The generator takes a latent variable $\mathbf z$ as input and outputs generated data 
 $\mathbf x$. The discriminator takes data $\mathbf x$ as input and outputs a probability 
-$y$, representing whether the data is real or fake.
+$y$, representing whether the data is real ($1$) or fake ($0$).
 
 $$
 \begin{align*}
@@ -41,9 +41,52 @@ D &:\mathbf x \to y
 \end{align*}
 $$
 
-The input $\mathbf z$ is a sample from a prior distribution in the latent space, 
-typically drawn from Gaussian noise. The generator ($G$) tries to produce data 
-($\mathbf x$) that appears real to the discriminator. Meanwhile, the discriminator 
-($D$) tries to correctly classify whether $\mathbf x$ is real ($1$) or fake ($0$).
+::: {.callout-note}
+# Output of a Discriminator
+The output of $D$ is a probability that indicates whether $\mathbf{x}$
+is genuine.
+A value of $1$ corresponds to genuine data, while a value of $0$ indicates fake data.
+:::
+
+## The Value Funciton
+When breaking down the min-max value function of GANs, it is often easier to 
+start with the $D$'s loss. Let's assist no matter what the $G$ attempts 
+to produce, it will still be fake.
+
+The value function ($V$) consists of two log-likelihood losses, each from a Bernoulli
+distribution: one representing the genuine data distribution and the other, the fake
+data distribution.
+
+Let $\mathbf{x} \sim p_\text{data}(\mathbf{x})$ represent a sample drawn from the
+genuine data distribution. They are all labeled as $1$.
+Same thing for the fake data $\mathbf{z} \sim p_\mathbf{z}(\mathbf{z})$.
+They are all labeled as $0$. Those are the ground truths in GANs.
+
+So, how do we assess the performance of $D$?
+
+### The Binary Cross Entropy Loss of $D$
+The Binary Cross-Entropy (BCE) is defined as follows.
+
+$$
+\mathcal L_\text{BCE}(\hat y, y)
+= - \lbrace y \log{\hat y} + (1-y) \log{(1-\hat y)} \rbrace
+$$
+
+We can try to optimize the model by decreasing the $\mathcal L$.
+Conversely, increasing $-\mathcal L$ resembles the same objective.
+When dealing with $D$'s loss, we use the latter approach.
+
+The loss of $D$ is calculated with negative BCE loss on
+both real and fake data distributions and are added together.
+
+$$
+-\lbrace
+    \mathcal L_\text{BCE}(D(\mathbf x), 1)
+  + \mathcal L_\text{BCE}(D(G(\mathbf z)), 0)
+\rbrace
+$$
+
+## Theoretical Bound
+![Fig](GAN/images/fig-01.jpg)
 
 @goodfellow2014generativeadversarialnetworks
