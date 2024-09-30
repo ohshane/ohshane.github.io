@@ -16,12 +16,76 @@ Feel free to explore it.
 
 ## Zero-sum game of a Generator and a Discriminator
 
-A standard (vanilla) GAN consists of two models: a generator and a discriminator.
+The zero-sum property (if one gains, another loses) means that any result of a zero-sum situation is Pareto optimal
+which is also called a conflict game[^wiki-zero-sum-game].
+
+[^wiki-zero-sum-game]: [Wikipedia - Zero-sum game](https://en.wikipedia.org/wiki/Zero-sum_game)
 
 The generator and discriminator engage in a zero-sum game, where the generator 
 tries to produce data that fools the discriminator, while the discriminator aims 
 to correctly identify real versus generated (fake) data. This interaction can be 
-expressed mathematically with the following objective:
+expressed with a payoff matrix.
+
+:::{=html}
+<div id="payoff-matrix">
+<table>
+  <tr>
+    <td></td>
+    <td>$D_\text{good}$</td>
+    <td>$D_\text{poor}$</td>
+  </tr>
+  <tr>
+    <td>$G_\text{good}$</td>
+    <td>$( 0, 0)$</td>
+    <td>$( 1,-1)$</td>
+  </tr>
+  <tr>
+    <td>$G_\text{poor}$</td>
+    <td>$(-1, 1)$</td>
+    <td>$( 0, 0)$</td>
+  </tr>
+</table>
+</div>
+
+<style>
+#payoff-matrix table {
+  margin: 2em auto;
+}
+
+#payoff-matrix tr td {
+  border: 1px solid black;
+}
+
+#payoff-matrix td {
+  width: 6em;
+  text-align: center;
+}
+</style>
+:::
+
+The payoff matrix shows all the combinations of what players can move.
+The gains for $G$ and $D$ in each state are denoted by tuples.
+
+The best choice for $D$, regardless of what $G$ chooses, is $D_\text{good}$.
+When $G$ chooses $G_\text{good}$, $D$ can move from $-1$ to $0$, gaining $+1$, 
+and when $G$ chooses $G_\text{poor}$, $D$ can move from $0$ to $1$, also gaining 
+$+1$, making $D_\text{good}$ a dominant strategy.
+Same for $G$, making $G_\text{good}$ a dominant strategy.
+
+The solution for this game is choosing $D_\text{good}$ and $G_\text{good}$
+which is considered as a Nash Equilibrium in GANs,
+maximizing both players' gains.
+
+However, the question of whether a Nash Equilibrium exists in the GAN framework
+remains open. Read @pmlr-v119-farnia20a to find out more.
+
+Since the GAN framework can be modeled as a zero-sum game,
+we can also derive the same Nash Equilibrium
+using the second element of the tuples ($D$'s gain), 
+which provides a more compact representation.
+This becomes the **value function**.
+
+## The Value Funciton
 
 $$
 \min_G \max_D V(D,G)
@@ -29,7 +93,6 @@ $$
 + \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D(G(\mathbf z)))]
 $$
 
-In this setup, the two players are the generator ($G$) and the discriminator ($D$).
 The generator takes a latent variable $\mathbf z$ as input and outputs generated data 
 $\mathbf x$. The discriminator takes data $\mathbf x$ as input and outputs a probability 
 $y$, representing whether the data is real ($1$) or fake ($0$).
@@ -41,18 +104,6 @@ D &:\mathbf x \to y
 \end{align*}
 $$
 
-::: {.callout-note}
-# Output of a Discriminator
-The output of $D$ is a probability that indicates whether $\mathbf{x}$
-is genuine.
-A value of $1$ corresponds to genuine data, while a value of $0$ indicates fake data.
-:::
-
-## The Value Funciton
-When breaking down the min-max value function of GANs, it is often easier to 
-start with the $D$'s loss. Let's assist no matter what the $G$ attempts 
-to produce, it will still be fake.
-
 The value function ($V$) consists of two log-likelihood losses, each from a Bernoulli
 distribution: one representing the genuine data distribution and the other, the fake
 data distribution.
@@ -60,9 +111,7 @@ data distribution.
 Let $\mathbf{x} \sim p_\text{data}(\mathbf{x})$ represent a sample drawn from the
 genuine data distribution. They are all labeled as $1$.
 Same thing for the fake data $\mathbf{z} \sim p_\mathbf{z}(\mathbf{z})$.
-They are all labeled as $0$. Those are the ground truths in GANs.
-
-So, how do we assess the performance of $D$?
+They are all labeled as $0$.
 
 ### The Binary Cross Entropy Loss of $D$
 The Binary Cross-Entropy (BCE) is defined as follows.
@@ -87,11 +136,10 @@ $$
 $$
 
 Since $D$ is trained with negative BCE loss,
-$\theta_\text d$ is updated with gradient ascending and
-gradient descending for $\theta_\text g$. 
+$\theta_\text{d}$ is updated with gradient ascent,
+while $\theta_\text{g}$ is updated with gradient descent.
 
-
-## Theoretical Bound
+## Theoretical Result
 ![Training GANs](GAN/images/fig-01.jpg){#fig-training-gans}
 
 The figure above is from @goodfellow2014generativeadversarialnetworks. 
@@ -109,3 +157,8 @@ As a result, $D$ converges to $D^{*}(\mathbf x) = \frac{ p_\text{data}(\mathbf x
 As you can see in (d) of @fig-training-gans, there is a point where we reach a point
 which both $D$ and $G$ cannot improve because $D(\mathbf x) = \frac{1}{2}$.
 
+This is also called as the global optimum of GANs.
+
+### Proof of the Global Optimality
+
+The min-max game ends

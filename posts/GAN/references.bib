@@ -7,3 +7,19 @@
       primaryClass={stat.ML},
       url={https://arxiv.org/abs/1406.2661}, 
 }
+
+@InProceedings{pmlr-v119-farnia20a,
+  title={Do {GAN}s always have {N}ash equilibria?},
+  author={Farnia, Farzan and Ozdaglar, Asuman},
+  booktitle={Proceedings of the 37th International Conference on Machine Learning},
+  pages={3029--3039},
+  year={2020},
+  editor={III, Hal Daumé and Singh, Aarti},
+  volume={119},
+  series={Proceedings of Machine Learning Research},
+  month={13--18 Jul},
+  publisher={PMLR},
+  pdf={http://proceedings.mlr.press/v119/farnia20a/farnia20a.pdf},
+  url={http://proceedings.mlr.press/v119/farnia20a.html},
+  abstract={Generative adversarial networks (GANs) represent a zero-sum game between two machine players, a generator and a discriminator, designed to learn the distribution of data. While GANs have achieved state-of-the-art performance in several benchmark learning tasks, GAN minimax optimization still poses great theoretical and empirical challenges. GANs trained using first-order optimization methods commonly fail to converge to a stable solution where the players cannot improve their objective, i.e., the Nash equilibrium of the underlying game. Such issues raise the question of the existence of Nash equilibria in GAN zero-sum games. In this work, we show through theoretical and numerical results that indeed GAN zero-sum games may have no Nash equilibria. To characterize an equilibrium notion applicable to GANs, we consider the equilibrium of a new zero-sum game with an objective function given by a proximal operator applied to the original objective, a solution we call the proximal equilibrium. Unlike the Nash equilibrium, the proximal equilibrium captures the sequential nature of GANs, in which the generator moves first followed by the discriminator. We prove that the optimal generative model in Wasserstein GAN problems provides a proximal equilibrium. Inspired by these results, we propose a new approach, which we call proximal training, for solving GAN problems. We perform several numerical experiments indicating the existence of proximal equilibria in GANs.}
+}
