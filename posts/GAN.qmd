@@ -113,7 +113,7 @@ genuine data distribution. They are all labeled as $1$.
 Same thing for the fake data $\mathbf{z} \sim p_\mathbf{z}(\mathbf{z})$.
 They are all labeled as $0$.
 
-### The Binary Cross Entropy Loss of $D$
+### Objective of $D$
 The Binary Cross-Entropy (BCE) is defined as follows.
 
 $$
@@ -129,17 +129,27 @@ The loss of $D$ is calculated with negative BCE loss on
 both real and fake data distributions and are added together.
 
 $$
--\lbrace
-    \mathcal L_\text{BCE}(D(\mathbf x), 1)
-  + \mathcal L_\text{BCE}(D(G(\mathbf z)), 0)
-\rbrace
+\max_D V(D,G) = 
+-\mathcal L_\text{BCE}(D(\mathbf x), 1)
+-\mathcal L_\text{BCE}(D(G(\mathbf z)), 0)
 $$
 
-Since $D$ is trained with negative BCE loss,
-$\theta_\text{d}$ is updated with gradient ascent,
-while $\theta_\text{g}$ is updated with gradient descent.
+$D$ will try to maximize the value function $V(D,G)$
+thus, $\theta_\text{d}$ is updated with gradient ascent.
 
-## Theoretical Result
+### Objective of $G$
+
+In $G$'s perspective, $G$'s objective is to fool $D$ by
+creating more realistic data.
+
+$$
+\min_G V(G) = -\mathcal L_\text{BCE}(D(G(\mathbf z)), 0) \\
+$$
+
+$G$ will try to minimize the value function $V(G)$
+thus, $\theta_\text{d}$ is updated with gradient decent.
+
+## Theoretical Results
 ![Training GANs](GAN/images/fig-01.jpg){#fig-training-gans}
 
 The figure above is from @goodfellow2014generativeadversarialnetworks. 
