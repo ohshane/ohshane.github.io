@@ -149,6 +149,13 @@ $$
 $G$ will try to minimize the value function $V(G)$
 thus, $\theta_\text{d}$ is updated with gradient decent.
 
+::: {.callout-note}
+# Unifying the loss with respect to $V$
+Note that we are not using $\mathcal L_\text{BCE}(D(G(\mathbf z)), 1)$
+as the value function for $G$. In the context of zero-sum loss, we will
+try to unify the losses in terms of $V$.
+:::
+
 ## Theoretical Results
 ![Training GANs](GAN/images/fig-01.jpg){#fig-training-gans}
 
@@ -163,12 +170,23 @@ so the height of the <span style="color: blue;">blue</span> bar represents the c
 The value of the <span style="color: blue;">blue</span> distribution is one-half on $x$, 
 where $x$ represents the intersection of the <span style="border-bottom: 2px dotted;">black</span> and <span style="color: blue;">blue</span> lines.
 
-As a result, $D$ converges to $D^{*}(\mathbf x) = \frac{ p_\text{data}(\mathbf x) }{ p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x) }$.
-As you can see in (d) of @fig-training-gans, there is a point where we reach a point
-which both $D$ and $G$ cannot improve because $D(\mathbf x) = \frac{1}{2}$.
+### Global Optimum of $V$
 
-This is also called as the global optimum of GANs.
+We reach the global optimum of $V$ when we approach optimal $D$ and $G$.
 
-### Proof of the Global Optimality
+\begin{align*}
+V(D,G)
+&= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)}[\log D(\mathbf x)]
++ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D(G(\mathbf z)))] \\
 
-The min-max game ends
+&= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x) d \mathbf x
++ \int_\mathbf{z} p_\mathbf{z}(\mathbf z) \log (1 - D(G(\mathbf z)) d \mathbf z \\
+
+&= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x) d \mathbf x
++ \int_\mathbf{x} p_\text{g}(\mathbf x) \log (1 - D(\mathbf x) d \mathbf x \\
+
+&= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x)
+                + p_\text{g}(\mathbf x) \log (1 - D(\mathbf x) d \mathbf x
+\end{align*}
+
+By setting $p_\text{data}(\mathbf x)$ as $a$ and $p_\text{g}(\mathbf x)$ as $b$,
