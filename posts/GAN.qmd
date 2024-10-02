@@ -180,13 +180,17 @@ V(D,G)
 + \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D(G(\mathbf z)))] \\
 
 &= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x) d \mathbf x
-+ \int_\mathbf{z} p_\mathbf{z}(\mathbf z) \log (1 - D(G(\mathbf z)) d \mathbf z \\
++ \int_\mathbf{z} p_\mathbf{z}(\mathbf z) \log (1 - D(G(\mathbf z))) d \mathbf z \\
 
 &= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x) d \mathbf x
-+ \int_\mathbf{x} p_\text{g}(\mathbf x) \log (1 - D(\mathbf x) d \mathbf x \\
++ \int_\mathbf{x} p_\text{g}(\mathbf x) \log (1 - D(\mathbf x)) d \mathbf x \\
 
 &= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x)
-                + p_\text{g}(\mathbf x) \log (1 - D(\mathbf x) d \mathbf x
+                + p_\text{g}(\mathbf x) \log (1 - D(\mathbf x)) d \mathbf x
 \end{align*}
 
 By setting $p_\text{data}(\mathbf x)$ as $a$ and $p_\text{g}(\mathbf x)$ as $b$,
+
+$$
+a \log y + b \log (1-y) 
+$$
