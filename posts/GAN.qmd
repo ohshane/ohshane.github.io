@@ -85,7 +85,7 @@ using the second element of the tuples ($D$'s gain),
 which provides a more compact representation.
 This becomes the **value function**.
 
-## The Value Funciton
+## The Value Function
 
 $$
 \min_G \max_D V(D,G)
@@ -108,10 +108,14 @@ The value function ($V$) consists of two log-likelihood losses, each from a Bern
 distribution: one representing the genuine data distribution and the other, the fake
 data distribution.
 
-Let $\mathbf{x} \sim p_\text{data}(\mathbf{x})$ represent a sample drawn from the
+Let $\mathbf{x} \sim p_\text{data}(\mathbf{x})$ represent a **sample** drawn from the
 genuine data distribution. They are all labeled as $1$.
 Same thing for the fake data $\mathbf{z} \sim p_\mathbf{z}(\mathbf{z})$.
 They are all labeled as $0$.
+
+::: {.callout-note}
+During training, we will keep the number of samples for $\mathbf{x}$ and $\mathbf{z}$ the same.
+:::
 
 ### Objective of $D$
 The Binary Cross-Entropy (BCE) is defined as follows.
@@ -129,8 +133,10 @@ The loss of $D$ is calculated with negative BCE loss on
 both real and fake data distributions and are added together.
 
 $$
-\max_D V(D,G) = 
--\mathcal L_\text{BCE}(D(\mathbf x), 1)
+\max_D V(D,G) =
+\sum_{\mathbf x}
+-\mathcal L_\text{BCE}(D(\mathbf x), 1) +
+\sum_{\mathbf z}
 -\mathcal L_\text{BCE}(D(G(\mathbf z)), 0)
 $$
 
@@ -143,11 +149,13 @@ In $G$'s perspective, $G$'s objective is to fool $D$ by
 creating more realistic data.
 
 $$
-\min_G V(G) = -\mathcal L_\text{BCE}(D(G(\mathbf z)), 0) \\
+\min_G V(G) =
+\sum_{\mathbf z}
+-\mathcal L_\text{BCE}(D(G(\mathbf z)), 0) \\
 $$
 
 $G$ will try to minimize the value function $V(G)$
-thus, $\theta_\text{d}$ is updated with gradient decent.
+thus, $\theta_\text{d}$ is updated with gradient descent.
 
 ::: {.callout-note}
 # Unifying the loss with respect to $V$
@@ -170,9 +178,18 @@ so the height of the <span style="color: blue;">blue</span> bar represents the c
 The value of the <span style="color: blue;">blue</span> distribution is one-half on $x$, 
 where $x$ represents the intersection of the <span style="border-bottom: 2px dotted;">black</span> and <span style="color: blue;">blue</span> lines.
 
-### Global Optimum of $V$
+::: {.callout-note}
+The results of this section are done in a non-parametric setting,
+e.g. we represent a model with infinite capacity by studying convergence in the
+space of **probability density functions**; $p_\text{data}$ and $p_\text{g}$.
+:::
 
 We reach the global optimum of $V$ when we approach optimal $D$ and $G$.
+
+### Optimal $D$
+
+Optimal $D$ can be obtained by maximizing $V$. For any given $G$, $D$ will try it's best to
+discriminate genuine data from the fake.
 
 \begin{align*}
 V(D,G)
@@ -190,7 +207,92 @@ V(D,G)
 \end{align*}
 
 By setting $p_\text{data}(\mathbf x)$ as $a$ and $p_\text{g}(\mathbf x)$ as $b$,
+the inner part of the integral can be expressed as the following.
+
+\begin{align*}
+f(y) &= a \log y + b \log (1-y) \\
+\dfrac{d}{dy} f(y) &= \dfrac{a}{y} - \dfrac{b}{1-y} = 0 \\
+\therefore y &= \frac{a}{a+b}
+\end{align*}
+
+The optimal $D$ can be defined as the following.
 
 $$
-a \log y + b \log (1-y) 
+D^*(\mathbf x) = \dfrac{p_\text{data}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
 $$
+
+### Optimal $G$
+
+With same $V$, optimal $G$ can be obtained by minimizing $V$.
+We will find optimal $G$ with respective to
+the optimal discriminator $D^*$.
+
+\begin{align*}
+V(D^*,G)
+&= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)}[\log D^*(\mathbf x)]
++ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D^*(G(\mathbf z)))] \\
+
+&= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)} \left[
+  \log \dfrac{p_\text{data}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
+\right]
++ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)} \left[
+  \log \dfrac{p_\text{g}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
+\right] \\
+
+&= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)} \left[
+  \log \dfrac{2 \ p_\text{data}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
+\right]
++ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)} \left[
+  \log \dfrac{2 \ p_\text{g}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
+\right]
+- \log 4 \\
+
+&= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)} \left[
+  \log \dfrac{p_\text{data}(\mathbf x)}{\dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2}}
+\right]
++ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)} \left[
+  \log \dfrac{p_\text{g}(\mathbf x)}{\dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2}}
+\right]
+- \log 4
+\\
+
+&= D_\text{KL} \left( p_\text{data}(\mathbf x) \bigg\| \dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2} \right)
+ + D_\text{KL} \left( p_\text{g}(\mathbf x) \bigg\| \dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2} \right) - \log 4 \\
+
+&= 2 \ \mathrm{JSD}(p_\text{data}(\mathbf x) \| p_\text{g}(\mathbf x)) - \log 4 \\
+
+&\geq -\log 4 \\[20pt]
+
+\min_{G} V(D^*, G) &= -\log 4 \iff p_\text{data} = p_\text{g} \\
+
+V(D^*,G^*) &= -\log4
+\end{align*}
+
+::: {.callout-note}
+# Does the order of $\min$, $\max$ matter?
+Yes, it does.  
+Mathematically, $\min_G \max_D V(D, G)$ is the same as $\min_G (\max_D V(D, G))$.  
+We try to solve from the inner parentheses.  
+In GAN's perspective, as long as $D$ tries its best to discriminate the two distributions, the best strategy for $G$ is to mimic $p_\text{data}$ as closely as possible.
+:::
+
+### Examples
+
+```{python}
+#| echo: false
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+x = np.linspace(-10, 10, 201)
+p_data = norm.pdf(x, loc=-2, scale=1)
+p_g    = norm.pdf(x, loc= 2, scale=2)
+d = p_data / (p_data+p_g)
+
+plt.plot(x, p_data, c='k', ls=':', lw=3, label=r"$p_d$")
+plt.plot(x, p_g, c='g', label=r"$p_g$")
+plt.plot(x, d, c='b', ls=':')
+plt.plot(x, d > 0.5, c='b', lw='.5')
+plt.legend()
+plt.show()
+```
