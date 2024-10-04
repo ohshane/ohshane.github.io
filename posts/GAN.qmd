@@ -215,7 +215,7 @@ f(y) &= a \log y + b \log (1-y) \\
 \therefore y &= \frac{a}{a+b}
 \end{align*}
 
-The optimal $D$ can be defined as the following.
+The optimal $D$ can be defined as follows.
 
 $$
 D^*(\mathbf x) = \dfrac{p_\text{data}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
