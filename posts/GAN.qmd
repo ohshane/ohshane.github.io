@@ -1,6 +1,6 @@
 ---
 title: GAN
-subtitle: ""
+subtitle: "Which Comes First? Generator or Discriminator?"
 description: ""
 author: Shane Oh
 date: 2024-09-26
@@ -276,10 +276,9 @@ We try to solve from the inner parentheses.
 In GAN's perspective, as long as $D$ tries its best to discriminate the two distributions, the best strategy for $G$ is to mimic $p_\text{data}$ as closely as possible.
 :::
 
-### Examples
-
 ```{python}
 #| echo: false
+#| fig-align: center 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
@@ -289,10 +288,11 @@ p_data = norm.pdf(x, loc=-2, scale=1)
 p_g    = norm.pdf(x, loc= 2, scale=2)
 d = p_data / (p_data+p_g)
 
+plt.figure(figsize=(4,3))
 plt.plot(x, p_data, c='k', ls=':', lw=3, label=r"$p_d$")
 plt.plot(x, p_g, c='g', label=r"$p_g$")
-plt.plot(x, d, c='b', ls=':')
-plt.plot(x, d > 0.5, c='b', lw='.5')
+plt.plot(x, d, c='b', ls=':', label=r"$D^*$")
+plt.fill_between(x, d > 0.5, color='blue', alpha=0.1)
 plt.legend()
 plt.show()
 ```
