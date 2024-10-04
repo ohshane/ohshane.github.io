@@ -1,0 +1,143 @@
+---
+title: Differential Entropy
+subtitle: "Entropy for PDFs"
+description: ""
+author: Shane Oh
+date: 2024-10-04
+image: false
+categories:
+  - Entropy
+  - Information Theory
+---
+
+What is entropy? Randomness? Compression lower bound?
+
+In this post, let's think of entropy as a scalar function of the random 
+variable $X$. It is also correct to say it is a scalar function of a distribution.
+
+Let's first look at the definition of entropy.
+
+$$
+H(X) = \mathbb E \left[ \log \dfrac{1}{p_X(X)} \right] = \sum_{x \in \mathcal X} p_X(x) \log \dfrac{1}{p_X(x)}
+$$
+
+There's nothing particularly special here. We discussed this in the previous  
+[post](Entropy.qmd). We should be able to apply this concept to all types of   
+distributions --- not just probability mass functions (PMFs), but also probability
+density functions (PDFs).
+
+Check this [lecture note](http://reeves.ee.duke.edu/information_theory/lecture7-Differential_Entropy.pdf)
+from Duke to find out more.
+
+Differential entropy is defined as follows.
+
+$$
+h(X) = \mathbb E \left[ \log \dfrac{1}{f_X(X)} \right] = \int_{\mathcal X} f_X(x) \log \dfrac{1}{f_X(x)} dx
+$$
+
+$h$ of PDFs are initially derived from $H$ by binning the continuous random variable $X$ into $X^\Delta$.
+Let's see how it works.
+
+## Proof
+
+First, prepare an arbitrary PDF. In this example, we are using $\mathcal N(x;0,1)$.
+
+```{python}
+#| echo: false
+#| fig-align: center 
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+x = np.linspace(-4, 4, 101)
+f = norm.pdf(x)
+
+fig, ax = plt.subplots(figsize=(4,2))
+ax.fill_between(x, f, color='k', alpha=0.1)
+ax.set_xlim(-4,4)
+ax.set_ylim(0)
+plt.show()
+```
+
+We set $\Delta$ to bin the continuous RV $X$.
+
+```{python}
+#| echo: false
+#| fig-align: center 
+fig, ax = plt.subplots(figsize=(4,2))
+ax.fill_between(x, f, color='k', alpha=0.1)
+ax.set_xlim(-4,4)
+ax.set_ylim(0)
+
+delta = 0.5
+
+for i in np.arange(-4, 4, delta):
+    ax.axvline(i, c='k', lw=0.5, alpha=0.4)
+
+plt.show()
+```
+
+By mean value theorem (MVT), for continuous $f$:
+
+$$
+\exists x_i \in [i\Delta, (i+1)\Delta] :
+f_X(x_i) \Delta = \int_{i\Delta}^{(i+1)\Delta} f_X(x) dx
+$$
+
+```{python}
+#| echo: false
+#| fig-align: center 
+from matplotlib.patches import Rectangle
+
+fig, ax = plt.subplots(figsize=(4,2))
+ax.fill_between(x, f, color='k', alpha=0.1)
+ax.set_xlim(-4,4)
+ax.set_ylim(0)
+
+for i in np.arange(-4, 4, delta):
+    ax.axvline(i, c='k', lw=0.5, alpha=0.4)
+
+values = []
+for i in np.arange(-4, 4, delta):
+    h = (norm.cdf(i+delta) - norm.cdf(i))/delta
+    values.append(h * delta)
+    ax.add_patch(
+        Rectangle((i,0), delta, h,
+        edgecolor='b',
+        facecolor='b',
+        fill=True,
+        lw=0.5,
+        alpha=0.1,
+    ))
+plt.show()
+```
+
+$$
+p_{X^\Delta}(x_i) \triangleq f_X(x_i) \Delta
+$$
+
+```{python}
+#| echo: false
+#| fig-align: center 
+fig, ax = plt.subplots(figsize=(4,2))
+ax.stem(
+    np.arange(-4, 4, delta) + delta/2,
+    values,
+    linefmt='b-',
+    markerfmt='bo',
+    basefmt='w'
+)
+ax.set_xlim(-4,4)
+ax.set_ylim(0)
+plt.show()    
+```
+
+\begin{align*}
+H(X^\Delta)
+&= \sum_i p_{X^\Delta}(x_i) \log \dfrac{1}{p_{X^\Delta}(x_i)} \\
+&= \sum_i f_X(x_i) \Delta \log \dfrac{1}{f_X(x_i) \Delta} \\
+&= \sum_i f_X(x_i) \Delta \log \dfrac{1}{f_X(x_i)} + \sum_i f_X(x_i) \Delta \log \dfrac{1}{\Delta} \\
+&\approx \int_{\mathcal X} f_X(x) \log \dfrac{1}{f_X(x)} dx + \log \dfrac{1}{\Delta} \\[20pt]
+
+h(X) &= \lim_{\Delta \to 0} \left( H(X^\Delta) - \log \dfrac{1}{\Delta} \right)
+\end{align*}
