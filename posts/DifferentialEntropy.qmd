@@ -1,6 +1,6 @@
 ---
 title: Differential Entropy
-subtitle: ""
+subtitle: "Entropy for PDFs"
 description: ""
 author: Shane Oh
 date: 2024-10-04
