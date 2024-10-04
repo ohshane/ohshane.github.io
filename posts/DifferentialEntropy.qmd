@@ -1,0 +1,28 @@
+---
+title: Differential Entropy
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2024-10-04
+image: false
+categories:
+  - Entropy
+  - Information Theory
+---
+
+What is entropy? Randomness? Compression lower bound?
+
+In this post, let's think of entropy as a scalar function of the random 
+variable $X$. It is also correct to say it is a scalar function of a distribution.
+
+Let's first look at the definition of entropy.
+
+$$
+H(X) = \sum_{x \in \mathcal X} p_X(x) \log \dfrac{1}{p_X(x)}
+$$
+
+There's nothing particularly special here. We discussed this in the previous  
+[post](Entropy.qmd). We should be able to apply this concept to all types of   
+distributions --- not just probability mass functions (PMFs), but also probability
+density functions (PDFs).
+
