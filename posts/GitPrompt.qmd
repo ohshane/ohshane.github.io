@@ -14,7 +14,7 @@ Download the `git-prompt.sh` with the `curl` command.
 ```{.sh .code-overflow-wrap}
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh -o ~/.git-prompt.sh
 ```
-Then add the following lines in the `.zshrc` file.
+Then add the following lines to the rc files depending on your environment.
 
 ```{.sh filename=".zshrc" .code-overflow-wrap}
 source ~/.git-prompt.sh
