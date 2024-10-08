@@ -1,0 +1,52 @@
+---
+title: Measureing Distributions
+subtitle: Spanning All Measures
+description: ""
+author: Shane Oh
+date: 2024-10-04
+image: false
+categories:
+  - Entropy
+  - Information Theory
+---
+
+Entropy plays an important role in measuring probability distributions (or RVs).
+Besides coding theories such as Huffman and Shannon-Fano, etc., it helps 
+quantify the amount of information using only probability.
+
+$$
+H(X) =
+\mathbb E [ I(X) ] =
+\mathbb E_{\mathbf x \sim p_X(\mathbf x)} \left[ \log \dfrac{1}{p_X(\mathbf x)} \right] =
+\sum_{\mathbf x \in \mathcal X} p_X(\mathbf x) \log \dfrac{1}{p_X(\mathbf x)}
+$$
+
+Thus, we can define entropy as a **scalar function** of an arbitrary probability mass 
+function (PMF). We often write $H(X)$ as $H(p)$, same for the differential entropy: $h(X)$ as $h(f)$[^differential-entropy].
+
+[^differential-entropy]: [ECE 587 / STA 563: Lecture 7 - Diﬀerential Entropy](http://reeves.ee.duke.edu/information_theory/lecture7-Differential_Entropy.pdf)
+
+One thing to become accustomed to is using $\mathbb E$ and 
+$\sum_x p(x)$ (or $\int_\mathcal{X} f(x)$, depending on the RVs) interchangeably.
+
+In the previous posts of [Huffman coding](HuffmanCoding.qmd) and [entropy](Entropy.qmd),
+we have derived that entropy is the the lower bound of average codeword length ($\bar \lambda$),
+simultaniously meaning the optimality of codeword length.
+
+For the dedicated data distribution,
+the best encoding strategy to achieve the shortest codeword length is
+using the codewords with repective to the frequency of its own data distribution.
+Shorter codewords length for more frequent random variable.
+
+The optimality in Huffman coding is expressed as follows.
+
+$$
+\sum_{i=1}^N p_X(\mathbf x_i) \lambda_i \leq
+\sum_{i=1}^N p_X(\mathbf x_i) \lambda_i^{'}
+$$
+
+Similarly, the optimality in entropy can be proved with Gibbs' inequality.
+
+$$
+\sum_{\mathbf x \in \mathcal X}
+$$
