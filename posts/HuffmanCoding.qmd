@@ -320,40 +320,46 @@ In coding theory, the Kraft–McMillan inequality gives a necessary and sufficie
 
 [^wiki-01]: [Kraft-McMillan inequality - Wikipedia](https://en.wikipedia.org/wiki/Kraft–McMillan_inequality)
 
-Before diving into this, let’s discuss the upper bound of $\lambda$.
-When all the probabilities $p(x_i)$ are powers of two
-($\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \cdots$),
-$\lambda$ will be integers ($1, 2, 3, \cdots$),
-which can be derived from $\log_2 \frac{1}{p(x_i)}$.
-However, most of the time, the expression will not result in an integer.
-In such cases, we can account for this by using the ceiling function, giving extra freedom.
-This is still useful when calculating $\bar \lambda$.
+When we discuss about the upper bound of $\lambda_i$,
+we are assuming the worst case scenario for each $x_i$.
 
-::: {.callout-note}
-Basically, ceiling $\lambda_i$ is same as flooring $p(x_i)$ to the nearest $2^{-\lambda_i}$.
-:::
+Assert $p_i$ is smallest among all probabilities.
+Let's sort all $p$ in the descending order, just before picking the least occuring two.
 
-From now on, we will define $\lambda_i$ like below.
+```
+                 1   <- until the end
+                  \
+                   .
+                    .
+                     \
+         ... >= p >= p_i''   <- and again
+                        \
+       ... >= p >= p >= p_i'   <- and again
+                       /   \
+... >= p >= p >= p >= p >= p_i   <- we are at the very end
+           / \  / \
+          .        p
+         .        / \
+```
+The parent of each node accumulates the minimum possible value, which follows powers of $2$. This accumulation process stops when we reach the root. We can set each $\lambda_i$ as the stopping condition, defined by reaching the root.
 
 $$
-\lambda_i \triangleq \lceil \log_2 \dfrac{1}{p(x_i)} \rceil
+2^{\lambda_i} p_i \geq 1
 $$
 
-This will give us some insights.
+We cannot stop the iteration until the cumulative probability reaches $1$. The upper inequality represents a partial form of the Kraft-McMillan inequality.
 
-$$
 \begin{align*}
- \lambda_i &\geq \log_2 \dfrac{1}{p(x_i)} = -\log_2 p(x_i) \\[10pt]
--\lambda_i &\leq \log_2 p(x_i) \\[10pt]
-2^{-\lambda_i} &\leq p(x_i) \\[10pt]
-\sum_{i=1}^N 2^{-\lambda_i} &\leq \sum_{i=1}^N p(x_i)
+2^{\lambda_i} p_i &\geq 1 \\
+p_i &\geq 2^{-\lambda_i} \\
+\sum_{i=1}^{N} p_i &\geq \sum_{i=1}^{N} 2^{-\lambda_i} \\
+\sum_{i=1}^{N} 2^{-\lambda_i} &\leq 1 \quad \cdots \text{Kraft-McMillan Inequality} \\
 \end{align*}
-$$
 
-Adding all the probability is equal to $1$ which leads to the final form of Kraft-McMillan inequality. 
+We can add a condition when reaching the root. Since we are assuming $\lambda_i$ to be the necessary and sufficient number of steps, we can say that if, after iterating $\lambda_i - 1$ times, we have not reached the root, the process should continue.
 
 $$
-\sum_{i=1}^N 2^{-\lambda_i} \leq 1
+2^{\lambda_i - 1} p_i < 1
 $$
 
 We can represent this in a figure like below.
@@ -366,3 +372,16 @@ Kraft-McMillan inequality
 
 In @fig-kraft-mcmillan, all $\lambda_i$ are integers.
 We are assigning the total width of $1$ by the power of 2 for each codewords.
+
+By combining two inequalities of stopping conditions:
+
+$$
+\log_2 \dfrac{1}{p_i} \leq \lambda_i < \log_2 \dfrac{1}{p_i} + 1
+$$
+
+$\lambda_i$ is considered as an positive integer. Thus,
+
+$$
+\lambda_i = \left\lceil \log_2 \dfrac{1}{p_i} \right\rceil
+$$
+
