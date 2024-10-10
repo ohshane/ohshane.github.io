@@ -1,7 +1,7 @@
 ---
-title: Measureing Distributions
-subtitle: Spanning All Measures
-description: ""
+title: Measuring Distributions
+subtitle: Gibbs' inequality and more!
+description: Just like Huffman coding's optimality, we can discuss entropy's optimality using Gibbs' inequality
 author: Shane Oh
 date: 2024-10-04
 image: false
@@ -39,14 +39,30 @@ using the codewords with repective to the frequency of its own data distribution
 Shorter codewords length for more frequent random variable.
 
 The optimality in Huffman coding is expressed as follows.
+Huffman coding achieves optimality in lossless coding using a greedy algorithm.
 
 $$
-\sum_{i=1}^N p_X(\mathbf x_i) \lambda_i \leq
-\sum_{i=1}^N p_X(\mathbf x_i) \lambda_i^{'}
+\sum_{i=1}^N p_i \lambda_i \leq
+\sum_{i=1}^N p_i \lambda_i^{'}
 $$
 
-Similarly, the optimality in entropy can be proved with Gibbs' inequality.
+Similarly, the optimality for entropy can be expressed as follows.
 
 $$
-\sum_{\mathbf x \in \mathcal X}
+\sum_{i=1}^{N} p_i \log \dfrac{1}{p_i} \leq \sum_{i=1}^{N} p_i \log \dfrac{1}{q_i}
 $$
+
+What this tells you is that for the given distribution $P$, $-\log P$ is global optimal.
+This can be proved with **Gibbs' inequality**.
+
+## Gibbs' inequality
+
+$$
+\begin{align*}
+-\sum_{i=1}^{N} p_i \log q_i + \sum_{i=1}^{N} p_i \log p_i &\geq 0 \\
+D_\mathrm{KL}(P \| Q) = -\sum_{i=1}^{N} p_i \log \dfrac{q_i}{p_i} &\geq 0 \\
+\end{align*}
+$$
+
+In the other words, entropy of distribution is **less than or equal to its cross entropy** with any other distribution.
+The difference between the two quantities is the Kullback-Leibler divergence (relative entropy).
