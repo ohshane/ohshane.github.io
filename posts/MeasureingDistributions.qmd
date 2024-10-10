@@ -8,6 +8,7 @@ image: false
 categories:
   - Entropy
   - Information Theory
+bibliography: MeasureingDistributions/references.bib
 ---
 
 Entropy plays an important role in measuring probability distributions (or RVs).
@@ -16,8 +17,8 @@ quantify the amount of information using only probability.
 
 $$
 H(X) =
-\mathbb E [ I(X) ] =
-\mathbb E_{\mathbf x \sim p_X(\mathbf x)} \left[ \log \dfrac{1}{p_X(\mathbf x)} \right] =
+H(p) =
+H(p,p) =
 \sum_{\mathbf x \in \mathcal X} p_X(\mathbf x) \log \dfrac{1}{p_X(\mathbf x)}
 $$
 
@@ -46,23 +47,55 @@ $$
 \sum_{i=1}^N p_i \lambda_i^{'}
 $$
 
-Similarly, the optimality for entropy can be expressed as follows.
+Similarly, the optimality for entropy can be expressed with Gibbs' inequality.
 
 $$
 \sum_{i=1}^{N} p_i \log \dfrac{1}{p_i} \leq \sum_{i=1}^{N} p_i \log \dfrac{1}{q_i}
 $$
 
 What this tells you is that for the given distribution $P$, $-\log P$ is global optimal.
-This can be proved with **Gibbs' inequality**.
 
-## Gibbs' inequality
+## Proving Gibbs' inequality
 
-$$
 \begin{align*}
--\sum_{i=1}^{N} p_i \log q_i + \sum_{i=1}^{N} p_i \log p_i &\geq 0 \\
-D_\mathrm{KL}(P \| Q) = -\sum_{i=1}^{N} p_i \log \dfrac{q_i}{p_i} &\geq 0 \\
+&\sum_{i=1}^{N} p_i \log \dfrac{1}{q_i} - \sum_{i=1}^{N} p_i \log \dfrac{1}{p_i} \\
+=& \sum_{i=1}^{N} p_i \log \dfrac{p_i}{q_i} \\
+=& \sum_{i=1}^{N} p_i \left( -\log \dfrac{q_i}{p_i} \right) \\
+\geq& -\log \sum_{i=1}^{N} p_i \dfrac{q_i}{p_i} \quad \cdots \text{Jensen's inequality} \\
+=& -\log \sum_{i=1}^{N} q_i \\
+=& \, 0
 \end{align*}
+
+## Entropy, cross entropy and KL divergence
+
+We can reform the upper inequality as below.
+$H(p,q)$ is called the **cross entropy**.
+
+$$
+D_\text{KL}(p \| q) \triangleq H(p,q) - H(p,p) \geq 0
 $$
 
-In the other words, entropy of distribution is **less than or equal to its cross entropy** with any other distribution.
+Entropy of distribution is **less than or equal to its cross entropy** with any other distribution.
 The difference between the two quantities is the Kullback-Leibler divergence (relative entropy).
+
+@murphy2013machine states that
+the cross entropy is the average number of bits
+needed to encode data coming from a source with distribution $p$ when we use model $q$ to
+define our codebook. The Kullback Leibler (KL) divergence is the average number of extra bits needed to
+encode the data, due to the fact that we used distribution $q$ to encode the data instead of the
+true distribution $p$.
+
+### Jensen-Shannon divergence
+
+As you can see from the definition, it is generally not the case that $D_\text{KL}(p \| q) = D_\text{KL}(q \| p)$. In some cases, it is useful to define a non-negative scalar between the two distributions that can act as a symmetric distance metric.
+
+$$
+\mathrm{JSD}(p \| q) =
+\dfrac{1}{2} D_\text{KL}\left(p \, \bigg\| \, \dfrac{p+q}{2} \right) +
+\dfrac{1}{2} D_\text{KL}\left(q \, \bigg\| \, \dfrac{p+q}{2} \right)
+$$
+
+This will satisfy  $\mathrm{JSD}(p \| q) = \mathrm{JSD}(q \| p)$.
+
+Since $D_\text{KL}$ is non-negative, $\mathrm{JSD}$ also inherits this property.
+This will become useful when deriving the optimality of GANs.
