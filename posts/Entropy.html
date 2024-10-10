@@ -218,7 +218,7 @@ Historical Context: Shannon’s Entropy and Huffman Coding
 <p><span class="math display">\[
 \bar \lambda = \mathbb E [ \lambda ]
 = \sum_{i=1}^N p(x_i) \lambda_i
-= \sum_{i=1}^N p(x_i) \lceil \log_2 \dfrac{1}{p(x_i)} \rceil
+= \sum_{i=1}^N p(x_i) \left\lceil \log_2 \dfrac{1}{p(x_i)} \right\rceil
 \]</span></p>
 <p>One thing we had a hard time deriving was <span class="math inline">\(\lambda\)</span>. We needed to check the frequency (or probability) of each character and aggregate them into a binary tree structure. After that, we traced the path from the root node to each leaf, encoding every character into a binary codeword. Finally, we mapped all of the codewords to the function <code>len</code> to obtain our most desired value, the length of each codeword.</p>
 <p>The value <span class="math inline">\(\lambda\)</span> can be interpreted as the number of bits (information) required to losslessly represent an arbitrary group (such as a character or color) within the given data. As you can feel from the word group, we were working on a discrete random variable.</p>

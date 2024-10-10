@@ -253,7 +253,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="99b14a32" class="cell" data-execution_count="2">
+<div id="f62523ae" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -277,7 +277,7 @@ compression rate: 0.0%</code></pre>
 <h3 class="anchored" data-anchor-id="sec-huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="1936241b" class="cell" data-execution_count="4">
+<div id="9e6295be" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
@@ -361,67 +361,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-139938697855760[36]
-139938697855760 -- 0 --&gt; 139938024961040
-139938697855760 -- 1 --&gt; 139938699788368
-139938024961040[21]
-139938024961040 -- 0 --&gt; 139938699788624
-139938024961040 -- 1 --&gt; 139938024953744
-139938699788368[15]
-139938699788368 -- 0 --&gt; 139938024954448
-139938699788368 -- 1 --&gt; 139938024960912
-139938699788624[13]
-139938699788624 -- 0 --&gt; 139938431520080
-139938699788624 -- 1 --&gt; 139938026035088
-139938024953744[8]
-139938024953744 -- 0 --&gt; 139938024960976
-139938024953744 -- 1 --&gt; 139938024960784
-139938024954448[8]
-139938024954448 -- 0 --&gt; 139938024954320
-139938024954448 -- 1 --&gt; 139938024954384
-139938024960912[7]
-139938024960912 -- 0 --&gt; 139938471005136
-139938024960912 -- 1 --&gt; 139938490027472
-139938431520080[' ': 7]
-139938026035088['A': 6]
-139938024960976[4]
-139938024960976 -- 0 --&gt; 139938024948688
-139938024960976 -- 1 --&gt; 139938024953424
-139938024960784[4]
-139938024960784 -- 0 --&gt; 139938024953680
-139938024960784 -- 1 --&gt; 139938024953552
-139938024954320[4]
-139938024954320 -- 0 --&gt; 139938233601488
-139938024954320 -- 1 --&gt; 139938423756048
-139938024954384[4]
-139938024954384 -- 0 --&gt; 139938431852560
-139938024954384 -- 1 --&gt; 139938032450448
-139938471005136['E': 4]
-139938490027472['P': 3]
-139938024948688[2]
-139938024948688 -- 0 --&gt; 139938024954128
-139938024948688 -- 1 --&gt; 139938423927056
-139938024953424[2]
-139938024953424 -- 0 --&gt; 139938030350224
-139938024953424 -- 1 --&gt; 139938233601360
-139938024953680[2]
-139938024953680 -- 0 --&gt; 139938471010960
-139938024953680 -- 1 --&gt; 139938431852496
-139938024953552[2]
-139938024953552 -- 0 --&gt; 139938471010832
-139938024953552 -- 1 --&gt; 139938433450320
-139938233601488['O': 2]
-139938423756048['T': 2]
-139938431852560['Y': 2]
-139938032450448['D': 2]
-139938024954128['W': 1]
-139938423927056['R': 1]
-139938030350224['C': 1]
-139938233601360['H': 1]
-139938471010960['S': 1]
-139938431852496['K': 1]
-139938471010832['L': 1]
-139938433450320['N': 1]
+139933461953744[36]
+139933461953744 -- 0 --&gt; 139933461942608
+139933461953744 -- 1 --&gt; 139933461947792
+139933461942608[21]
+139933461942608 -- 0 --&gt; 139933461953360
+139933461942608 -- 1 --&gt; 139933461953872
+139933461947792[15]
+139933461947792 -- 0 --&gt; 139933461940688
+139933461947792 -- 1 --&gt; 139933461952720
+139933461953360[13]
+139933461953360 -- 0 --&gt; 139932556429840
+139933461953360 -- 1 --&gt; 139933461911440
+139933461953872[8]
+139933461953872 -- 0 --&gt; 139933461942032
+139933461953872 -- 1 --&gt; 139933461943760
+139933461940688[8]
+139933461940688 -- 0 --&gt; 139933461938448
+139933461940688 -- 1 --&gt; 139933461946832
+139933461952720[7]
+139933461952720 -- 0 --&gt; 139932555326992
+139933461952720 -- 1 --&gt; 139932556440912
+139932556429840[' ': 7]
+139933461911440['A': 6]
+139933461942032[4]
+139933461942032 -- 0 --&gt; 139933461938320
+139933461942032 -- 1 --&gt; 139933461941008
+139933461943760[4]
+139933461943760 -- 0 --&gt; 139933461948240
+139933461943760 -- 1 --&gt; 139933461830864
+139933461938448[4]
+139933461938448 -- 0 --&gt; 139933461945232
+139933461938448 -- 1 --&gt; 139933461941584
+139933461946832[4]
+139933461946832 -- 0 --&gt; 139932555327184
+139933461946832 -- 1 --&gt; 139932555327248
+139932555326992['E': 4]
+139932556440912['P': 3]
+139933461938320[2]
+139933461938320 -- 0 --&gt; 139933461951760
+139933461938320 -- 1 --&gt; 139933461946064
+139933461941008[2]
+139933461941008 -- 0 --&gt; 139933461945040
+139933461941008 -- 1 --&gt; 139933461944912
+139933461948240[2]
+139933461948240 -- 0 --&gt; 139932555327056
+139933461948240 -- 1 --&gt; 139932555325456
+139933461830864[2]
+139933461830864 -- 0 --&gt; 139932593864144
+139933461830864 -- 1 --&gt; 139932574096080
+139933461945232['O': 2]
+139933461941584['T': 2]
+139932555327184['Y': 2]
+139932555327248['D': 2]
+139933461951760['W': 1]
+139933461946064['R': 1]
+139933461945040['C': 1]
+139933461944912['H': 1]
+139932555327056['S': 1]
+139932555325456['K': 1]
+139932593864144['L': 1]
+139932574096080['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -432,7 +432,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="47ca4a68" class="cell" data-execution_count="8">
+<div id="c147f655" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -445,7 +445,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="15e478b2" class="cell" data-execution_count="10">
+<div id="73642800" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
@@ -515,36 +515,35 @@ Figure&nbsp;1: Image compression
 <section id="sec-kraft-mcmillan-inequality" class="level2">
 <h2 class="anchored" data-anchor-id="sec-kraft-mcmillan-inequality">Kraft-McMillan inequality</h2>
 <p>In coding theory, the Kraft–McMillan inequality gives a necessary and sufficient condition for the existence of a prefix code<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<p>Before diving into this, let’s discuss the upper bound of <span class="math inline">\(\lambda\)</span>. When all the probabilities <span class="math inline">\(p(x_i)\)</span> are powers of two (<span class="math inline">\(\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \cdots\)</span>), <span class="math inline">\(\lambda\)</span> will be integers (<span class="math inline">\(1, 2, 3, \cdots\)</span>), which can be derived from <span class="math inline">\(\log_2 \frac{1}{p(x_i)}\)</span>. However, most of the time, the expression will not result in an integer. In such cases, we can account for this by using the ceiling function, giving extra freedom. This is still useful when calculating <span class="math inline">\(\bar \lambda\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Basically, ceiling <span class="math inline">\(\lambda_i\)</span> is same as flooring <span class="math inline">\(p(x_i)\)</span> to the nearest <span class="math inline">\(2^{-\lambda_i}\)</span>.</p>
-</div>
-</div>
-<p>From now on, we will define <span class="math inline">\(\lambda_i\)</span> like below.</p>
+<p>When we discuss about the upper bound of <span class="math inline">\(\lambda_i\)</span>, we are assuming the worst case scenario for each <span class="math inline">\(x_i\)</span>.</p>
+<p>Assert <span class="math inline">\(p_i\)</span> is smallest among all probabilities. Let’s sort all <span class="math inline">\(p\)</span> in the descending order, just before picking the least occuring two.</p>
+<pre><code>                 1   &lt;- until the end
+                  \
+                   .
+                    .
+                     \
+         ... &gt;= p &gt;= p_i''   &lt;- and again
+                        \
+       ... &gt;= p &gt;= p &gt;= p_i'   &lt;- and again
+                       /   \
+... &gt;= p &gt;= p &gt;= p &gt;= p &gt;= p_i   &lt;- we are at the very end
+           / \  / \
+          .        p
+         .        / \</code></pre>
+<p>The parent of each node accumulates the minimum possible value, which follows powers of <span class="math inline">\(2\)</span>. This accumulation process stops when we reach the root. We can set each <span class="math inline">\(\lambda_i\)</span> as the stopping condition, defined by reaching the root.</p>
 <p><span class="math display">\[
-\lambda_i \triangleq \lceil \log_2 \dfrac{1}{p(x_i)} \rceil
+2^{\lambda_i} p_i \geq 1
 \]</span></p>
-<p>This will give us some insights.</p>
+<p>We cannot stop the iteration until the cumulative probability reaches <span class="math inline">\(1\)</span>. The upper inequality represents a partial form of the Kraft-McMillan inequality.</p>
+<p><span class="math display">\[\begin{align*}
+2^{\lambda_i} p_i &amp;\geq 1 \\
+p_i &amp;\geq 2^{-\lambda_i} \\
+\sum_{i=1}^{N} p_i &amp;\geq \sum_{i=1}^{N} 2^{-\lambda_i} \\
+\sum_{i=1}^{N} 2^{-\lambda_i} &amp;\leq 1 \quad \cdots \text{Kraft-McMillan Inequality} \\
+\end{align*}\]</span></p>
+<p>We can add a condition when reaching the root. Since we are assuming <span class="math inline">\(\lambda_i\)</span> to be the necessary and sufficient number of steps, we can say that if, after iterating <span class="math inline">\(\lambda_i - 1\)</span> times, we have not reached the root, the process should continue.</p>
 <p><span class="math display">\[
-\begin{align*}
-\lambda_i &amp;\geq \log_2 \dfrac{1}{p(x_i)} = -\log_2 p(x_i) \\[10pt]
--\lambda_i &amp;\leq \log_2 p(x_i) \\[10pt]
-2^{-\lambda_i} &amp;\leq p(x_i) \\[10pt]
-\sum_{i=1}^N 2^{-\lambda_i} &amp;\leq \sum_{i=1}^N p(x_i)
-\end{align*}
-\]</span></p>
-<p>Adding all the probability is equal to <span class="math inline">\(1\)</span> which leads to the final form of Kraft-McMillan inequality.</p>
-<p><span class="math display">\[
-\sum_{i=1}^N 2^{-\lambda_i} \leq 1
+2^{\lambda_i - 1} p_i &lt; 1
 \]</span></p>
 <p>We can represent this in a figure like below.</p>
 <div id="fig-kraft-mcmillan" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -558,6 +557,14 @@ Figure&nbsp;2: Kraft-McMillan inequality
 </figure>
 </div>
 <p>In <a href="#fig-kraft-mcmillan" class="quarto-xref">Figure&nbsp;2</a>, all <span class="math inline">\(\lambda_i\)</span> are integers. We are assigning the total width of <span class="math inline">\(1\)</span> by the power of 2 for each codewords.</p>
+<p>By combining two inequalities of stopping conditions:</p>
+<p><span class="math display">\[
+\log_2 \dfrac{1}{p_i} \leq \lambda_i &lt; \log_2 \dfrac{1}{p_i} + 1
+\]</span></p>
+<p><span class="math inline">\(\lambda_i\)</span> is considered as an positive integer. Thus,</p>
+<p><span class="math display">\[
+\lambda_i = \left\lceil \log_2 \dfrac{1}{p_i} \right\rceil
+\]</span></p>
 
 
 </section>

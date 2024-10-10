@@ -7,9 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2024-09-26">
+<meta name="dcterms.date" content="2024-10-04">
+<meta name="description" content="Just like Huffman coding’s optimality, we can discuss entropy’s optimality using Gibbs’ inequality">
 
-<title>GAN – Shane</title>
+<title>Measuring Distributions – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -125,8 +126,8 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="GAN – Shane">
-<meta property="og:description" content="Which Comes First? Generator or Discriminator?">
+<meta property="og:title" content="Measuring Distributions – Shane">
+<meta property="og:description" content="Just like Huffman coding’s optimality, we can discuss entropy’s optimality using Gibbs’ inequality">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -171,16 +172,10 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#zero-sum-game-of-a-generator-and-a-discriminator" id="toc-zero-sum-game-of-a-generator-and-a-discriminator" class="nav-link active" data-scroll-target="#zero-sum-game-of-a-generator-and-a-discriminator">Zero-sum game of a Generator and a Discriminator</a></li>
-  <li><a href="#the-value-function" id="toc-the-value-function" class="nav-link" data-scroll-target="#the-value-function">The Value Function</a>
+  <li><a href="#proving-gibbs-inequality" id="toc-proving-gibbs-inequality" class="nav-link active" data-scroll-target="#proving-gibbs-inequality">Proving Gibbs’ inequality</a></li>
+  <li><a href="#entropy-cross-entropy-and-kl-divergence" id="toc-entropy-cross-entropy-and-kl-divergence" class="nav-link" data-scroll-target="#entropy-cross-entropy-and-kl-divergence">Entropy, cross entropy and KL divergence</a>
   <ul class="collapse">
-  <li><a href="#objective-of-d" id="toc-objective-of-d" class="nav-link" data-scroll-target="#objective-of-d">Objective of <span class="math inline">\(D\)</span></a></li>
-  <li><a href="#objective-of-g" id="toc-objective-of-g" class="nav-link" data-scroll-target="#objective-of-g">Objective of <span class="math inline">\(G\)</span></a></li>
-  </ul></li>
-  <li><a href="#theoretical-results" id="toc-theoretical-results" class="nav-link" data-scroll-target="#theoretical-results">Theoretical Results</a>
-  <ul class="collapse">
-  <li><a href="#optimal-d" id="toc-optimal-d" class="nav-link" data-scroll-target="#optimal-d">Optimal <span class="math inline">\(D\)</span></a></li>
-  <li><a href="#optimal-g" id="toc-optimal-g" class="nav-link" data-scroll-target="#optimal-g">Optimal <span class="math inline">\(G\)</span></a></li>
+  <li><a href="#jensen-shannon-divergence" id="toc-jensen-shannon-divergence" class="nav-link" data-scroll-target="#jensen-shannon-divergence">Jensen-Shannon divergence</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -190,14 +185,19 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">GAN</h1>
-<p class="subtitle lead">Which Comes First? Generator or Discriminator?</p>
+<h1 class="title">Measuring Distributions</h1>
+<p class="subtitle lead">Gibbs’ inequality and more!</p>
   <div class="quarto-categories">
-    <div class="quarto-category">ML</div>
-    <div class="quarto-category">Generative Models</div>
+    <div class="quarto-category">Entropy</div>
+    <div class="quarto-category">Information Theory</div>
   </div>
   </div>
 
+<div>
+  <div class="description">
+    Just like Huffman coding’s optimality, we can discuss entropy’s optimality using Gibbs’ inequality
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -212,7 +212,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 26, 2024</p>
+      <p class="date">October 4, 2024</p>
     </div>
   </div>
   
@@ -224,264 +224,56 @@ window.Quarto = {
 </header>
 
 
-<p>There is an interactive playground available at <a href="https://poloclub.github.io/ganlab/">GAN Lab</a>. Feel free to explore it.</p>
-<section id="zero-sum-game-of-a-generator-and-a-discriminator" class="level2">
-<h2 class="anchored" data-anchor-id="zero-sum-game-of-a-generator-and-a-discriminator">Zero-sum game of a Generator and a Discriminator</h2>
-<p>The zero-sum property (if one gains, another loses) means that any result of a zero-sum situation is Pareto optimal which is also called a conflict game<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<p>The generator and discriminator engage in a zero-sum game, where the generator tries to produce data that fools the discriminator, while the discriminator aims to correctly identify real versus generated (fake) data. This interaction can be expressed with a payoff matrix.</p>
-<div class="{=html}">
-<div id="payoff-matrix">
-<table>
-<tbody><tr>
-<td>
-</td>
-<td>
-<span class="math inline">\(D_\text{good}\)</span>
-</td>
-<td>
-<span class="math inline">\(D_\text{poor}\)</span>
-</td>
-</tr>
-<tr>
-<td>
-<span class="math inline">\(G_\text{good}\)</span>
-</td>
-<td>
-<span class="math inline">\(( 0, 0)\)</span>
-</td>
-<td>
-<span class="math inline">\(( 1,-1)\)</span>
-</td>
-</tr>
-<tr>
-<td>
-<span class="math inline">\(G_\text{poor}\)</span>
-</td>
-<td>
-<span class="math inline">\((-1, 1)\)</span>
-</td>
-<td>
-<span class="math inline">\(( 0, 0)\)</span>
-</td>
-</tr>
-</tbody></table>
-</div>
-<style>
-#payoff-matrix table {
-  margin: 2em auto;
-}
-
-#payoff-matrix tr td {
-  border: 1px solid black;
-}
-
-#payoff-matrix td {
-  width: 6em;
-  text-align: center;
-}
-</style>
-</div>
-<p>The payoff matrix shows all the combinations of what players can move. The gains for <span class="math inline">\(G\)</span> and <span class="math inline">\(D\)</span> in each state are denoted by tuples.</p>
-<p>The best choice for <span class="math inline">\(D\)</span>, regardless of what <span class="math inline">\(G\)</span> chooses, is <span class="math inline">\(D_\text{good}\)</span>. When <span class="math inline">\(G\)</span> chooses <span class="math inline">\(G_\text{good}\)</span>, <span class="math inline">\(D\)</span> can move from <span class="math inline">\(-1\)</span> to <span class="math inline">\(0\)</span>, gaining <span class="math inline">\(+1\)</span>, and when <span class="math inline">\(G\)</span> chooses <span class="math inline">\(G_\text{poor}\)</span>, <span class="math inline">\(D\)</span> can move from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>, also gaining <span class="math inline">\(+1\)</span>, making <span class="math inline">\(D_\text{good}\)</span> a dominant strategy. Same for <span class="math inline">\(G\)</span>, making <span class="math inline">\(G_\text{good}\)</span> a dominant strategy.</p>
-<p>The solution for this game is choosing <span class="math inline">\(D_\text{good}\)</span> and <span class="math inline">\(G_\text{good}\)</span> which is considered as a Nash Equilibrium in GANs, maximizing both players’ gains.</p>
-<p>However, the question of whether a Nash Equilibrium exists in the GAN framework remains open. Read <span class="citation" data-cites="pmlr-v119-farnia20a">Farnia and Ozdaglar (<a href="#ref-pmlr-v119-farnia20a" role="doc-biblioref">2020</a>)</span> to find out more.</p>
-<p>Since the GAN framework can be modeled as a zero-sum game, we can also derive the same Nash Equilibrium using the second element of the tuples (<span class="math inline">\(D\)</span>’s gain), which provides a more compact representation. This becomes the <strong>value function</strong>.</p>
-</section>
-<section id="the-value-function" class="level2">
-<h2 class="anchored" data-anchor-id="the-value-function">The Value Function</h2>
+<p>Entropy plays an important role in measuring probability distributions (or RVs). Besides coding theories such as Huffman and Shannon-Fano, etc., it helps quantify the amount of information using only probability.</p>
 <p><span class="math display">\[
-\min_G \max_D V(D,G)
-= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)}[\log D(\mathbf x)]
-+ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D(G(\mathbf z)))]
+H(X) =
+H(p) =
+H(p,p) =
+\sum_{\mathbf x \in \mathcal X} p_X(\mathbf x) \log \dfrac{1}{p_X(\mathbf x)}
 \]</span></p>
-<p>The generator takes a latent variable <span class="math inline">\(\mathbf z\)</span> as input and outputs generated data <span class="math inline">\(\mathbf x\)</span>. The discriminator takes data <span class="math inline">\(\mathbf x\)</span> as input and outputs a probability <span class="math inline">\(y\)</span>, representing whether the data is real (<span class="math inline">\(1\)</span>) or fake (<span class="math inline">\(0\)</span>).</p>
+<p>Thus, we can define entropy as a <strong>scalar function</strong> of an arbitrary probability mass function (PMF). We often write <span class="math inline">\(H(X)\)</span> as <span class="math inline">\(H(p)\)</span>, same for the differential entropy: <span class="math inline">\(h(X)\)</span> as <span class="math inline">\(h(f)\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>One thing to become accustomed to is using <span class="math inline">\(\mathbb E\)</span> and <span class="math inline">\(\sum_x p(x)\)</span> (or <span class="math inline">\(\int_\mathcal{X} f(x)\)</span>, depending on the RVs) interchangeably.</p>
+<p>In the previous posts of <a href="../posts/HuffmanCoding.html">Huffman coding</a> and <a href="../posts/Entropy.html">entropy</a>, we have derived that entropy is the the lower bound of average codeword length (<span class="math inline">\(\bar \lambda\)</span>), simultaniously meaning the optimality of codeword length.</p>
+<p>For the dedicated data distribution, the best encoding strategy to achieve the shortest codeword length is using the codewords with repective to the frequency of its own data distribution. Shorter codewords length for more frequent random variable.</p>
+<p>The optimality in Huffman coding is expressed as follows. Huffman coding achieves optimality in lossless coding using a greedy algorithm.</p>
 <p><span class="math display">\[
-\begin{align*}
-G &amp;:\mathbf z \to \mathbf x \\
-D &amp;:\mathbf x \to y
-\end{align*}
+\sum_{i=1}^N p_i \lambda_i \leq
+\sum_{i=1}^N p_i \lambda_i^{'}
 \]</span></p>
-<p>The value function (<span class="math inline">\(V\)</span>) consists of two log-likelihood losses, each from a Bernoulli distribution: one representing the genuine data distribution and the other, the fake data distribution.</p>
-<p>Let <span class="math inline">\(\mathbf{x} \sim p_\text{data}(\mathbf{x})\)</span> represent a <strong>sample</strong> drawn from the genuine data distribution. They are all labeled as <span class="math inline">\(1\)</span>. Same thing for the fake data <span class="math inline">\(\mathbf{z} \sim p_\mathbf{z}(\mathbf{z})\)</span>. They are all labeled as <span class="math inline">\(0\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>During training, we will keep the number of samples for <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{z}\)</span> the same.</p>
-</div>
-</div>
-<section id="objective-of-d" class="level3">
-<h3 class="anchored" data-anchor-id="objective-of-d">Objective of <span class="math inline">\(D\)</span></h3>
-<p>The Binary Cross-Entropy (BCE) is defined as follows.</p>
+<p>Similarly, the optimality for entropy can be expressed with Gibbs’ inequality.</p>
 <p><span class="math display">\[
-\mathcal L_\text{BCE}(\hat y, y)
-= - \lbrace y \log{\hat y} + (1-y) \log{(1-\hat y)} \rbrace
+\sum_{i=1}^{N} p_i \log \dfrac{1}{p_i} \leq \sum_{i=1}^{N} p_i \log \dfrac{1}{q_i}
 \]</span></p>
-<p>We can try to optimize the model by decreasing the <span class="math inline">\(\mathcal L\)</span>. Conversely, increasing <span class="math inline">\(-\mathcal L\)</span> resembles the same objective. When dealing with <span class="math inline">\(D\)</span>’s loss, we use the latter approach.</p>
-<p>The loss of <span class="math inline">\(D\)</span> is calculated with negative BCE loss on both real and fake data distributions and are added together.</p>
-<p><span class="math display">\[
-\max_D V(D,G) =
-\sum_{\mathbf x}
--\mathcal L_\text{BCE}(D(\mathbf x), 1) +
-\sum_{\mathbf z}
--\mathcal L_\text{BCE}(D(G(\mathbf z)), 0)
-\]</span></p>
-<p><span class="math inline">\(D\)</span> will try to maximize the value function <span class="math inline">\(V(D,G)\)</span> thus, <span class="math inline">\(\theta_\text{d}\)</span> is updated with gradient ascent.</p>
-</section>
-<section id="objective-of-g" class="level3">
-<h3 class="anchored" data-anchor-id="objective-of-g">Objective of <span class="math inline">\(G\)</span></h3>
-<p>In <span class="math inline">\(G\)</span>’s perspective, <span class="math inline">\(G\)</span>’s objective is to fool <span class="math inline">\(D\)</span> by creating more realistic data.</p>
-<p><span class="math display">\[
-\min_G V(G) =
-\sum_{\mathbf z}
--\mathcal L_\text{BCE}(D(G(\mathbf z)), 0) \\
-\]</span></p>
-<p><span class="math inline">\(G\)</span> will try to minimize the value function <span class="math inline">\(V(G)\)</span> thus, <span class="math inline">\(\theta_\text{d}\)</span> is updated with gradient descent.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Unifying the loss with respect to <span class="math inline">\(V\)</span>
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Note that we are not using <span class="math inline">\(\mathcal L_\text{BCE}(D(G(\mathbf z)), 1)\)</span> as the value function for <span class="math inline">\(G\)</span>. In the context of zero-sum loss, we will try to unify the losses in terms of <span class="math inline">\(V\)</span>.</p>
-</div>
-</div>
-</section>
-</section>
-<section id="theoretical-results" class="level2">
-<h2 class="anchored" data-anchor-id="theoretical-results">Theoretical Results</h2>
-<div id="fig-training-gans" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-training-gans-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="GAN/images/fig-01.jpg" class="img-fluid figure-img">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-training-gans-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Training GANs
-</figcaption>
-</figure>
-</div>
-<p>The figure above is from <span class="citation" data-cites="goodfellow2014generativeadversarialnetworks">Goodfellow et al. (<a href="#ref-goodfellow2014generativeadversarialnetworks" role="doc-biblioref">2014</a>)</span>. The genuine data distribution <span class="math inline">\(p_\text{data}\)</span> is represented by a <span style="border-bottom: 2px dotted;">black dotted line</span>. and <span style="color: green;">green</span> denotes the generated distribution <span class="math inline">\(p_\text{g}\)</span>, and lastly the color <span style="color: blue;">blue</span> denotes the discriminated distribution,</p>
-<p>As mentioned above, the output of <span class="math inline">\(D\)</span> is the probability that the data is genuine, so the height of the <span style="color: blue;">blue</span> bar represents the corresponding value between <span class="math inline">\([0, 1]\)</span>. The value of the <span style="color: blue;">blue</span> distribution is one-half on <span class="math inline">\(x\)</span>, where <span class="math inline">\(x\)</span> represents the intersection of the <span style="border-bottom: 2px dotted;">black</span> and <span style="color: blue;">blue</span> lines.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The results of this section are done in a non-parametric setting, e.g.&nbsp;we represent a model with infinite capacity by studying convergence in the space of <strong>probability density functions</strong>; <span class="math inline">\(p_\text{data}\)</span> and <span class="math inline">\(p_\text{g}\)</span>.</p>
-</div>
-</div>
-<p>We reach the global optimum of <span class="math inline">\(V\)</span> when we approach optimal <span class="math inline">\(D\)</span> and <span class="math inline">\(G\)</span>.</p>
-<section id="optimal-d" class="level3">
-<h3 class="anchored" data-anchor-id="optimal-d">Optimal <span class="math inline">\(D\)</span></h3>
-<p>Optimal <span class="math inline">\(D\)</span> can be obtained by maximizing <span class="math inline">\(V\)</span>. For any given <span class="math inline">\(G\)</span>, <span class="math inline">\(D\)</span> will try it’s best to discriminate genuine data from the fake.</p>
+<p>What this tells you is that for the given distribution <span class="math inline">\(P\)</span>, <span class="math inline">\(-\log P\)</span> is global optimal.</p>
+<section id="proving-gibbs-inequality" class="level2">
+<h2 class="anchored" data-anchor-id="proving-gibbs-inequality">Proving Gibbs’ inequality</h2>
 <p><span class="math display">\[\begin{align*}
-V(D,G)
-&amp;= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)}[\log D(\mathbf x)]
-+ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D(G(\mathbf z)))] \\
-
-&amp;= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x) d \mathbf x
-+ \int_\mathbf{z} p_\mathbf{z}(\mathbf z) \log (1 - D(G(\mathbf z))) d \mathbf z \\
-
-&amp;= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x) d \mathbf x
-+ \int_\mathbf{x} p_\text{g}(\mathbf x) \log (1 - D(\mathbf x)) d \mathbf x \\
-
-&amp;= \int_\mathbf{x} p_\text{data}(\mathbf x) \log D(\mathbf x)
-                + p_\text{g}(\mathbf x) \log (1 - D(\mathbf x)) d \mathbf x
+&amp;\sum_{i=1}^{N} p_i \log \dfrac{1}{q_i} - \sum_{i=1}^{N} p_i \log \dfrac{1}{p_i} \\
+=&amp; \sum_{i=1}^{N} p_i \log \dfrac{p_i}{q_i} \\
+=&amp; \sum_{i=1}^{N} p_i \left( -\log \dfrac{q_i}{p_i} \right) \\
+\geq&amp; -\log \sum_{i=1}^{N} p_i \dfrac{q_i}{p_i} \quad \cdots \text{Jensen's inequality} \\
+=&amp; -\log \sum_{i=1}^{N} q_i \\
+=&amp; \, 0
 \end{align*}\]</span></p>
-<p>By setting <span class="math inline">\(p_\text{data}(\mathbf x)\)</span> as <span class="math inline">\(a\)</span> and <span class="math inline">\(p_\text{g}(\mathbf x)\)</span> as <span class="math inline">\(b\)</span>, the inner part of the integral can be expressed as the following.</p>
-<p><span class="math display">\[\begin{align*}
-f(y) &amp;= a \log y + b \log (1-y) \\
-\dfrac{d}{dy} f(y) &amp;= \dfrac{a}{y} - \dfrac{b}{1-y} = 0 \\
-\therefore y &amp;= \frac{a}{a+b}
-\end{align*}\]</span></p>
-<p>The optimal <span class="math inline">\(D\)</span> can be defined as follows.</p>
-<p><span class="math display">\[
-D^*(\mathbf x) = \dfrac{p_\text{data}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
-\]</span></p>
 </section>
-<section id="optimal-g" class="level3">
-<h3 class="anchored" data-anchor-id="optimal-g">Optimal <span class="math inline">\(G\)</span></h3>
-<p>With same <span class="math inline">\(V\)</span>, optimal <span class="math inline">\(G\)</span> can be obtained by minimizing <span class="math inline">\(V\)</span>. We will find optimal <span class="math inline">\(G\)</span> with respective to the optimal discriminator <span class="math inline">\(D^*\)</span>.</p>
-<p><span class="math display">\[\begin{align*}
-V(D^*,G)
-&amp;= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)}[\log D^*(\mathbf x)]
-+ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)}[\log (1-D^*(G(\mathbf z)))] \\
-
-&amp;= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)} \left[
-  \log \dfrac{p_\text{data}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
-\right]
-+ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)} \left[
-  \log \dfrac{p_\text{g}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
-\right] \\
-
-&amp;= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)} \left[
-  \log \dfrac{2 \ p_\text{data}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
-\right]
-+ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)} \left[
-  \log \dfrac{2 \ p_\text{g}(\mathbf x)}{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}
-\right]
-- \log 4 \\
-
-&amp;= \mathbb E_{\mathbf x \sim p_\text{data}(\mathbf x)} \left[
-  \log \dfrac{p_\text{data}(\mathbf x)}{\dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2}}
-\right]
-+ \mathbb E_{\mathbf z \sim p_\mathbf{z}(\mathbf z)} \left[
-  \log \dfrac{p_\text{g}(\mathbf x)}{\dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2}}
-\right]
-- \log 4
-\\
-
-&amp;= D_\text{KL} \left( p_\text{data}(\mathbf x) \bigg\| \dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2} \right)
-+ D_\text{KL} \left( p_\text{g}(\mathbf x) \bigg\| \dfrac{p_\text{data}(\mathbf x) + p_\text{g}(\mathbf x)}{2} \right) - \log 4 \\
-
-&amp;= 2 \ \mathrm{JSD}(p_\text{data}(\mathbf x) \| p_\text{g}(\mathbf x)) - \log 4 \\
-
-&amp;\geq -\log 4 \\[20pt]
-
-\min_{G} V(D^*, G) &amp;= -\log 4 \iff p_\text{data} = p_\text{g} \\
-
-V(D^*,G^*) &amp;= -\log4
-\end{align*}\]</span></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Does the order of <span class="math inline">\(\min\)</span>, <span class="math inline">\(\max\)</span> matter?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Yes, it does.<br>
-Mathematically, <span class="math inline">\(\min_G \max_D V(D, G)\)</span> is the same as <span class="math inline">\(\min_G (\max_D V(D, G))\)</span>.<br>
-We try to solve from the inner parentheses.<br>
-In GAN’s perspective, as long as <span class="math inline">\(D\)</span> tries its best to discriminate the two distributions, the best strategy for <span class="math inline">\(G\)</span> is to mimic <span class="math inline">\(p_\text{data}\)</span> as closely as possible.</p>
-</div>
-</div>
-<div id="14f1a68b" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="GAN_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="347" height="263"></p>
-</figure>
-</div>
-</div>
-</div>
+<section id="entropy-cross-entropy-and-kl-divergence" class="level2">
+<h2 class="anchored" data-anchor-id="entropy-cross-entropy-and-kl-divergence">Entropy, cross entropy and KL divergence</h2>
+<p>We can reform the upper inequality as below. <span class="math inline">\(H(p,q)\)</span> is called the <strong>cross entropy</strong>.</p>
+<p><span class="math display">\[
+D_\text{KL}(p \| q) \triangleq H(p,q) - H(p,p) \geq 0
+\]</span></p>
+<p>Entropy of distribution is <strong>less than or equal to its cross entropy</strong> with any other distribution. The difference between the two quantities is the Kullback-Leibler divergence (relative entropy).</p>
+<p><span class="citation" data-cites="murphy2013machine">Murphy (<a href="#ref-murphy2013machine" role="doc-biblioref">2013</a>)</span> states that the cross entropy is the average number of bits needed to encode data coming from a source with distribution <span class="math inline">\(p\)</span> when we use model <span class="math inline">\(q\)</span> to define our codebook. The Kullback Leibler (KL) divergence is the average number of extra bits needed to encode the data, due to the fact that we used distribution <span class="math inline">\(q\)</span> to encode the data instead of the true distribution <span class="math inline">\(p\)</span>.</p>
+<section id="jensen-shannon-divergence" class="level3">
+<h3 class="anchored" data-anchor-id="jensen-shannon-divergence">Jensen-Shannon divergence</h3>
+<p>As you can see from the definition, it is generally not the case that <span class="math inline">\(D_\text{KL}(p \| q) = D_\text{KL}(q \| p)\)</span>. In some cases, it is useful to define a non-negative scalar between the two distributions that can act as a symmetric distance metric.</p>
+<p><span class="math display">\[
+\mathrm{JSD}(p \| q) =
+\dfrac{1}{2} D_\text{KL}\left(p \, \bigg\| \, \dfrac{p+q}{2} \right) +
+\dfrac{1}{2} D_\text{KL}\left(q \, \bigg\| \, \dfrac{p+q}{2} \right)
+\]</span></p>
+<p>This will satisfy <span class="math inline">\(\mathrm{JSD}(p \| q) = \mathrm{JSD}(q \| p)\)</span>.</p>
+<p>Since <span class="math inline">\(D_\text{KL}\)</span> is non-negative, <span class="math inline">\(\mathrm{JSD}\)</span> also inherits this property. This will become useful when deriving the optimality of GANs.</p>
 
 
 
@@ -490,16 +282,13 @@ In GAN’s perspective, as long as <span class="math inline">\(D\)</span> tries 
 
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-pmlr-v119-farnia20a" class="csl-entry" role="listitem">
-Farnia, Farzan, and Asuman Ozdaglar. 2020. <span>“Do <span>GAN</span>s Always Have <span>N</span>ash Equilibria?”</span> In <em>Proceedings of the 37th International Conference on Machine Learning</em>, edited by Hal Daumé III and Aarti Singh, 119:3029–39. Proceedings of Machine Learning Research. PMLR. <a href="http://proceedings.mlr.press/v119/farnia20a.html">http://proceedings.mlr.press/v119/farnia20a.html</a>.
-</div>
-<div id="ref-goodfellow2014generativeadversarialnetworks" class="csl-entry" role="listitem">
-Goodfellow, Ian J., Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. 2014. <span>“Generative Adversarial Networks.”</span> <a href="https://arxiv.org/abs/1406.2661">https://arxiv.org/abs/1406.2661</a>.
+<div id="ref-murphy2013machine" class="csl-entry" role="listitem">
+Murphy, Kevin P. 2013. <em>Machine Learning : A Probabilistic Perspective</em>. Cambridge, Mass. [u.a.]: MIT Press.
 </div>
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p><a href="https://en.wikipedia.org/wiki/Zero-sum_game">Wikipedia - Zero-sum game</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p><a href="http://reeves.ee.duke.edu/information_theory/lecture7-Differential_Entropy.pdf">ECE 587 / STA 563: Lecture 7 - Diﬀerential Entropy</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
