@@ -34,7 +34,7 @@ of Huffman coding.
 $$
 \bar \lambda = \mathbb E [ \lambda ]
 = \sum_{i=1}^N p(x_i) \lambda_i
-= \sum_{i=1}^N p(x_i) \lceil \log_2 \dfrac{1}{p(x_i)} \rceil
+= \sum_{i=1}^N p(x_i) \left\lceil \log_2 \dfrac{1}{p(x_i)} \right\rceil
 $$
 
 One thing we had a hard time deriving was $\lambda$.
