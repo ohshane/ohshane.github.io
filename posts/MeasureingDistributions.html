@@ -173,10 +173,11 @@ window.Quarto = {
    
   <ul>
   <li><a href="#proving-gibbs-inequality" id="toc-proving-gibbs-inequality" class="nav-link active" data-scroll-target="#proving-gibbs-inequality">Proving Gibbs’ inequality</a></li>
-  <li><a href="#entropy-cross-entropy-and-kl-divergence" id="toc-entropy-cross-entropy-and-kl-divergence" class="nav-link" data-scroll-target="#entropy-cross-entropy-and-kl-divergence">Entropy, cross entropy and KL divergence</a>
+  <li><a href="#kullback-leibler-divergence" id="toc-kullback-leibler-divergence" class="nav-link" data-scroll-target="#kullback-leibler-divergence">Kullback-Leibler divergence</a>
   <ul class="collapse">
   <li><a href="#jensen-shannon-divergence" id="toc-jensen-shannon-divergence" class="nav-link" data-scroll-target="#jensen-shannon-divergence">Jensen-Shannon divergence</a></li>
   </ul></li>
+  <li><a href="#mutual-information" id="toc-mutual-information" class="nav-link" data-scroll-target="#mutual-information">Mutual information</a></li>
   </ul>
 </nav>
     </div>
@@ -256,11 +257,17 @@ H(p,p) =
 =&amp; \, 0
 \end{align*}\]</span></p>
 </section>
-<section id="entropy-cross-entropy-and-kl-divergence" class="level2">
-<h2 class="anchored" data-anchor-id="entropy-cross-entropy-and-kl-divergence">Entropy, cross entropy and KL divergence</h2>
+<section id="kullback-leibler-divergence" class="level2">
+<h2 class="anchored" data-anchor-id="kullback-leibler-divergence">Kullback-Leibler divergence</h2>
 <p>We can reform the upper inequality as below. <span class="math inline">\(H(p,q)\)</span> is called the <strong>cross entropy</strong>.</p>
 <p><span class="math display">\[
-D_\text{KL}(p \| q) \triangleq H(p,q) - H(p,p) \geq 0
+D_\text{KL}(p \| q) \triangleq H(p,q) - H(p,p)
+\]</span></p>
+<p><span class="math display">\[
+H(p,q) - H(p,p) = \sum_{i=1}^{N} p_i \log \dfrac{p_i}{q_i} \geq 0
+\]</span></p>
+<p><span class="math display">\[
+D_\text{KL}(p \| q) = 0 \iff p = q
 \]</span></p>
 <p>Entropy of distribution is <strong>less than or equal to its cross entropy</strong> with any other distribution. The difference between the two quantities is the Kullback-Leibler divergence (relative entropy).</p>
 <p><span class="citation" data-cites="murphy2013machine">Murphy (<a href="#ref-murphy2013machine" role="doc-biblioref">2013</a>)</span> states that the cross entropy is the average number of bits needed to encode data coming from a source with distribution <span class="math inline">\(p\)</span> when we use model <span class="math inline">\(q\)</span> to define our codebook. The Kullback Leibler (KL) divergence is the average number of extra bits needed to encode the data, due to the fact that we used distribution <span class="math inline">\(q\)</span> to encode the data instead of the true distribution <span class="math inline">\(p\)</span>.</p>
@@ -274,10 +281,21 @@ D_\text{KL}(p \| q) \triangleq H(p,q) - H(p,p) \geq 0
 \]</span></p>
 <p>This will satisfy <span class="math inline">\(\mathrm{JSD}(p \| q) = \mathrm{JSD}(q \| p)\)</span>.</p>
 <p>Since <span class="math inline">\(D_\text{KL}\)</span> is non-negative, <span class="math inline">\(\mathrm{JSD}\)</span> also inherits this property. This will become useful when deriving the optimality of GANs.</p>
-
-
-
 </section>
+</section>
+<section id="mutual-information" class="level2">
+<h2 class="anchored" data-anchor-id="mutual-information">Mutual information</h2>
+<p>Consider two random variables, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. Suppose we want to know how much knowing one variable tells us about the other. The more they are correlated, the more different <span class="math inline">\(p(X,Y)\)</span> and <span class="math inline">\(p(X)p(Y)\)</span> will get. Defining the <span class="math inline">\(D_\text{KL}\)</span> between <span class="math inline">\(p(X,Y)\)</span> and <span class="math inline">\(p(X)p(Y)\)</span> can represent how different <span class="math inline">\(p(X,Y)\)</span> is from independence.</p>
+<p><span class="math display">\[
+I(X;Y) \triangleq D_\text{KL}(p(X,Y) \| p(X)p(Y))
+= \sum_{x} \sum_{y} p(x,y) \log \dfrac{p(x,y)}{p(x)p(y)}
+\]</span></p>
+<p><span class="math display">\[
+I(X;Y) = 0 \iff p(X,Y) = p(X)p(Y) \iff X \perp Y
+\]</span></p>
+
+
+
 </section>
 
 
