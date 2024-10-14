@@ -66,13 +66,21 @@ What this tells you is that for the given distribution $P$, $-\log P$ is global 
 =& \, 0
 \end{align*}
 
-## Entropy, cross entropy and KL divergence
+## Kullback-Leibler divergence
 
 We can reform the upper inequality as below.
 $H(p,q)$ is called the **cross entropy**.
 
 $$
-D_\text{KL}(p \| q) \triangleq H(p,q) - H(p,p) \geq 0
+D_\text{KL}(p \| q) \triangleq H(p,q) - H(p,p)
+$$
+
+$$
+H(p,q) - H(p,p) = \sum_{i=1}^{N} p_i \log \dfrac{p_i}{q_i} \geq 0
+$$
+
+$$
+D_\text{KL}(p \| q) = 0 \iff p = q
 $$
 
 Entropy of distribution is **less than or equal to its cross entropy** with any other distribution.
@@ -99,3 +107,20 @@ This will satisfy  $\mathrm{JSD}(p \| q) = \mathrm{JSD}(q \| p)$.
 
 Since $D_\text{KL}$ is non-negative, $\mathrm{JSD}$ also inherits this property.
 This will become useful when deriving the optimality of GANs.
+
+## Mutual information
+
+Consider two random variables, $X$ and $Y$. Suppose we want to know how much 
+knowing one variable tells us about the other. The more they are correlated, 
+the more different $p(X,Y)$ and $p(X)p(Y)$ will get. Defining the $D_\text{KL}$ 
+between $p(X,Y)$ and $p(X)p(Y)$ can represent how different $p(X,Y)$ is from independence.
+
+$$
+I(X;Y) \triangleq D_\text{KL}(p(X,Y) \| p(X)p(Y))
+= \sum_{x} \sum_{y} p(x,y) \log \dfrac{p(x,y)}{p(x)p(y)}
+$$
+
+$$
+I(X;Y) = 0 \iff p(X,Y) = p(X)p(Y) \iff X \perp Y
+$$
+
