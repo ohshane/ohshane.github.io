@@ -124,3 +124,67 @@ $$
 I(X;Y) = 0 \iff p(X,Y) = p(X)p(Y) \iff X \perp Y
 $$
 
+```{python}
+# | echo: false
+# | layout-ncol: 2
+# | label: fig-mutual-information
+# | fig-cap: "Mutual Information"
+# | fig-subcap: 
+# |   - "p(X,Y)"
+# |   - "p(X)p(Y)"
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
+
+mean = [0.0, 0.0]
+cov = [[1.0, 0.5],
+       [0.5, 1.0]]
+
+np.random.seed(42)
+x, y = np.random.multivariate_normal(mean, cov, 200).T
+heatmap, xedges, yedges = np.histogram2d(x, y, bins=20, range=[[-4,4],[-4,4]])
+heatmap /= heatmap.sum()
+
+X = heatmap.sum(0, keepdims=True)
+Y = heatmap.sum(1, keepdims=True)
+
+fig = plt.figure(figsize=(3,3))
+gs = GridSpec(2, 2, width_ratios=[0.2, 4], height_ratios=[4, 0.2], wspace=0.04, hspace=0.04)
+
+ax_main = fig.add_subplot(gs[0,1])
+ax_main.pcolormesh(xedges, yedges, heatmap)
+ax_main.set_axis_off()
+
+ax = fig.add_subplot(gs[0,0], sharey=ax_main)
+ax.pcolormesh([0,1], yedges, Y)
+ax.set_xticks([])
+ax.set_yticks(np.arange(-4,5,1))
+ax.set_ylabel('Y')
+
+ax = fig.add_subplot(gs[1,1], sharex=ax_main)
+ax.pcolormesh(xedges, [0,1], X)
+ax.set_xticks(np.arange(-4,5,1))
+ax.set_yticks([])
+ax.set_xlabel('X')
+plt.show()
+
+fig = plt.figure(figsize=(3,3))
+gs = GridSpec(2, 2, width_ratios=[0.2, 4], height_ratios=[4, 0.2], wspace=0.04, hspace=0.04)
+
+ax_main = fig.add_subplot(gs[0,1])
+ax_main.pcolormesh(xedges, yedges, np.matmul(Y,X))
+ax_main.set_axis_off()
+
+ax = fig.add_subplot(gs[0,0], sharey=ax_main)
+ax.pcolormesh([0,1], yedges, Y)
+ax.set_xticks([])
+ax.set_yticks(np.arange(-4,5,1))
+ax.set_ylabel('Y')
+
+ax = fig.add_subplot(gs[1,1], sharex=ax_main)
+ax.pcolormesh(xedges, [0,1], X)
+ax.set_xticks(np.arange(-4,5,1))
+ax.set_yticks([])
+ax.set_xlabel('X')
+plt.show()
+```
