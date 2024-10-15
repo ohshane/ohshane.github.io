@@ -1,0 +1,14 @@
+---
+title: Bayesian Concept Learning
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2024-10-15
+image: false
+categories:
+  - Bayesian
+---
+
+$$
+p(h|\mathcal D) = \dfrac{p(\mathcal D|h) p(h)}{\sum_{h^{'} \in \mathcal H} p(\mathcal D, h^{'})}
+$$
