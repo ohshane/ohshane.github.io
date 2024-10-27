@@ -1,0 +1,281 @@
+---
+title: Kubernetes Cluster with Raspberry Pi
+subtitle: From zero to hero!
+description: Inspired by NetworkChuck
+author: Shane Oh
+date: 2024-10-27
+image: false
+categories:
+  - Kubernetes
+---
+
+Start building your own Kubernetes (K8s) cluster with Raspberry Pi!
+
+Check out this [video](https://youtu.be/X9fSMGkjtug?si=dUl3tGijNQvn72Of) 
+from NetworkChuck for guidance and inspiration. 
+
+I’ve chosen to create a fully-fledged K8s cluster on Raspberry Pi, as a 
+hands-on way to learn and troubleshoot Kubernetes. If you'd prefer a 
+simpler setup, consider using lightweight distributions like K3s or K0s, 
+which are optimized for ease of use on resource-constrained devices.
+
+## Materials
+
+Here are the materials I started with to set up my Raspberry Pi Kubernetes 
+cluster:
+
+- 4 $\times$ Raspberry Pi 4 Model B (4GB)
+- 4 $\times$ Micro SD cards (128GB)
+- 4 $\times$ RJ45 Ethernet cables
+- 4 $\times$ USB Type-C cables
+- 4 $\times$ USB chargers
+- 1 $\times$ Network switch
+- 1 $\times$ Acrylic tower case
+
+Once assembled, the end product will look like this:
+
+![Raspberry Pi Kubernetes Cluster](RaspiK8s/images/RaspiK8s.jpg){height=300px}
+
+That wraps up the hardware setup! Now it’s time for the _fun part_.
+
+## Installing
+
+### Operating system
+
+Let's start by installing the OS. For this project, we’ll be using
+[ubuntu-20.04.5-preinstalled-server-arm64+raspi.img](https://cdimage.ubuntu.com/releases/20.04.5/release/).
+
+Let's bake some images onto the microSD cards. This part can feel tedious, 
+but fortunately, there’s dedicated imaging software from the official 
+Raspberry Pi project that simplifies the process. It lets you select an OS 
+from a dropdown list and burn images to the cards in just a few minutes.
+
+[Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+
+`cloud-init` gets handy when installing with configurations.
+it streamlines the process of setting up and configuring instances,
+whether you’re dealing with a cloud VM or a local server.
+By tweaking settings in `user-data` and `network-config`, you can:
+
+- Set up user accounts, SSH keys.
+- Install packages or run scripts on the first boot.
+- Configure network settings like static IP addresses or DNS.
+
+For my case, the network architecture is configured as:
+```
+ISP ─── modem
+          │
+        router ─── L2 switch
+     192.168.0.1       │
+          │            ├── knode-01  192.168.0.10
+        macbook        ├── knode-02  192.168.0.11
+    192.168.0.100      ├── knode-03  192.168.0.12
+                       └── knode-04  192.168.0.13
+```
+
+After booting up the servers, I recommend using tmux simply helps you run the same command
+across multiple SSH sessions simultaneously.
+Turn the sync on/off with {{<kbd Ctrl-b>}} {{<kbd : >}} `setw synchronize-panes on/off`.
+
+```{yaml filename='network-config'}
+version: 2
+ethernets:
+  eth0:
+    dhcp4: no
+    dhcp6: no
+    addresses: 
+      - 192.168.0.10/24
+    gateway4: 192.168.0.1
+    nameservers:
+      addresses:
+        - 8.8.8.8
+        - 8.8.4.4
+```
+
+### `kubelet`, `kubeadm` and `kubectl`
+
+- `kubelet`: Runs on each node in a Kubernetes cluster, managing 
+  containerized applications and ensuring their health.
+- `kubeadm`: Assists in setting up and configuring Kubernetes clusters 
+  by initializing the control plane and joining nodes.
+- `kubectl`: Command-line tool for interacting with the Kubernetes API, 
+  enabling deployment, management, and troubleshooting of applications 
+  within the cluster.
+
+The official documentation is [here](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl).
+
+:::{.callout-important}
+The default behavior of a kubelet is to fail to start if swap memory is detected on a node.
+This means that swap should either be disabled or tolerated by kubelet[^swapoff].
+
+[^swapoff]:[Kubernetes - Installing kubeadm, swap configuration](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#swap-configuration)
+
+```{.sh}
+sudo swapoff -a # <1>
+sudo sed -i '/ swap / s/^/#/' /etc/fstab # <2>
+free -h
+```
+1. Turns off swap memory temporarily.
+2. Disables swap on boot to keep it turned off after rebooting.
+:::
+
+https://www.danielcolomb.com/2023/07/16/building-a-kubernetes-cluster-with-raspberry-pis-and-containerd/
+
+### CRI runtime
+
+```{.sh}
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+sudo mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install -y containerd.io
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+
+```
+
+```{.sh}
+containerd config default | sudo tee /etc/containerd/config.toml
+```
+Change `SystemdCgroup` as `true`.
+
+
+```{.sh}
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay br_netfilter
+sudo systemctl restart containerd
+
+sudo sed -i '$ s/$/ cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 swapaccount=1/' /boot/firmware/cmdline.txt
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf 
+net.bridge.bridge-nf-call-ip6tables = 1 
+net.bridge.bridge-nf-call-iptables = 1 
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward = 1
+EOF
+
+sudo sysctl --system
+```
+
+
+
+
+
+
+
+
+
+https://kubernetes.io/docs/setup/production-environment/container-runtimes/
+
+https://github.com/containerd/containerd/blob/main/docs/getting-started.md#option-1-from-the-official-binaries
+
+
+Enable IPv4 packet forwarding
+```{.sh}
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward = 1
+EOF
+sudo sysctl --system
+```
+
+install containerd
+[containerd](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
+
+
+```{.sh}
+wget https://github.com/containerd/containerd/releases/download/v1.7.23/containerd-1.7.23-linux-arm64.tar.gz
+tar Cxzvf /usr/local containerd-1.7.23-linux-amd64.tar.gz
+
+wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+sudo mkdir -p /usr/local/lib/systemd/system
+sudo mv containerd.service /usr/local/lib/systemd/system/
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now containerd
+
+sudo mkdir /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+sudo systemctl restart containerd
+```
+
+install runc
+```{.sh}
+wget https://github.com/opencontainers/runc/releases/download/v1.2.0/runc.arm64
+install -m 755 runc.arm64 /usr/local/sbin/runc
+runc --version
+```
+
+install cni plugins
+
+
+```{.sh}
+wget https://github.com/containernetworking/plugins/releases/download/v1.6.0/cni-plugins-linux-arm64-v1.6.0.tgz
+sudo mkdir -p /opt/cni/bin
+sudo tar -C /opt/cni/bin -xzvf cni-plugins-linux-arm64-v1.6.0.tgz
+```
+
+```{.sh}
+sudo systemctl enable --now kubelet
+```
+
+planning for kube-flannel
+```{.sh}
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+```
+
+```{.sh}
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+or 
+```{.sh}
+export KUBECONFIG=/etc/kubernetes/admin.conf
+```
+
+
+install flannel
+
+```
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
+
+
+```
+sudo kubeadm join <master-node-ip>:6443 --token <your-token> --discovery-token-ca-cert-hash sha256:<ca-hash>
+```
+```{.sh}
+kubeadm token list # <1>
+kubeadm token create --ttl 72h # <2> if expired
+```
+get ca certificate hash
+```{.sh}
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | \
+openssl rsa -pubin -outform der 2>/dev/null | \
+openssl dgst -sha256 -hex | \
+sed 's/^.* //'
+```
+
+
+sudo apt install linux-modules-extra-raspi
+sudo apt install linux-modules-extra-raspi
+
+kubeadm join 192.168.0.10:6443 --token nlqf4x.gpav9a0kah76mn6a \
+        --discovery-token-ca-cert-hash sha256:8c6b2223821027e86a7868b938dd9d2fc249a70a7289a68aa58432a2c5e79788
