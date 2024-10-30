@@ -214,11 +214,34 @@ sudo apt-mark hold kubelet kubeadm kubectl
 sudo systemctl enable --now kubelet
 ```
 
-### Initialize control-plane
+#### Initialize control-plane
 
 We are planning to use [Flannel](https://mvallim.github.io/kubernetes-under-the-hood/documentation/kube-flannel.html) for container networking.
 
-It is a popular CNI (Conatainer Networking Interface) plugin in Kubernetes that provides an unified network across the entire cluster.
+Firstly, initialize the control plane with `kubeadm init` command and
+later join the worker nodes.
+
+```{.sh}
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+#### Join worker nodes
+
+```{.sh}
+kubeadm join 192.168.0.10:6443 \ # <1>
+  --token 1b120a.0349bfe2a349b331 \ 
+  --discovery-token-ca-cert-hash \
+    sha256:09321a32...39058c12
+```
+1. The IP address for the control plane's API server with the port defaulting to 6443.
+
+#### Apply CNI plugin
+
+Flannel is a popular CNI (Conatainer Networking Interface) plugin in Kubernetes that provides an unified network across the entire cluster.
 
 Flannel enables this by:
 
@@ -232,118 +255,88 @@ Flannel enables this by:
 
   - Host-GW: This backend enables direct routing between nodes on the same subnet, which can be useful in specific networking environments.
 
-We will first initialize the control plane with `kubeadm init` command and
-later join the worker nodes.
+SSH into the control-plane and create pods for CNI networking.
 
 ```{.sh}
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+wget https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+kubectl apply -f kube-flannel.yml
 ```
+
+#### Apply LoadBalancer
+
+We have created a baremetal Kubernetes cluster. To properly load balance services,
+consider using [MetalLB](https://metallb.universe.tf/installation/).
 
 ```{.sh}
-kubeadm join 192.168.0.10:6443 \ # <1>
-  --token 1b120a.0349bfe2a349b331 \ 
-  --discovery-token-ca-cert-hash \
-    sha256:09321a90b32485f99f1542375020389547823cd23239058c1230934a54003222
-```
-1. The IP address for the control plane. The default API server
-
-
-
-https://kubernetes.io/docs/setup/production-environment/container-runtimes/
-
-https://github.com/containerd/containerd/blob/main/docs/getting-started.md#option-1-from-the-official-binaries
-
-
-Enable IPv4 packet forwarding
-```{.sh}
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-net.ipv4.ip_forward = 1
-EOF
-sudo sysctl --system
+wget https://raw.githubusercontent.com/metallb/metallb/v0.14.8/config/manifests/metallb-native.yaml
+kubectl apply -f metallb-native.yaml
 ```
 
-install containerd
-[containerd](https://github.com/containerd/containerd/blob/main/docs/getting-started.md)
-
-
-```{.sh}
-wget https://github.com/containerd/containerd/releases/download/v1.7.23/containerd-1.7.23-linux-arm64.tar.gz
-tar Cxzvf /usr/local containerd-1.7.23-linux-amd64.tar.gz
-
-wget https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
-sudo mkdir -p /usr/local/lib/systemd/system
-sudo mv containerd.service /usr/local/lib/systemd/system/
-
-sudo systemctl daemon-reload
-sudo systemctl enable --now containerd
-
-sudo mkdir /etc/containerd
-containerd config default | sudo tee /etc/containerd/config.toml
-sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
-sudo systemctl restart containerd
+```{.yaml filename="metallb-config.yaml"}
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: metallb-pool-01
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.0.20-192.168.0.30 # <1>
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: metallb-adv-01
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - metallb-pool-01
 ```
-
-install runc
-```{.sh}
-wget https://github.com/opencontainers/runc/releases/download/v1.2.0/runc.arm64
-install -m 755 runc.arm64 /usr/local/sbin/runc
-runc --version
-```
-
-install cni plugins
-
+1. This IP range is used by MetalLB to assign external IPs to LoadBalancer services.
+Ensure that the range falls within your network’s subnet (e.g., `192.168.0.0/24`)
 
 ```{.sh}
-wget https://github.com/containernetworking/plugins/releases/download/v1.6.0/cni-plugins-linux-arm64-v1.6.0.tgz
-sudo mkdir -p /opt/cni/bin
-sudo tar -C /opt/cni/bin -xzvf cni-plugins-linux-arm64-v1.6.0.tgz
+kubectl apply -f metallb-config.yaml
 ```
 
-```{.sh}
-sudo systemctl enable --now kubelet
+## Accessing
+
+There are typical authentication methods to access the cluster: Bearer tokens
+and CA certificates. However, `kubectl` can support other methods such as client
+certificates and external authentication providers.
+
+The `~/.kube/config` file contains the CA certificate issued when
+initializing the node.
+
+To use the same configuration on another system, you can transfer the `config`
+file via `sftp` to the remote computer.
+
+```{.yaml filename="~/.kube/context"}
+apiVersion: v1
+kind: Config
+
+clusters:
+- name: raspberrypi
+  cluster:
+    certificate-authority-data: <super-secret>
+    server: https://<public-ip>:6443
+
+users:
+- name: raspberrypi-admin
+  user:
+    client-certificate-data: <super-secret>
+    client-key-data: <super-secret>
+
+contexts:
+- name: raspberrypi-admin@raspberrypi
+  context:
+    cluster: raspberrypi
+    user: raspberrypi-admin
+
+current-context: raspberrypi-admin@raspberrypi
+
+preferences: {}
 ```
 
-planning for kube-flannel
-```{.sh}
-sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-```
+With your router configured to forward requests from the public IP to the private IP,
+this sould work seamlessly.
 
-```{.sh}
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-```
-or 
-```{.sh}
-export KUBECONFIG=/etc/kubernetes/admin.conf
-```
-
-
-install flannel
-
-```
-kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-```
-
-
-```
-sudo kubeadm join <master-node-ip>:6443 --token <your-token> --discovery-token-ca-cert-hash sha256:<ca-hash>
-```
-```{.sh}
-kubeadm token list # <1>
-kubeadm token create --ttl 72h # <2> if expired
-```
-get ca certificate hash
-```{.sh}
-openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | \
-openssl rsa -pubin -outform der 2>/dev/null | \
-openssl dgst -sha256 -hex | \
-sed 's/^.* //'
-```
-
-
-sudo apt install linux-modules-extra-raspi
-sudo apt install linux-modules-extra-raspi
-
-kubeadm join 192.168.0.10:6443 --token nlqf4x.gpav9a0kah76mn6a \
-        --discovery-token-ca-cert-hash sha256:8c6b2223821027e86a7868b938dd9d2fc249a70a7289a68aa58432a2c5e79788
