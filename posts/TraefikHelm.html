@@ -204,7 +204,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Check the official <a href="https://github.com/traefik/traefik-helm-chart">Github</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add traefik https://traefik.github.io/charts</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create ns traefik</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install traefik traefik/traefik <span class="at">--set</span> ingressRoute.dashboard.enabled=true <span class="at">--namespace</span> traefik</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install traefik traefik/traefik <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> ingressRoute.dashboard.enabled=true <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> traefik</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="accessing-the-dashboard" class="level2">
 <h2 class="anchored" data-anchor-id="accessing-the-dashboard">Accessing the dashboard</h2>
@@ -215,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> k port-forward <span class="at">-n</span> traefik traefik-6d574648c7-gwb8t 8080:8080</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Forwarding</span> from 127.0.0.1:8080 <span class="at">-</span><span class="op">&gt;</span> 8080</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Forwarding</span> from <span class="pp">[</span><span class="ss">::1</span><span class="pp">]</span>:8080 <span class="at">-</span><span class="op">&gt;</span> 8080</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Access through <code>http://localhost:8080/dashboard/</code>.</p>
+<p>Access through <a href="http://localhost:8080/dashboard/"><code>http://localhost:8080/dashboard/</code></a>.</p>
 
 
 </section>
