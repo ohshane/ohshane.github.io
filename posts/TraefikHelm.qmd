@@ -4,7 +4,7 @@ subtitle: ""
 description: ""
 author: Shane Oh
 date: 2024-02-11
-image: false
+image: "https://raw.githubusercontent.com/traefik/traefik/master/docs/content/assets/img/traefik.logo.png"
 categories:
   - Kubernetes
   - Helm

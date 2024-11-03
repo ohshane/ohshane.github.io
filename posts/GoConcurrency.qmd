@@ -4,7 +4,7 @@ subtitle: Channel, waitgroup, mutex
 description: ""
 author: Shane Oh
 date: 2024-09-04
-image: false
+image: "https://go.dev/blog/go-brand/Go-Logo/PNG/Go-Logo_LightBlue.png"
 categories:
   - Go
 draft: true
