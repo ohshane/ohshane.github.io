@@ -1,0 +1,35 @@
+---
+title: Traefik dashboard with Helm
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2024-02-11
+image: false
+categories:
+  - Kubernetes
+  - Helm
+---
+
+## Install Traefik using Helm
+
+Check the official [Github](https://github.com/traefik/traefik-helm-chart).
+
+```{.sh}
+helm repo add traefik https://traefik.github.io/charts
+kubectl create ns traefik
+helm install traefik traefik/traefik --set ingressRoute.dashboard.enabled=true --namespace traefik
+```
+
+## Accessing the dashboard
+
+```{.sh}
+$ k get po -n traefik
+NAME                       READY   STATUS    RESTARTS   AGE
+traefik-6d574648c7-gwb8t   1/1     Running   0          18m
+
+$ k port-forward -n traefik traefik-6d574648c7-gwb8t 8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+```
+
+Access through `http://localhost:8080/dashboard/`.

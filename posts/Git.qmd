@@ -1,6 +1,6 @@
 ---
 title: Local Git Commands
-subtitle: "Ever thought of Git graphs as linked lists?"
+subtitle: ""
 description: ""
 author: Shane Oh
 date: 2023-04-14
