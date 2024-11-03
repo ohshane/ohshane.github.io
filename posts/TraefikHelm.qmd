@@ -17,7 +17,9 @@ Check the official [Github](https://github.com/traefik/traefik-helm-chart).
 ```{.sh}
 helm repo add traefik https://traefik.github.io/charts
 kubectl create ns traefik
-helm install traefik traefik/traefik --set ingressRoute.dashboard.enabled=true --namespace traefik
+helm install traefik traefik/traefik \
+  --set ingressRoute.dashboard.enabled=true \
+  --namespace traefik
 ```
 
 ## Accessing the dashboard
@@ -32,4 +34,4 @@ Forwarding from 127.0.0.1:8080 -> 8080
 Forwarding from [::1]:8080 -> 8080
 ```
 
-Access through `http://localhost:8080/dashboard/`.
+Access through [`http://localhost:8080/dashboard/`](http://localhost:8080/dashboard/).
