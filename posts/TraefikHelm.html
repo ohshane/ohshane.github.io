@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2024-10-04">
+<meta name="dcterms.date" content="2024-02-11">
 
-<title>Differential Entropy – Shane</title>
+<title>Traefik dashboard with Helm – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -74,39 +108,10 @@ ul.task-list li input[type="checkbox"] {
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Differential Entropy – Shane">
-<meta property="og:description" content="Entropy for PDFs">
+<meta property="og:title" content="Traefik dashboard with Helm – Shane">
+<meta property="og:description" content="">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -151,7 +156,8 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#proof" id="toc-proof" class="nav-link active" data-scroll-target="#proof">Proof</a></li>
+  <li><a href="#install-traefik-using-helm" id="toc-install-traefik-using-helm" class="nav-link active" data-scroll-target="#install-traefik-using-helm">Install Traefik using Helm</a></li>
+  <li><a href="#accessing-the-dashboard" id="toc-accessing-the-dashboard" class="nav-link" data-scroll-target="#accessing-the-dashboard">Accessing the dashboard</a></li>
   </ul>
 </nav>
     </div>
@@ -160,11 +166,10 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Differential Entropy</h1>
-<p class="subtitle lead">Entropy for PDFs</p>
+<h1 class="title">Traefik dashboard with Helm</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Entropy</div>
-    <div class="quarto-category">Information Theory</div>
+    <div class="quarto-category">Kubernetes</div>
+    <div class="quarto-category">Helm</div>
   </div>
   </div>
 
@@ -182,7 +187,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 4, 2024</p>
+      <p class="date">February 11, 2024</p>
     </div>
   </div>
   
@@ -194,78 +199,23 @@ window.Quarto = {
 </header>
 
 
-<p>What is entropy? Randomness? Compression lower bound?</p>
-<p>In this post, let’s think of entropy as a scalar function of the random variable <span class="math inline">\(X\)</span>. It is also correct to say it is a scalar function of a distribution.</p>
-<p>Let’s first look at the definition of entropy.</p>
-<p><span class="math display">\[
-H(X) = \mathbb E \left[ \log \dfrac{1}{p_X(X)} \right] = \sum_{x \in \mathcal X} p_X(x) \log \dfrac{1}{p_X(x)}
-\]</span></p>
-<p>There’s nothing particularly special here. We discussed this in the previous<br>
-<a href="../posts/Entropy.html">post</a>. We should be able to apply this concept to all types of<br>
-distributions — not just probability mass functions (PMFs), but also probability density functions (PDFs).</p>
-<p>Check this <a href="http://reeves.ee.duke.edu/information_theory/lecture7-Differential_Entropy.pdf">lecture note</a> from Duke to find out more.</p>
-<p>Differential entropy is defined as follows.</p>
-<p><span class="math display">\[
-h(X) = \mathbb E \left[ \log \dfrac{1}{f_X(X)} \right] = \int_{\mathcal X} f_X(x) \log \dfrac{1}{f_X(x)} dx
-\]</span></p>
-<p><span class="math inline">\(h\)</span> of PDFs are initially derived from <span class="math inline">\(H\)</span> by binning the continuous random variable <span class="math inline">\(X\)</span> into <span class="math inline">\(X^\Delta\)</span>. Let’s see how it works.</p>
-<section id="proof" class="level2">
-<h2 class="anchored" data-anchor-id="proof">Proof</h2>
-<p>First, prepare an arbitrary PDF. In this example, we are using <span class="math inline">\(\mathcal N(x;0,1)\)</span>.</p>
-<div id="e1880663" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="352" height="189"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>We set <span class="math inline">\(\Delta\)</span> to bin the continuous RV <span class="math inline">\(X\)</span>.</p>
-<div id="6134d028" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-3-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="352" height="189"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>By mean value theorem (MVT), for continuous <span class="math inline">\(f\)</span>:</p>
-<p><span class="math display">\[
-\exists x_i \in [i\Delta, (i+1)\Delta] :
-f_X(x_i) \Delta = \int_{i\Delta}^{(i+1)\Delta} f_X(x) dx
-\]</span></p>
-<div id="30c7b152" class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="352" height="189"></p>
-</figure>
-</div>
-</div>
-</div>
-<p><span class="math display">\[
-p_{X^\Delta}(x_i) \triangleq f_X(x_i) \Delta
-\]</span></p>
-<div id="e6b0b202" class="cell" data-execution_count="4">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-5-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="360" height="194"></p>
-</figure>
-</div>
-</div>
-</div>
-<p><span class="math display">\[\begin{align*}
-H(X^\Delta)
-&amp;= \sum_i p_{X^\Delta}(x_i) \log \dfrac{1}{p_{X^\Delta}(x_i)} \\
-&amp;= \sum_i f_X(x_i) \Delta \log \dfrac{1}{f_X(x_i) \Delta} \\
-&amp;= \sum_i f_X(x_i) \Delta \log \dfrac{1}{f_X(x_i)} + \sum_i f_X(x_i) \Delta \log \dfrac{1}{\Delta} \\
-&amp;\approx \int_{\mathcal X} f_X(x) \log \dfrac{1}{f_X(x)} dx + \log \dfrac{1}{\Delta} \\[20pt]
-
-h(X) &amp;= \lim_{\Delta \to 0} \left( H(X^\Delta) - \log \dfrac{1}{\Delta} \right)
-\end{align*}\]</span></p>
+<section id="install-traefik-using-helm" class="level2">
+<h2 class="anchored" data-anchor-id="install-traefik-using-helm">Install Traefik using Helm</h2>
+<p>Check the official <a href="https://github.com/traefik/traefik-helm-chart">Github</a>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add traefik https://traefik.github.io/charts</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create ns traefik</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install traefik traefik/traefik <span class="at">--set</span> ingressRoute.dashboard.enabled=true <span class="at">--namespace</span> traefik</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="accessing-the-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="accessing-the-dashboard">Accessing the dashboard</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> k get po <span class="at">-n</span> traefik</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">NAME</span>                       READY   STATUS    RESTARTS   AGE</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">traefik-6d574648c7-gwb8t</span>   1/1     Running   0          18m</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> k port-forward <span class="at">-n</span> traefik traefik-6d574648c7-gwb8t 8080:8080</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Forwarding</span> from 127.0.0.1:8080 <span class="at">-</span><span class="op">&gt;</span> 8080</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Forwarding</span> from <span class="pp">[</span><span class="ss">::1</span><span class="pp">]</span>:8080 <span class="at">-</span><span class="op">&gt;</span> 8080</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Access through <code>http://localhost:8080/dashboard/</code>.</p>
 
 
 </section>
