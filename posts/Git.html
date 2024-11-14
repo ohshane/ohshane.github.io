@@ -171,6 +171,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#git-reset" id="toc-git-reset" class="nav-link" data-scroll-target="#git-reset"><code>git reset</code></a></li>
   <li><a href="#git-revert" id="toc-git-revert" class="nav-link" data-scroll-target="#git-revert"><code>git revert</code></a></li>
+  <li><a href="#git-orphan" id="toc-git-orphan" class="nav-link" data-scroll-target="#git-orphan"><code>git orphan</code></a></li>
+  <li><a href="#git-ls-tree" id="toc-git-ls-tree" class="nav-link" data-scroll-target="#git-ls-tree"><code>git ls-tree</code></a></li>
   </ul>
 </nav>
     </div>
@@ -732,6 +734,30 @@ Note
 <div class="sourceCode" id="cb14"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert HEAD <span class="at">-m</span> 1</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> revert HEAD <span class="at">-m</span> 2 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The number (index) of a parent can be checked with the command <code>git cat-file -p HEAD</code>.</p>
+</section>
+<section id="git-orphan" class="level2">
+<h2 class="anchored" data-anchor-id="git-orphan"><code>git orphan</code></h2>
+<p><code>orphan</code> is often used to create a new branch that has no commit history.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">--orphan</span> gh-pages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="git-ls-tree" class="level2">
+<h2 class="anchored" data-anchor-id="git-ls-tree"><code>git ls-tree</code></h2>
+<p>This is useful when listing files without switching to it.</p>
+<div class="sourceCode" id="annotated-cell-15"><pre class="sourceCode sh code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-15-1"><a href="#annotated-cell-15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> ls-tree C1</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-15-2" class="code-annotation-target"><a href="#annotated-cell-15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> ls-tree <span class="at">-r</span> C1</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-15" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-15-3" class="code-annotation-target"><a href="#annotated-cell-15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> ls-tree <span class="at">-r</span> C1 <span class="at">--name-only</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-15" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="2" data-code-annotation="1">Recursive</span>
+</dd>
+<dt data-target-cell="annotated-cell-15" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-15" data-code-lines="3" data-code-annotation="2">Shows type and hash by default</span>
+</dd>
+</dl>
+<p>Following command copies files to HEAD.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout C1 <span class="at">--</span> file.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
