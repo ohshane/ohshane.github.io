@@ -1,0 +1,48 @@
+---
+title: Vibration Analysis
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2024-11-23
+categories:
+  - Vibration Analysis
+---
+
+## Introduction
+
+Vibration analysis is a critical aspect of mechanical engineering, allowing us to understand and optimize the dynamic behavior of machinery and structures. From diagnosing faults to designing stable systems, vibration analysis plays a pivotal role in ensuring reliability and safety.
+
+## Objectives of Vibration Analysis
+
+- Design Optimization
+   - Prevent **resonance**, which can cause excessive amplitude and potential failure.
+   - Example: Turbine blades, aircraft wings, building structures.
+
+- Condition Monitoring and Fault Diagnosis
+   - Early detection of faults in components like bearings, gears, and shafts.
+   - Supports **predictive maintenance** (PM) by identifying anomalies in frequency data.
+   - Strategies of PM.
+      - TBM: Time-based maintenance
+      - CBM: Condition-based maintenance
+
+## Key Techniques
+
+### Time Domain Analysis
+Examines signal variations over time to compute values like:
+
+- RMS (Root Mean Square)
+- Peak-to-peak amplitude
+- Maximum amplitude
+
+### Frequency Domain Analysis
+Transforms signals to the frequency domain to analyze components like:
+
+- Dominant frequencies
+- Amplitude and phase relationships
+- Fast Fourier Transform (FFT)
+
+## Applications in Real-World Scenarios
+
+### Rotating Machinery
+- Diagnose **bearing faults** by detecting anomalies at specific frequencies.
+- Identify **imbalances** based on amplitude in rotational frequencies.
