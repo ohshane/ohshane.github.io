@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.39">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-a41fc1c1af58e26a160ea912a82aa768.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -253,7 +253,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="32694754" class="cell" data-execution_count="2">
+<div id="ae41f74b" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -277,7 +277,7 @@ compression rate: 0.0%</code></pre>
 <h3 class="anchored" data-anchor-id="sec-huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="945f52b7" class="cell" data-execution_count="4">
+<div id="250fc07f" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
@@ -361,67 +361,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-140156467977104[36]
-140156467977104 -- 0 --&gt; 140156467970192
-140156467977104 -- 1 --&gt; 140156467971728
-140156467970192[21]
-140156467970192 -- 0 --&gt; 140156467975952
-140156467970192 -- 1 --&gt; 140156467977872
-140156467971728[15]
-140156467971728 -- 0 --&gt; 140156467979728
-140156467971728 -- 1 --&gt; 140156467976656
-140156467975952[13]
-140156467975952 -- 0 --&gt; 140156468048336
-140156467975952 -- 1 --&gt; 140156468041744
-140156467977872[8]
-140156467977872 -- 0 --&gt; 140156467974096
-140156467977872 -- 1 --&gt; 140156467983184
-140156467979728[8]
-140156467979728 -- 0 --&gt; 140156467982992
-140156467979728 -- 1 --&gt; 140156467982672
-140156467976656[7]
-140156467976656 -- 0 --&gt; 140156468050704
-140156467976656 -- 1 --&gt; 140156468044240
-140156468048336[' ': 7]
-140156468041744['A': 6]
-140156467974096[4]
-140156467974096 -- 0 --&gt; 140156467983248
-140156467974096 -- 1 --&gt; 140156467980944
-140156467983184[4]
-140156467983184 -- 0 --&gt; 140156467981776
-140156467983184 -- 1 --&gt; 140156467986384
-140156467982992[4]
-140156467982992 -- 0 --&gt; 140156468038864
-140156467982992 -- 1 --&gt; 140156468037072
-140156467982672[4]
-140156467982672 -- 0 --&gt; 140156468038416
-140156467982672 -- 1 --&gt; 140156468041808
-140156468050704['E': 4]
-140156468044240['P': 3]
-140156467983248[2]
-140156467983248 -- 0 --&gt; 140156467986064
-140156467983248 -- 1 --&gt; 140156468044304
-140156467980944[2]
-140156467980944 -- 0 --&gt; 140156468048272
-140156467980944 -- 1 --&gt; 140156468046480
-140156467981776[2]
-140156467981776 -- 0 --&gt; 140156468044816
-140156467981776 -- 1 --&gt; 140156468043600
-140156467986384[2]
-140156467986384 -- 0 --&gt; 140156468040912
-140156467986384 -- 1 --&gt; 140156468047312
-140156468038864['O': 2]
-140156468037072['T': 2]
-140156468038416['Y': 2]
-140156468041808['D': 2]
-140156467986064['W': 1]
-140156468044304['R': 1]
-140156468048272['C': 1]
-140156468046480['H': 1]
-140156468044816['S': 1]
-140156468043600['K': 1]
-140156468040912['L': 1]
-140156468047312['N': 1]
+139786622998224[36]
+139786622998224 -- 0 --&gt; 139786622994512
+139786622998224 -- 1 --&gt; 139786623003664
+139786622994512[21]
+139786622994512 -- 0 --&gt; 139786622998864
+139786622994512 -- 1 --&gt; 139786622997136
+139786623003664[15]
+139786623003664 -- 0 --&gt; 139786623003216
+139786623003664 -- 1 --&gt; 139786622996816
+139786622998864[13]
+139786622998864 -- 0 --&gt; 139785739221904
+139786622998864 -- 1 --&gt; 139785956126160
+139786622997136[8]
+139786622997136 -- 0 --&gt; 139786622993360
+139786622997136 -- 1 --&gt; 139786622992528
+139786623003216[8]
+139786623003216 -- 0 --&gt; 139786622998672
+139786623003216 -- 1 --&gt; 139786622997520
+139786622996816[7]
+139786622996816 -- 0 --&gt; 139785732948880
+139786622996816 -- 1 --&gt; 139785739396048
+139785739221904[' ': 7]
+139785956126160['A': 6]
+139786622993360[4]
+139786622993360 -- 0 --&gt; 139786622999760
+139786622993360 -- 1 --&gt; 139786623004752
+139786622992528[4]
+139786622992528 -- 0 --&gt; 139785956186384
+139786622992528 -- 1 --&gt; 139785956049360
+139786622998672[4]
+139786622998672 -- 0 --&gt; 139786622998480
+139786622998672 -- 1 --&gt; 139786624856912
+139786622997520[4]
+139786622997520 -- 0 --&gt; 139785951916368
+139786622997520 -- 1 --&gt; 139785732949008
+139785732948880['E': 4]
+139785739396048['P': 3]
+139786622999760[2]
+139786622999760 -- 0 --&gt; 139786623002512
+139786622999760 -- 1 --&gt; 139786622998160
+139786623004752[2]
+139786623004752 -- 0 --&gt; 139786622993104
+139786623004752 -- 1 --&gt; 139786624702096
+139785956186384[2]
+139785956186384 -- 0 --&gt; 139785732948944
+139785956186384 -- 1 --&gt; 139785961075792
+139785956049360[2]
+139785956049360 -- 0 --&gt; 139785739396112
+139785956049360 -- 1 --&gt; 139786624971728
+139786622998480['O': 2]
+139786624856912['T': 2]
+139785951916368['Y': 2]
+139785732949008['D': 2]
+139786623002512['W': 1]
+139786622998160['R': 1]
+139786622993104['C': 1]
+139786624702096['H': 1]
+139785732948944['S': 1]
+139785961075792['K': 1]
+139785739396112['L': 1]
+139786624971728['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -432,7 +432,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="eed6672f" class="cell" data-execution_count="8">
+<div id="547f3163" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -445,7 +445,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="a391c49e" class="cell" data-execution_count="10">
+<div id="93756183" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
@@ -658,8 +658,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -770,7 +768,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {
