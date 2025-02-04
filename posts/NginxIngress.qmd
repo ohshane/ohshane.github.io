@@ -10,10 +10,30 @@ categories:
 ---
 
 This document is based on a bare-metal Raspberry Pi Kubernetes (K8s) cluster, as discussed in the previous [post](RaspiK8s.qmd).
-To facilitate external access, a load balancer like `MetalLB` is required. The setup of `MetalLB` was covered in the past post.
+To facilitate external access, a load balancer like `MetalLB` is required. The setup of `MetalLB` was covered in the previous post.
 
-For this guide, we will use the **NGINX Ingress Controller**.
+For this guide, we will use the Ingress-Nginx Controller.
 
+## Introduction
+
+So, what is an ingress?
+There are two kinds of network communication: Ingress and Egress.
+
+- Ingress --- Controls external access to services within the cluster, typically via HTTP/HTTPS. It acts as a gateway for handling incoming traffic and routing it to the appropriate backend services.
+- Egress --- Manages outbound traffic from the cluster to external services. It defines policies to regulate how pods can communicate with external networks.
+
+Ingress is particularly useful for exposing services via a single endpoint while managing SSL termination, path-based routing, and load balancing.
+In contrast, egress rules help enforce security by restricting outbound connections.
+Manipulating ingress resource is similar to manipulating Nginx server with `nginx.conf`.
+
+The basic architecture is as follows.
+
+[![Nginx ingress architecture](NginxIngress/images/nginx-ingress-arch.png){#fig-ingress-nginx-arch}](https://aws.amazon.com/blogs/containers/exposing-kubernetes-applications-part-3-nginx-ingress-controller/)
+
+There is a detailed post about the [Ingress-Nginx Controller](https://aws.amazon.com/blogs/containers/exposing-kubernetes-applications-part-3-nginx-ingress-controller/) from the AWS blog. 
+Simply replace the load balancer in the @fig-ingress-nginx-arch with `MetalLB` service which
+is already exposed using the Ingress-Nginx Controller Service. This comes right out of the box.
+  
 ## Installation
 
 Installing the NGINX Ingress Controller is straightforward. Refer to the [official guide](https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters) and apply the following configuration.
@@ -58,7 +78,6 @@ spec:
 ```
 1. The default network type is `NodePort`. Change this to `LoadBalancer` when using `MetalLB`.
 
-
 ## Exposing the Ingress Controller
 
 To expose the ingress controller, define a service of type `NodePort` or `LoadBalancer`.
@@ -66,7 +85,7 @@ To expose the ingress controller, define a service of type `NodePort` or `LoadBa
 ```{.sh}
 $ kubectl edit svc ingress-nginx-controller -n ingress-nginx
 ```
-To route traffic to services inside your cluster, create an _Ingress resource_.
+To route traffic to services inside your cluster, create an Ingress resource.
 This routes `https://shaneoh.org` traffic to the `https://www.shaneoh.org` Kubernetes service on port 80.
 
 ```{.yaml filename=redirect-root-to-www.yaml}
@@ -76,8 +95,8 @@ metadata:
   name: redirect-root-to-www
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/permanent-redirect: "https://www.shaneoh.org"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: / # <1>
+    nginx.ingress.kubernetes.io/permanent-redirect: "http://www.shaneoh.org"
 spec:
   ingressClassName: nginx
   rules:
@@ -91,6 +110,16 @@ spec:
             name: placeholder-service
             port:
               number: 80
+```
+1. The routing path handled by the ingress service is omitted and then passed to the services.
+
+After creating the resource, check if it is running correctly by:
+
+```{.sh}
+$ kubectl get ingress
+
+NAME                   CLASS   HOSTS         ADDRESS        PORTS   AGE
+redirect-root-to-www   nginx   shaneoh.org   192.168.0.11   80      5d9h
 ```
 
 Stay tuned for future posts covering advanced ingress configurations, including Let's Encrypt TLS using cert-manager.
