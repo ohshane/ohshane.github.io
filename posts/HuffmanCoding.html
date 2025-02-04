@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.39">
+<meta name="generator" content="quarto-1.6.40">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-a41fc1c1af58e26a160ea912a82aa768.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-fa04ba71d101d419b397d6cd1f71a2b8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -253,7 +253,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="ae41f74b" class="cell" data-execution_count="2">
+<div id="ba932728" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -277,7 +277,7 @@ compression rate: 0.0%</code></pre>
 <h3 class="anchored" data-anchor-id="sec-huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="250fc07f" class="cell" data-execution_count="4">
+<div id="a521ca53" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
@@ -361,67 +361,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-139786622998224[36]
-139786622998224 -- 0 --&gt; 139786622994512
-139786622998224 -- 1 --&gt; 139786623003664
-139786622994512[21]
-139786622994512 -- 0 --&gt; 139786622998864
-139786622994512 -- 1 --&gt; 139786622997136
-139786623003664[15]
-139786623003664 -- 0 --&gt; 139786623003216
-139786623003664 -- 1 --&gt; 139786622996816
-139786622998864[13]
-139786622998864 -- 0 --&gt; 139785739221904
-139786622998864 -- 1 --&gt; 139785956126160
-139786622997136[8]
-139786622997136 -- 0 --&gt; 139786622993360
-139786622997136 -- 1 --&gt; 139786622992528
-139786623003216[8]
-139786623003216 -- 0 --&gt; 139786622998672
-139786623003216 -- 1 --&gt; 139786622997520
-139786622996816[7]
-139786622996816 -- 0 --&gt; 139785732948880
-139786622996816 -- 1 --&gt; 139785739396048
-139785739221904[' ': 7]
-139785956126160['A': 6]
-139786622993360[4]
-139786622993360 -- 0 --&gt; 139786622999760
-139786622993360 -- 1 --&gt; 139786623004752
-139786622992528[4]
-139786622992528 -- 0 --&gt; 139785956186384
-139786622992528 -- 1 --&gt; 139785956049360
-139786622998672[4]
-139786622998672 -- 0 --&gt; 139786622998480
-139786622998672 -- 1 --&gt; 139786624856912
-139786622997520[4]
-139786622997520 -- 0 --&gt; 139785951916368
-139786622997520 -- 1 --&gt; 139785732949008
-139785732948880['E': 4]
-139785739396048['P': 3]
-139786622999760[2]
-139786622999760 -- 0 --&gt; 139786623002512
-139786622999760 -- 1 --&gt; 139786622998160
-139786623004752[2]
-139786623004752 -- 0 --&gt; 139786622993104
-139786623004752 -- 1 --&gt; 139786624702096
-139785956186384[2]
-139785956186384 -- 0 --&gt; 139785732948944
-139785956186384 -- 1 --&gt; 139785961075792
-139785956049360[2]
-139785956049360 -- 0 --&gt; 139785739396112
-139785956049360 -- 1 --&gt; 139786624971728
-139786622998480['O': 2]
-139786624856912['T': 2]
-139785951916368['Y': 2]
-139785732949008['D': 2]
-139786623002512['W': 1]
-139786622998160['R': 1]
-139786622993104['C': 1]
-139786624702096['H': 1]
-139785732948944['S': 1]
-139785961075792['K': 1]
-139785739396112['L': 1]
-139786624971728['N': 1]
+140206401521424[36]
+140206401521424 -- 0 --&gt; 140206401522448
+140206401521424 -- 1 --&gt; 140206401533456
+140206401522448[21]
+140206401522448 -- 0 --&gt; 140206401531984
+140206401522448 -- 1 --&gt; 140206401532176
+140206401533456[15]
+140206401533456 -- 0 --&gt; 140206401530896
+140206401533456 -- 1 --&gt; 140206401535248
+140206401531984[13]
+140206401531984 -- 0 --&gt; 140206401529296
+140206401531984 -- 1 --&gt; 140206401521104
+140206401532176[8]
+140206401532176 -- 0 --&gt; 140206401530960
+140206401532176 -- 1 --&gt; 140206401534224
+140206401530896[8]
+140206401530896 -- 0 --&gt; 140206401534544
+140206401530896 -- 1 --&gt; 140206401531280
+140206401535248[7]
+140206401535248 -- 0 --&gt; 140206401520720
+140206401535248 -- 1 --&gt; 140206401528912
+140206401529296[' ': 7]
+140206401521104['A': 6]
+140206401530960[4]
+140206401530960 -- 0 --&gt; 140206401520592
+140206401530960 -- 1 --&gt; 140206401532560
+140206401534224[4]
+140206401534224 -- 0 --&gt; 140206401533392
+140206401534224 -- 1 --&gt; 140205857250832
+140206401534544[4]
+140206401534544 -- 0 --&gt; 140206401525392
+140206401534544 -- 1 --&gt; 140206401528656
+140206401531280[4]
+140206401531280 -- 0 --&gt; 140206401519888
+140206401531280 -- 1 --&gt; 140206401530064
+140206401520720['E': 4]
+140206401528912['P': 3]
+140206401520592[2]
+140206401520592 -- 0 --&gt; 140206401524240
+140206401520592 -- 1 --&gt; 140206401527248
+140206401532560[2]
+140206401532560 -- 0 --&gt; 140206401522128
+140206401532560 -- 1 --&gt; 140206401519952
+140206401533392[2]
+140206401533392 -- 0 --&gt; 140206401522064
+140206401533392 -- 1 --&gt; 140206401526032
+140205857250832[2]
+140205857250832 -- 0 --&gt; 140206401520784
+140205857250832 -- 1 --&gt; 140206401529872
+140206401525392['O': 2]
+140206401528656['T': 2]
+140206401519888['Y': 2]
+140206401530064['D': 2]
+140206401524240['W': 1]
+140206401527248['R': 1]
+140206401522128['C': 1]
+140206401519952['H': 1]
+140206401522064['S': 1]
+140206401526032['K': 1]
+140206401520784['L': 1]
+140206401529872['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -432,7 +432,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="547f3163" class="cell" data-execution_count="8">
+<div id="a0416acf" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -445,7 +445,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="93756183" class="cell" data-execution_count="10">
+<div id="cf695f08" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
