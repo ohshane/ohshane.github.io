@@ -1,7 +1,7 @@
 ---
 title: Ingress
 subtitle: LoadBalancer and Beyond
-description: ""
+description: "https://docs.nginx.com/images/icons/NGINX-Ingress-Controller-product-icon.svg"
 author: Shane Oh
 date: 2025-02-04
 image: False
