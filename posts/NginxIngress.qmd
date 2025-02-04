@@ -1,10 +1,10 @@
 ---
-title: Ingress
+title: Nginx Ingress
 subtitle: LoadBalancer and Beyond
-description: "https://docs.nginx.com/images/icons/NGINX-Ingress-Controller-product-icon.svg"
+description: ""
 author: Shane Oh
 date: 2025-02-04
-image: False
+image: "https://docs.nginx.com/images/icons/NGINX-Ingress-Controller-product-icon.svg"
 categories:
   - K8s
 ---
