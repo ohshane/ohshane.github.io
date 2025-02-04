@@ -1,0 +1,96 @@
+---
+title: Ingress
+subtitle: LoadBalancer and Beyond
+description: ""
+author: Shane Oh
+date: 2025-02-04
+image: False
+categories:
+  - K8s
+---
+
+This document is based on a bare-metal Raspberry Pi Kubernetes (K8s) cluster, as discussed in the previous [post](RaspiK8s.qmd).
+To facilitate external access, a load balancer like `MetalLB` is required. The setup of `MetalLB` was covered in the past post.
+
+For this guide, we will use the **NGINX Ingress Controller**.
+
+## Installation
+
+Installing the NGINX Ingress Controller is straightforward. Refer to the [official guide](https://kubernetes.github.io/ingress-nginx/deploy/#bare-metal-clusters) and apply the following configuration.
+
+This setup includes two primary components:
+
+- Deployment --- responsible for running the ingress controller pods
+- Service --- exposing the ingress controller to the network
+
+```{.yaml}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/version: 1.12.0
+  name: ingress-nginx-controller
+  namespace: ingress-nginx
+spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - appProtocol: http
+    name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  - appProtocol: https
+    name: https
+    port: 443
+    protocol: TCP
+    targetPort: https
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx
+    app.kubernetes.io/name: ingress-nginx
+  type: NodePort # <1>
+```
+1. The default network type is `NodePort`. Change this to `LoadBalancer` when using `MetalLB`.
+
+
+## Exposing the Ingress Controller
+
+To expose the ingress controller, define a service of type `NodePort` or `LoadBalancer`.
+
+```{.sh}
+$ kubectl edit svc ingress-nginx-controller -n ingress-nginx
+```
+To route traffic to services inside your cluster, create an _Ingress resource_.
+This routes `https://shaneoh.org` traffic to the `https://www.shaneoh.org` Kubernetes service on port 80.
+
+```{.yaml filename=redirect-root-to-www.yaml}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: redirect-root-to-www
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/permanent-redirect: "https://www.shaneoh.org"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "shaneoh.org"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: placeholder-service
+            port:
+              number: 80
+```
+
+Stay tuned for future posts covering advanced ingress configurations, including Let's Encrypt TLS using cert-manager.
