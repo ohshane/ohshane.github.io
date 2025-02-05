@@ -1,0 +1,204 @@
+---
+title: Rook Ceph
+subtitle: Distributed Storage Across Nodes
+description: ""
+author: Shane Oh
+date: 2025-02-04
+image: "https://rook.io/images/rook-logo.svg"
+categories:
+  - Kubernetes
+---
+
+## Introduction
+**Rook** is a cloud-native storage orchestrator for Kubernetes,
+and **Ceph** is a highly scalable distributed storage solution.
+Together, they provide a powerful storage management system for Kubernetes clusters.
+
+Ceph integrates with Kubernetes using the Container Storage Interface (CSI).
+CSI provides a standardized mechanism for Kubernetes to manage storage systems,
+allowing dynamic provisioning and lifecycle management of storage volumes.
+
+### Dynamic vs Static Provisioning
+Kubernetes supports two types of Persistent Volume (PV) provisioning: dynamic and static.
+
+- **Static Provisioning**: In this method, cluster administrators manually create Persistent Volumes (PVs)
+  before they can be claimed by applications.
+  This requires predefining storage resources,
+  which can be inefficient and lead to resource underutilization.
+- **Dynamic Provisioning**: This method enables Kubernetes to automatically provision storage resources
+  when a Persistent Volume Claim (PVC) is requested by an application.
+  It eliminates the need for pre-created PVs,
+  making storage management more flexible and scalable.
+  A **StorageClass** defines the parameters for dynamic provisioning of PVs.
+
+Rook Ceph is one of the dynamic storage solution which is widely used in cloud native architectures,
+and it is just 2 lines of `kubectl create` away!
+Check out more intriguing CNCF projects from the [Cloud Native Landscape](https://landscape.cncf.io).
+
+## Installing
+
+Refer to the official [quickstart](https://rook.io/docs/rook/latest-release/Getting-Started/quickstart/)
+guide for starting. The [slack](https://rook-io.slack.com/) channel was a big help for me
+when trouble shooting. Thanks Madhu!
+
+The hardware setup I used includes:
+
+- A RaspberryPi cluster (1 $\times$ Control-plane + 3 $\times$ Worker nodes)
+- 3 $\times$ USB thumb drives (128GB of storage each)
+
+### Attatching Pysical Storage
+
+Follow the [prerequisites](https://rook.io/docs/rook/latest-release/Getting-Started/Prerequisites/prerequisites/) when setting up the cluster for the first time.
+
+
+```{.sh}
+$ lsblk -f
+
+NAME        FSTYPE   LABEL       UUID        FSAVAIL FSUSE% MOUNTPOINT
+loop0       squashfs                               0   100% /snap/core20/1614
+loop1       squashfs                               0   100% /snap/core20/2437
+loop2       squashfs                               0   100% /snap/lxd/22761
+loop3       squashfs                               0   100% /snap/lxd/29631
+loop4       squashfs                               0   100% /snap/snapd/23546
+loop5       squashfs                               0   100% /snap/snapd/23259
+sda # <1>
+mmcblk0
+├─mmcblk0p1 vfat     system-boot 5D5B-XXXX      131M    48% /boot/firmware
+└─mmcblk0p2 ext4     writable    a7c22XXXX    104.5G     7% /
+```
+1. The drives were recognized as `/dev/sda` on each worker node. They should **NOT** have a file system
+or be mounted. If they do, use `wipefs --all /dev/sda` or [zap the device](https://rook.io/docs/rook/latest-release/Getting-Started/ceph-teardown/?h=clean#zapping-devices).
+
+
+:::{.callout-note}
+# Using a Thumb Drive
+There is a known issue when configuring Ceph with thumb drives.
+Check [this section](#when-using-a-thumb-drive) before provisioning.
+:::
+
+:::{.callout-note}
+# Not a Fresh Install?
+Delete all `/var/lib/rook` files on each node. Details are [here](#uninstalling).
+:::
+
+### Creating Resources
+
+```{.sh}
+$ git clone https://github.com/rook/rook.git
+cd rook/deploy/examples
+kubectl create -f crds.yaml -f common.yaml -f operator.yaml
+kubectl create -f cluster.yaml
+```
+
+```{.sh}
+$ kubectl get pods -n rook-ceph
+NAME                                                 READY   STATUS      RESTARTS   AGE
+csi-cephfsplugin-59rx4                               3/3     Running     0          12h
+csi-cephfsplugin-dhkpd                               3/3     Running     0          12h
+csi-cephfsplugin-provisioner-cccbd7c6d-m7844         6/6     Running     0          12h
+csi-cephfsplugin-provisioner-cccbd7c6d-wjvt6         6/6     Running     0          12h
+csi-cephfsplugin-vjdvb                               3/3     Running     0          12h
+csi-rbdplugin-fp67b                                  3/3     Running     0          12h
+csi-rbdplugin-gfnxh                                  3/3     Running     0          12h
+csi-rbdplugin-provisioner-897c4d994-77kxn            6/6     Running     0          12h
+csi-rbdplugin-provisioner-897c4d994-l5k6n            6/6     Running     0          12h
+csi-rbdplugin-t7kwq                                  3/3     Running     0          12h
+rook-ceph-crashcollector-knode-02-7d68dbc866-qsttt   1/1     Running     0          12h
+rook-ceph-crashcollector-knode-03-78b9d64f4f-g4bjx   1/1     Running     0          12h
+rook-ceph-crashcollector-knode-04-78bbd5d99b-7cj5t   1/1     Running     0          12h
+rook-ceph-exporter-knode-02-7d5f47b679-l9wvr         1/1     Running     0          12h
+rook-ceph-exporter-knode-03-7bcf6b9b88-cfvlk         1/1     Running     0          12h
+rook-ceph-exporter-knode-04-7d869467d9-q6pb9         1/1     Running     0          12h
+rook-ceph-mgr-a-5d69dfbd98-5cvdd                     3/3     Running     0          12h
+rook-ceph-mgr-b-6888bccd5c-nbf7b                     3/3     Running     0          12h
+rook-ceph-mon-a-5745c67854-xhccz                     2/2     Running     0          12h
+rook-ceph-mon-b-84c46c4589-rjptk                     2/2     Running     0          12h
+rook-ceph-mon-c-785c749569-p99wl                     2/2     Running     0          12h
+rook-ceph-operator-79f8754564-9bt5x                  1/1     Running     0          12h # <1>
+rook-ceph-osd-0-856fb9cd8f-c55h6                     2/2     Running     0          12h # <3> 
+rook-ceph-osd-1-856979b788-4zpbn                     2/2     Running     0          11h # <3>
+rook-ceph-osd-2-6df96bd8b7-gghrd                     2/2     Running     0          11h # <3>
+rook-ceph-osd-prepare-knode-02-cpspg                 0/1     Completed   0          11h # <2>
+rook-ceph-osd-prepare-knode-03-s7d97                 0/1     Completed   0          11h # <2>
+rook-ceph-osd-prepare-knode-04-5922p                 0/1     Completed   0          11h # <2>
+rook-ceph-tools-7dd7bbcd4b-vmfvj                     1/1     Running     0          12h # <4>
+```
+1. The `rook-ceph-operator` is installed using the `operator.yaml` file. When `create` or `apply` is used for new configurations, the operator detects the changes and updates the cluster to the desired state. If the cluster does not automatically apply the desired state, delete the operator pod using `kubectl delete` to force a restart, which will trigger a re-evaluation of the current state.  
+2. As the name suggests, `rook-ceph-osd-prepare` prepares the available disks on each node. It automatically detects the disks based on the selector defined in `cluster.yaml`.  
+3. The `rook-ceph-osd` is the actual daemon running on each node. It takes over five minutes for all instances to become fully operational.  
+4. The [Toolbox](https://rook.io/docs/rook/latest-release/Troubleshooting/ceph-toolbox/) can be installed and used for Rook debugging. Use `exec` to access the `rook-ceph-tools` pod for inspection.  
+
+
+```{.sh filename=toolbox}
+$ kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash
+bash-5.1$ ceph status
+  cluster:
+    id:     11aa2177-be62-417d-83f5-46e8bb97ecd1
+    health: HEALTH_OK
+
+  services:
+    mon: 3 daemons, quorum a,b,c (age 12h)
+    mgr: a(active, since 12h), standbys: b
+    osd: 3 osds: 3 up (since 11h), 3 in (since 12h)
+
+  data:
+    pools:   2 pools, 33 pgs
+    objects: 7 objects, 449 KiB
+    usage:   95 MiB used, 351 GiB / 352 GiB avail
+    pgs:     33 active+clean
+
+bash-5.1$ ceph df
+--- RAW STORAGE ---
+CLASS     SIZE    AVAIL    USED  RAW USED  %RAW USED
+hdd    352 GiB  351 GiB  95 MiB    95 MiB       0.03
+TOTAL  352 GiB  351 GiB  95 MiB    95 MiB       0.03
+
+--- POOLS ---
+POOL         ID  PGS   STORED  OBJECTS     USED  %USED  MAX AVAIL
+.mgr          1    1  449 KiB        2  1.3 MiB      0    111 GiB
+replicapool   2   32     19 B        5   12 KiB      0    111 GiB
+```
+
+## Uninstalling
+
+When tearing down the cluster, **PLEASE FOLLOW** the [instructions](https://rook.io/docs/rook/latest-release/Getting-Started/ceph-teardown/).
+
+After removing the resources from the K8s cluster, there can still be some remaining data that could
+interfere with the installation such as the `/var/lib/rook` folder defined in the `cluster.yaml`.
+
+```{.yaml filename=cluster.yaml}
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v19.2.0
+    allowUnsupported: false
+  dataDirHostPath: /var/lib/rook # <1>
+  ...
+```
+1. The path on the host where configuration files will be persisted. Must be specified. If there are multiple clusters, the directory must be unique for each cluster. **If you reinstall the cluster, make sure you delete this directory from each host or else the mons will fail to start on the new cluster.**
+
+## Troubleshooting
+
+### When using a thumb drive
+
+By default, Ceph does **NOT** accept USB thumb drives.
+This is due to Ceph detecting the `ID_BUS` value as `usb` and excluding such devices.
+
+To work around this, create a rule in `/etc/udev/rules.d/` to mimic a SCSI drive:
+
+```{.sh filename=/etc/udev/rules.d/99-usb-to-scsi.rules}
+ACTION=="add|change|online", ENV{ID_TYPE}=="disk", ENV{ID_BUS}=="usb", ENV{ID_SCSI}="1"
+ACTION=="add|change|online", ENV{ID_TYPE}=="disk", ENV{ID_BUS}=="usb", ENV{ID_BUS}="scsi"
+```
+
+```{.sh}
+$ udevadm control --reload-rules && udevadm trigger
+$ udevadm info --query=property /dev/sda | grep -i id_bus
+
+ID_BUS=scsi # <1>
+```
+1. If the old value persists, try physically detaching and reattaching the drive.
