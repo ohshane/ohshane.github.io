@@ -4,9 +4,9 @@ subtitle: LoadBalancer and Beyond
 description: ""
 author: Shane Oh
 date: 2025-02-04
-image: "https://docs.nginx.com/images/icons/NGINX-Ingress-Controller-product-icon.svg"
+image: False
 categories:
-  - K8s
+  - Kubernetes
 ---
 
 This document is based on a bare-metal Raspberry Pi Kubernetes (K8s) cluster, as discussed in the previous [post](RaspiK8s.qmd).
@@ -88,6 +88,8 @@ $ kubectl edit svc ingress-nginx-controller -n ingress-nginx
 To route traffic to services inside your cluster, create an Ingress resource.
 This routes `https://shaneoh.org` traffic to the `https://www.shaneoh.org` Kubernetes service on port 80.
 
+For more details check the blog post on [URI based versus Host based routing](https://guide.ncloud-docs.com/docs/k8s-k8sexamples-ingress) in Ingress.
+
 ```{.yaml filename=redirect-root-to-www.yaml}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -123,3 +125,7 @@ redirect-root-to-www   nginx   shaneoh.org   192.168.0.11   80      5d9h
 ```
 
 Stay tuned for future posts covering advanced ingress configurations, including Let's Encrypt TLS using cert-manager.
+
+
+
+
