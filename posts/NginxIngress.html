@@ -8,9 +8,8 @@
 
 <meta name="author" content="Shane Oh">
 <meta name="dcterms.date" content="2025-02-04">
-<meta name="description" content="https://docs.nginx.com/images/icons/NGINX-Ingress-Controller-product-icon.svg">
 
-<title>Ingress – Shane</title>
+<title>Nginx Ingress – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,8 +110,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Ingress – Shane">
-<meta property="og:description" content="https://docs.nginx.com/images/icons/NGINX-Ingress-Controller-product-icon.svg">
+<meta property="og:title" content="Nginx Ingress – Shane">
+<meta property="og:description" content="LoadBalancer and Beyond">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -168,18 +167,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Ingress</h1>
+<h1 class="title">Nginx Ingress</h1>
 <p class="subtitle lead">LoadBalancer and Beyond</p>
   <div class="quarto-categories">
-    <div class="quarto-category">K8s</div>
+    <div class="quarto-category">Kubernetes</div>
   </div>
   </div>
 
-<div>
-  <div class="description">
-    https://docs.nginx.com/images/icons/NGINX-Ingress-Controller-product-icon.svg
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
@@ -280,6 +274,7 @@ Figure&nbsp;1: Nginx ingress architecture
 <p>To expose the ingress controller, define a service of type <code>NodePort</code> or <code>LoadBalancer</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> kubectl edit svc ingress-nginx-controller <span class="at">-n</span> ingress-nginx</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To route traffic to services inside your cluster, create an Ingress resource. This routes <code>https://shaneoh.org</code> traffic to the <code>https://www.shaneoh.org</code> Kubernetes service on port 80.</p>
+<p>For more details check the blog post on <a href="https://guide.ncloud-docs.com/docs/k8s-k8sexamples-ingress">URI based versus Host based routing</a> in Ingress.</p>
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>redirect-root-to-www.yaml</strong></pre>
