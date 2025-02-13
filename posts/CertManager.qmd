@@ -1,0 +1,57 @@
+---
+title: Cert Manager
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2025-02-04
+image: "https://cert-manager.io/images/cert-manager-logo-icon.svg"
+categories:
+  - Kubernetes
+  - Ingress
+---
+
+After installing Nginx as the ingress controller, apply the following:
+
+```{.yaml filename="clusterissuer.yaml"}
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: user@example.com
+    privateKeySecretRef:
+      name: letsencrypt-key
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kuard
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # <1>
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - www.example.com
+    secretName: letsencrypt-tls
+  rules:
+  - host: www.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kuard
+            port:
+              number: 80
+```
+1. If using a `ClusterIssuer`, remember to update the Ingress annotation
+`cert-manager.io/issuer` to `cert-manager.io/cluster-issuer`.
+
