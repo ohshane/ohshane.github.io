@@ -75,7 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-fa04ba71d101d419b397d6cd1f71a2b8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ffe684a3cfcacf33da522e5f9f444eaa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -253,7 +253,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="3d57ae4a" class="cell" data-execution_count="2">
+<div id="c6b51b00" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -277,7 +277,7 @@ compression rate: 0.0%</code></pre>
 <h3 class="anchored" data-anchor-id="sec-huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="0f5526da" class="cell" data-execution_count="4">
+<div id="8ee05ef5" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
@@ -361,67 +361,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-139802003677520[36]
-139802003677520 -- 0 --&gt; 139802003630608
-139802003677520 -- 1 --&gt; 139802003672592
-139802003630608[21]
-139802003630608 -- 0 --&gt; 139802003675024
-139802003630608 -- 1 --&gt; 139802003624080
-139802003672592[15]
-139802003672592 -- 0 --&gt; 139802003627856
-139802003672592 -- 1 --&gt; 139802003620112
-139802003675024[13]
-139802003675024 -- 0 --&gt; 139802003514128
-139802003675024 -- 1 --&gt; 139802003517328
-139802003624080[8]
-139802003624080 -- 0 --&gt; 139802003635280
-139802003624080 -- 1 --&gt; 139802003626128
-139802003627856[8]
-139802003627856 -- 0 --&gt; 139802003621584
-139802003627856 -- 1 --&gt; 139802003628688
-139802003620112[7]
-139802003620112 -- 0 --&gt; 139802003513552
-139802003620112 -- 1 --&gt; 139802003514448
-139802003514128[' ': 7]
-139802003517328['A': 6]
-139802003635280[4]
-139802003635280 -- 0 --&gt; 139802003627728
-139802003635280 -- 1 --&gt; 139802003627408
-139802003626128[4]
-139802003626128 -- 0 --&gt; 139802003622992
-139802003626128 -- 1 --&gt; 139802003623312
-139802003621584[4]
-139802003621584 -- 0 --&gt; 139802003628368
-139802003621584 -- 1 --&gt; 139802003632976
-139802003628688[4]
-139802003628688 -- 0 --&gt; 139802003622416
-139802003628688 -- 1 --&gt; 139802003632336
-139802003513552['E': 4]
-139802003514448['P': 3]
-139802003627728[2]
-139802003627728 -- 0 --&gt; 139802003630736
-139802003627728 -- 1 --&gt; 139802003629456
-139802003627408[2]
-139802003627408 -- 0 --&gt; 139802003631696
-139802003627408 -- 1 --&gt; 139802003631184
-139802003622992[2]
-139802003622992 -- 0 --&gt; 139802003517264
-139802003622992 -- 1 --&gt; 139802003634320
-139802003623312[2]
-139802003623312 -- 0 --&gt; 139802003511248
-139802003623312 -- 1 --&gt; 139801657476624
-139802003628368['O': 2]
-139802003632976['T': 2]
-139802003622416['Y': 2]
-139802003632336['D': 2]
-139802003630736['W': 1]
-139802003629456['R': 1]
-139802003631696['C': 1]
-139802003631184['H': 1]
-139802003517264['S': 1]
-139802003634320['K': 1]
-139802003511248['L': 1]
-139801657476624['N': 1]
+140602533403792[36]
+140602533403792 -- 0 --&gt; 140602882777232
+140602533403792 -- 1 --&gt; 140602882779984
+140602882777232[21]
+140602882777232 -- 0 --&gt; 140602882769424
+140602882777232 -- 1 --&gt; 140602882774096
+140602882779984[15]
+140602882779984 -- 0 --&gt; 140602882778576
+140602882779984 -- 1 --&gt; 140602882780368
+140602882769424[13]
+140602882769424 -- 0 --&gt; 140602882769680
+140602882769424 -- 1 --&gt; 140602882774608
+140602882774096[8]
+140602882774096 -- 0 --&gt; 140602882781328
+140602882774096 -- 1 --&gt; 140602882776848
+140602882778576[8]
+140602882778576 -- 0 --&gt; 140602882784016
+140602882778576 -- 1 --&gt; 140602882784272
+140602882780368[7]
+140602882780368 -- 0 --&gt; 140602882773456
+140602882780368 -- 1 --&gt; 140602882772176
+140602882769680[' ': 7]
+140602882774608['A': 6]
+140602882781328[4]
+140602882781328 -- 0 --&gt; 140602882782544
+140602882781328 -- 1 --&gt; 140602882783184
+140602882776848[4]
+140602882776848 -- 0 --&gt; 140602882773840
+140602882776848 -- 1 --&gt; 140602340676944
+140602882784016[4]
+140602882784016 -- 0 --&gt; 140602882783568
+140602882784016 -- 1 --&gt; 140602882778448
+140602882784272[4]
+140602882784272 -- 0 --&gt; 140602882778768
+140602882784272 -- 1 --&gt; 140602882777616
+140602882773456['E': 4]
+140602882772176['P': 3]
+140602882782544[2]
+140602882782544 -- 0 --&gt; 140602882780176
+140602882782544 -- 1 --&gt; 140602882770704
+140602882783184[2]
+140602882783184 -- 0 --&gt; 140602882783248
+140602882783184 -- 1 --&gt; 140602882778704
+140602882773840[2]
+140602882773840 -- 0 --&gt; 140602882772560
+140602882773840 -- 1 --&gt; 140602882779856
+140602340676944[2]
+140602340676944 -- 0 --&gt; 140602882771408
+140602340676944 -- 1 --&gt; 140602882769872
+140602882783568['O': 2]
+140602882778448['T': 2]
+140602882778768['Y': 2]
+140602882777616['D': 2]
+140602882780176['W': 1]
+140602882770704['R': 1]
+140602882783248['C': 1]
+140602882778704['H': 1]
+140602882772560['S': 1]
+140602882779856['K': 1]
+140602882771408['L': 1]
+140602882769872['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -432,7 +432,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="2a9b22f2" class="cell" data-execution_count="8">
+<div id="541414f1" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -445,7 +445,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="08f99da5" class="cell" data-execution_count="10">
+<div id="6898baae" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
