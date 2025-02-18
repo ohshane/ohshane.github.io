@@ -5,6 +5,7 @@
       "/posts/Kubeconfig.html",
       "/posts/BinaryHeap.html",
       "/posts/CertManager.html",
+      "/posts/Cloudflare526.html",
       "/posts/DifferentialEntropy.html",
       "/posts/Entropy.html",
       "/posts/GAN.html",
@@ -20,8 +21,7 @@
       "/posts/NginxIngress.html",
       "/posts/RookCeph.html",
       "/posts/Tmux.html",
-      "/posts/TraefikHelm.html",
-      "/posts/VibrationAnalysis.html"
+      "/posts/TraefikHelm.html"
     ]
   }
 ]
