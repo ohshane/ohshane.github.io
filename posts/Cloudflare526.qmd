@@ -1,0 +1,41 @@
+---
+title: Cloudflare 526 Error
+subtitle: SSL/TLS Encryption Modes
+description: ""
+author: Shane Oh
+date: 2025-02-17
+image: false
+categories:
+  - Cloudflare
+---
+
+## Introduction
+
+```
+[Browser]--- A ---[Cloudflare]--- B ---[Origin server]
+```
+
+When using Cloudflare as a reverse proxy:
+
+### Connection A
+This connection is between the end-user's browser and Cloudflare's edge servers.
+It is typically encrypted via free SSL certificate.
+
+### Connection B
+This is the connection between Cloudflare and your origin server.
+It can be either HTTP or HTTPS depending on your server configurations.
+
+Cloudflare supports several [encryption modes](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/#custom-ssltls):
+
+- Off (no encryption)
+- Flexible
+- Full
+- Full (strict)
+- Strict (SSL-Only Origin Pull)
+
+
+**Use Full mode** if using a self-signed certificate.
+**Use Full (strict) mode** only if your certificate is
+issued by a trusted CA.
+
+![Cloudflare dashboard](Cloudflare526/images/cloudflare.png)
