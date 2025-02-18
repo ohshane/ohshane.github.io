@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2024-10-04">
+<meta name="dcterms.date" content="2025-02-17">
 
-<title>Differential Entropy – Shane</title>
+<title>Introduction to Keycloak – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -74,39 +108,11 @@ ul.task-list li input[type="checkbox"] {
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Differential Entropy – Shane">
-<meta property="og:description" content="Entropy for PDFs">
+<meta property="og:title" content="Introduction to Keycloak – Shane">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://ohshane.github.io/posts/none">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -151,7 +157,15 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#proof" id="toc-proof" class="nav-link active" data-scroll-target="#proof">Proof</a></li>
+  <li><a href="#features" id="toc-features" class="nav-link active" data-scroll-target="#features">Features</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#kubectl-create" id="toc-kubectl-create" class="nav-link" data-scroll-target="#kubectl-create">Kubectl create</a></li>
+  <li><a href="#change-default-admin-user" id="toc-change-default-admin-user" class="nav-link" data-scroll-target="#change-default-admin-user">Change Default Admin User</a></li>
+  <li><a href="#require-ssl-optional" id="toc-require-ssl-optional" class="nav-link" data-scroll-target="#require-ssl-optional">Require SSL (Optional)</a></li>
+  <li><a href="#frontend-url" id="toc-frontend-url" class="nav-link" data-scroll-target="#frontend-url">Frontend URL</a></li>
+  <li><a href="#expose-admin-console-via-ingress" id="toc-expose-admin-console-via-ingress" class="nav-link" data-scroll-target="#expose-admin-console-via-ingress">Expose Admin Console via Ingress</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -160,11 +174,10 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Differential Entropy</h1>
-<p class="subtitle lead">Entropy for PDFs</p>
+<h1 class="title">Introduction to Keycloak</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Entropy</div>
-    <div class="quarto-category">Information Theory</div>
+    <div class="quarto-category">Keycloak</div>
+    <div class="quarto-category">Kubernetes</div>
   </div>
   </div>
 
@@ -182,7 +195,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 4, 2024</p>
+      <p class="date">February 17, 2025</p>
     </div>
   </div>
   
@@ -194,80 +207,110 @@ window.Quarto = {
 </header>
 
 
-<p>What is entropy? Randomness? Compression lower bound?</p>
-<p>In this post, let’s think of entropy as a scalar function of the random variable <span class="math inline">\(X\)</span>. It is also correct to say it is a scalar function of a distribution.</p>
-<p>Let’s first look at the definition of entropy.</p>
-<p><span class="math display">\[
-H(X) = \mathbb E \left[ \log \dfrac{1}{p_X(X)} \right] = \sum_{x \in \mathcal X} p_X(x) \log \dfrac{1}{p_X(x)}
-\]</span></p>
-<p>There’s nothing particularly special here. We discussed this in the previous<br>
-<a href="../posts/Entropy.html">post</a>. We should be able to apply this concept to all types of<br>
-distributions — not just probability mass functions (PMFs), but also probability density functions (PDFs).</p>
-<p>Check this <a href="http://reeves.ee.duke.edu/information_theory/lecture7-Differential_Entropy.pdf">lecture note</a> from Duke to find out more.</p>
-<p>Differential entropy is defined as follows.</p>
-<p><span class="math display">\[
-h(X) = \mathbb E \left[ \log \dfrac{1}{f_X(X)} \right] = \int_{\mathcal X} f_X(x) \log \dfrac{1}{f_X(x)} dx
-\]</span></p>
-<p><span class="math inline">\(h\)</span> of PDFs are initially derived from <span class="math inline">\(H\)</span> by binning the continuous random variable <span class="math inline">\(X\)</span> into <span class="math inline">\(X^\Delta\)</span>. Let’s see how it works.</p>
-<section id="proof" class="level2">
-<h2 class="anchored" data-anchor-id="proof">Proof</h2>
-<p>First, prepare an arbitrary PDF. In this example, we are using <span class="math inline">\(\mathcal N(x;0,1)\)</span>.</p>
-<div id="9b2282ce" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display">
+<p>Keycloak is an open-source Identity and Access Management (IAM) solution aimed at modern applications and services.</p>
+<section id="features" class="level2">
+<h2 class="anchored" data-anchor-id="features">Features</h2>
+<ul>
+<li><strong>Single Sign-On (SSO)</strong>: Users authenticate with Keycloak rather than individual applications.</li>
+<li><strong>Identity Brokering and Social Login</strong>: Enable login with social networks like Google, Facebook, etc.</li>
+<li><strong>User Federation</strong>: Connect to existing user directories like LDAP or Active Directory.</li>
+<li><strong>Admin Console</strong>: Manage all aspects of Keycloak through a web-based GUI.</li>
+<li><strong>Standard Protocols</strong>: Supports OAuth 2.0, OpenID Connect, and SAML.</li>
+</ul>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
+<p>To get started with Keycloak on K8s, follow the <a href="https://www.keycloak.org/getting-started/getting-started-kube">official guide</a>:</p>
+<section id="kubectl-create" class="level3">
+<h3 class="anchored" data-anchor-id="kubectl-create">Kubectl create</h3>
+<p>Use the following command to deploy Keycloak on your Kubernetes cluster:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="at">kubectl create -f https://raw.githubusercontent.com/keycloak/keycloak-quickstarts/refs/heads/main/kubernetes/keycloak.yaml</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This creates a <code>deployment</code> and a <code>service</code> in the default namespace. Before exposing the admin console via ingress,</p>
+</section>
+<section id="change-default-admin-user" class="level3">
+<h3 class="anchored" data-anchor-id="change-default-admin-user">Change Default Admin User</h3>
+<p>Keycloak requires replacing the pre-configured admin account with a new one. This can be done by accessing the web-based admin console. Access the admin console within your local network (via <code>NodePort</code>, etc.).</p>
+<p>Log in with the username <code>admin</code> and password <code>admin</code> as described in the <a href="https://www.keycloak.org/getting-started/getting-started-kube#_start_keycloak">guide</a>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-2-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="352" height="189"></p>
+<p><img src="Keycloak/images/login.png" class="img-fluid figure-img"></p>
+<figcaption>Keycloak login</figcaption>
 </figure>
 </div>
+<p>Navigate to <strong>Manage &gt; Users &gt; User list</strong> and click the <strong>Add user</strong> button. Add a new admin user with a name you desire. This will create a new account without a password.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution
 </div>
 </div>
-<p>We set <span class="math inline">\(\Delta\)</span> to bin the continuous RV <span class="math inline">\(X\)</span>.</p>
-<div id="23f47d31" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
+<div class="callout-body-container callout-body">
+<p>Before deleting the old admin account, create the new one first and set a password. Otherwise, you will no longer be able to configure the account from the web.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you are willing to create a new admin account with the same name, Navigate to <strong>Configure &gt; Realm settings &gt; Login</strong> and toggle the <strong>Edit username</strong> button.</p>
+</div>
+</div>
+<p>After creating a new user, set a password for the new admin account by: Navigating to <strong>Credentials</strong> tab and clicking the <strong>Reset Password</strong> button.</p>
+<p>Now you can delete the old admin account.</p>
+</section>
+<section id="require-ssl-optional" class="level3">
+<h3 class="anchored" data-anchor-id="require-ssl-optional">Require SSL (Optional)</h3>
+<p>Keycloak requires SSL connection for external requests by default. Turn it off by navigating to <strong>Configure &gt; Realm settings &gt; General</strong> and toggle the <strong>Require SSL</strong> button.</p>
+</section>
+<section id="frontend-url" class="level3">
+<h3 class="anchored" data-anchor-id="frontend-url">Frontend URL</h3>
+<p>Lastly, just before exposing the admin console with ingress change the <strong>Frontend URL</strong> value in <strong>Configure &gt; Realm settings &gt; General</strong>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-3-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="352" height="189"></p>
+<p><img src="Keycloak/images/frontend-url.png" class="img-fluid figure-img"></p>
+<figcaption>Frontend URL</figcaption>
 </figure>
 </div>
-</div>
-</div>
-<p>By mean value theorem (MVT), for continuous <span class="math inline">\(f\)</span>:</p>
-<p><span class="math display">\[
-\exists x_i \in [i\Delta, (i+1)\Delta] :
-f_X(x_i) \Delta = \int_{i\Delta}^{(i+1)\Delta} f_X(x) dx
-\]</span></p>
-<div id="f60f9528" class="cell" data-execution_count="3">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="352" height="189"></p>
-</figure>
-</div>
-</div>
-</div>
-<p><span class="math display">\[
-p_{X^\Delta}(x_i) \triangleq f_X(x_i) \Delta
-\]</span></p>
-<div id="6f258079" class="cell" data-execution_count="4">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="DifferentialEntropy_files/figure-html/cell-5-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="360" height="194"></p>
-</figure>
-</div>
-</div>
-</div>
-<p><span class="math display">\[\begin{align*}
-H(X^\Delta)
-&amp;= \sum_i p_{X^\Delta}(x_i) \log \dfrac{1}{p_{X^\Delta}(x_i)} \\
-&amp;= \sum_i f_X(x_i) \Delta \log \dfrac{1}{f_X(x_i) \Delta} \\
-&amp;= \sum_i f_X(x_i) \Delta \log \dfrac{1}{f_X(x_i)} + \sum_i f_X(x_i) \Delta \log \dfrac{1}{\Delta} \\
-&amp;\approx \int_{\mathcal X} f_X(x) \log \dfrac{1}{f_X(x)} dx + \log \dfrac{1}{\Delta} \\[20pt]
+</section>
+<section id="expose-admin-console-via-ingress" class="level3">
+<h3 class="anchored" data-anchor-id="expose-admin-console-via-ingress">Expose Admin Console via Ingress</h3>
+<p>After configuring the upper settings, you are now ready to make the admin console accessable to the world!</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiVersion</span><span class="kw">:</span><span class="at"> networking.k8s.io/v1</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kind</span><span class="kw">:</span><span class="at"> Ingress</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span><span class="kw">:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">name</span><span class="kw">:</span><span class="at"> ingress-keycloak</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">annotations</span><span class="kw">:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">cert-manager.io/cluster-issuer</span><span class="kw">:</span><span class="at"> </span><span class="st">"letsencrypt-prod"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">nginx.ingress.kubernetes.io/rewrite-target</span><span class="kw">:</span><span class="at"> /</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">spec</span><span class="kw">:</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ingressClassName</span><span class="kw">:</span><span class="at"> nginx</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">tls</span><span class="kw">:</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">hosts</span><span class="kw">:</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> auth.shaneoh.org</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">secretName</span><span class="kw">:</span><span class="at"> letsencrypt-tls</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">host</span><span class="kw">:</span><span class="at"> auth.shaneoh.org</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">http</span><span class="kw">:</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">paths</span><span class="kw">:</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">path</span><span class="kw">:</span><span class="at"> /</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">pathType</span><span class="kw">:</span><span class="at"> Prefix</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">backend</span><span class="kw">:</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="fu">service</span><span class="kw">:</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">name</span><span class="kw">:</span><span class="at"> keycloak</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">port</span><span class="kw">:</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="at">              </span><span class="fu">number</span><span class="kw">:</span><span class="at"> </span><span class="dv">8080</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-h(X) &amp;= \lim_{\Delta \to 0} \left( H(X^\Delta) - \log \dfrac{1}{\Delta} \right)
-\end{align*}\]</span></p>
 
-
+</section>
 </section>
 
 </main> <!-- /main -->
