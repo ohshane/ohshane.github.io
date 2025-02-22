@@ -7,9 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2024-02-11">
+<meta name="dcterms.date" content="2025-02-20">
+<meta name="description" content="Build your own OICD provider with Keycloak">
 
-<title>Traefik dashboard with Helm – Shane</title>
+<title>OpenID Connect – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -110,9 +111,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Traefik dashboard with Helm – Shane">
-<meta property="og:description" content="">
-<meta property="og:image" content="https://raw.githubusercontent.com/traefik/traefik/master/docs/content/assets/img/traefik.logo.png">
+<meta property="og:title" content="OpenID Connect – Shane">
+<meta property="og:description" content="Build your own OICD provider with Keycloak">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -157,8 +157,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#install-traefik-using-helm" id="toc-install-traefik-using-helm" class="nav-link active" data-scroll-target="#install-traefik-using-helm">Install Traefik using Helm</a></li>
-  <li><a href="#accessing-the-dashboard" id="toc-accessing-the-dashboard" class="nav-link" data-scroll-target="#accessing-the-dashboard">Accessing the dashboard</a></li>
+  <li><a href="#authentication-and-authorization" id="toc-authentication-and-authorization" class="nav-link active" data-scroll-target="#authentication-and-authorization">Authentication and Authorization</a>
+  <ul class="collapse">
+  <li><a href="#authentication-authn" id="toc-authentication-authn" class="nav-link" data-scroll-target="#authentication-authn">Authentication (AuthN)</a></li>
+  <li><a href="#authorization-authz" id="toc-authorization-authz" class="nav-link" data-scroll-target="#authorization-authz">Authorization (AuthZ)</a></li>
+  </ul></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a></li>
+  <li><a href="#flow" id="toc-flow" class="nav-link" data-scroll-target="#flow">Flow</a>
+  <ul class="collapse">
+  <li><a href="#authentication-request" id="toc-authentication-request" class="nav-link" data-scroll-target="#authentication-request">Authentication Request</a></li>
+  <li><a href="#token-request" id="toc-token-request" class="nav-link" data-scroll-target="#token-request">Token Request</a></li>
+  <li><a href="#userinfo-request" id="toc-userinfo-request" class="nav-link" data-scroll-target="#userinfo-request">UserInfo Request</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -167,13 +178,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Traefik dashboard with Helm</h1>
+<h1 class="title">OpenID Connect</h1>
+<p class="subtitle lead">Difference Between OAuth2.0 and More!</p>
   <div class="quarto-categories">
+    <div class="quarto-category">Keycloak</div>
     <div class="quarto-category">Kubernetes</div>
-    <div class="quarto-category">Helm</div>
   </div>
   </div>
 
+<div>
+  <div class="description">
+    Build your own OICD provider with Keycloak
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -188,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 11, 2024</p>
+      <p class="date">February 20, 2025</p>
     </div>
   </div>
   
@@ -200,27 +217,174 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="install-traefik-using-helm" class="level2">
-<h2 class="anchored" data-anchor-id="install-traefik-using-helm">Install Traefik using Helm</h2>
-<p>Check the official <a href="https://github.com/traefik/traefik-helm-chart">Github</a>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> repo add traefik https://traefik.github.io/charts</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kubectl</span> create ns traefik</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">helm</span> install traefik traefik/traefik <span class="dt">\</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> ingressRoute.dashboard.enabled=true <span class="dt">\</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--namespace</span> traefik</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<!-- https://www.youtube.com/watch?v=996OiexHze0
+https://github.com/keycloak/keycloak/discussions/14398 -->
+<p>This document is based on the <a href="https://openid.net/specs/openid-connect-core-1_0.html">OpenID Connect Core</a> specification. Additionally, the <a href="https://www.youtube.com/watch?v=996OiexHze0">video</a> by Okta elucidates the core idea of the whole concept with a simple diagram. Great explaination Nate!</p>
+<p>Before we begin, let’s talk about auth first.</p>
+<section id="authentication-and-authorization" class="level2">
+<h2 class="anchored" data-anchor-id="authentication-and-authorization">Authentication and Authorization</h2>
+<p>Authentication and Authorization are two fundamental concepts in the world of security.</p>
+<section id="authentication-authn" class="level3">
+<h3 class="anchored" data-anchor-id="authentication-authn">Authentication (AuthN)</h3>
+<p>Authentication is the process of verifying the identity of a user or system. It answers the question: <strong>Who are you?</strong></p>
+<p>Common methods of authentication include:</p>
+<ul>
+<li>Username and password</li>
+<li>Multi-factor authentication (MFA)</li>
+</ul>
 </section>
-<section id="accessing-the-dashboard" class="level2">
-<h2 class="anchored" data-anchor-id="accessing-the-dashboard">Accessing the dashboard</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> k get po <span class="at">-n</span> traefik</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">NAME</span>                       READY   STATUS    RESTARTS   AGE</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">traefik-6d574648c7-gwb8t</span>   1/1     Running   0          18m</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> k port-forward <span class="at">-n</span> traefik traefik-6d574648c7-gwb8t 8080:8080</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">Forwarding</span> from 127.0.0.1:8080 <span class="at">-</span><span class="op">&gt;</span> 8080</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">Forwarding</span> from <span class="pp">[</span><span class="ss">::1</span><span class="pp">]</span>:8080 <span class="at">-</span><span class="op">&gt;</span> 8080</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Access through <a href="http://localhost:8080/dashboard/"><code>http://localhost:8080/dashboard/</code></a>.</p>
+<section id="authorization-authz" class="level3">
+<h3 class="anchored" data-anchor-id="authorization-authz">Authorization (AuthZ)</h3>
+<p>Authorization, on the other hand, determines what an authenticated user or system is allowed to do. It answers the question: **What are you allowed to do?</p>
+<p>Authorization typically involves:</p>
+<ul>
+<li>Role-based access control (RBAC)</li>
+<li>Attribute-based access control (ABAC)</li>
+</ul>
+<p>Understanding the difference between AuthN and AuthZ is crucial for implementing secure systems. While authentication ensures that the user is who they claim to be, authorization ensures that the user has permission to access the requested resources.</p>
+</section>
+</section>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<blockquote class="blockquote">
+<p>OpenID Connect 1.0 is a simple identity layer on top of the OAuth 2.0 protocol. It enables Clients to verify the identity of the End-User based on the authentication performed by an Authorization Server, as well as to obtain basic profile information about the End-User in an interoperable and REST-like manner.</p>
+</blockquote>
+<p><a href="https://openid.net/specs/openid-connect-core-1_0.html#Overview">Section 1.3.</a> explains the steps that the OpenID Connect (OIDC) protocol follows from a bird’s-eye view.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="OIDC/images/flow.jpg" class="img-fluid figure-img"></p>
+<figcaption>General steps of OpenID Connect</figcaption>
+</figure>
+</div>
+<p>There are three actors in this diagram.</p>
+<ul>
+<li>End-User: The person who clicks, types, user credentials to get logged in.</li>
+<li>RP (Relying Party): The application that wants to verify the identity of the End-User and obtain information about the End-User.</li>
+<li>OP (OpenID Provider): The server that authenticates the End-User and provides the identity information to the RP.</li>
+</ul>
+</section>
+<section id="prerequisites" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
+<p>Let’s take an example with Keycloak to understand the steps involved in the OpenID Connect flow. In this example, Keycloak is acting as an OP.</p>
+<p>In Keycloak, a realm is a space where you manage objects such as users, applications, and roles. Each realm is isolated from other realms and can have its own configuration and settings.</p>
+<p>Go to the dropdown menu in the upper left menu and select the realm you want to configure. Then, follow these steps:</p>
+<ol type="1">
+<li><strong>Create realm</strong>: This requires a name which will be used as a <code>REALM_NAME</code> later on.</li>
+<li><strong>Manage &gt; Clients &gt; Clients list &gt; Create client</strong>: This creates an RP with a distinctive name <code>CLIENT_ID</code>.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="OIDC/images/clients.png" class="img-fluid figure-img"></p>
+<figcaption>Keycloak Clients</figcaption>
+</figure>
+</div>
+</section>
+<section id="flow" class="level2">
+<h2 class="anchored" data-anchor-id="flow">Flow</h2>
+<section id="authentication-request" class="level3">
+<h3 class="anchored" data-anchor-id="authentication-request">Authentication Request</h3>
+<p>The first request is made by the client application when the <code>Login with Keycloak</code> button is clicked. This redirects the the browser’s page to the Keycloak’s auth page.</p>
+<div class="sourceCode" id="annotated-cell-1"><pre class="sourceCode jsx code-annotation-code code-with-copy code-annotated"><code class="sourceCode javascriptreact"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;button</span></span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> (</span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">window</span><span class="op">.</span><span class="at">location</span><span class="op">.</span><span class="at">href</span> <span class="op">=</span> <span class="vs">`https://</span><span class="sc">${</span>HOST<span class="sc">}</span><span class="vs">/auth/realms/</span><span class="sc">${</span>REALM_NAME<span class="sc">}</span><span class="vs">/protocol/openid-connect/auth`</span></span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="vs">`?client_id=</span><span class="sc">${</span>CLIENT_ID<span class="sc">}</span><span class="vs">`</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-5" class="code-annotation-target"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="vs">`&amp;redirect_uri=</span><span class="sc">${</span>REDIRECT_URI<span class="sc">}</span><span class="vs">`</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="vs">`&amp;response_type=</span><span class="sc">${</span>RESPONSE_TYPE<span class="sc">}</span><span class="vs">`</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-7" class="code-annotation-target"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> <span class="vs">`&amp;scope=</span><span class="sc">${</span>SCOPE<span class="sc">}</span><span class="vs">`</span></span>
+<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>  )<span class="va">}</span></span>
+<span id="annotated-cell-1-9"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">&gt;</span></span>
+<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-hidden="true" tabindex="-1"></a>  Login with Keycloak</span>
+<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/button&gt;</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="5" data-code-annotation="1">The RP’s callback url. <code>https://www.shaneoh.org/callback</code> in this case.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="6" data-code-annotation="2">Either <code>code</code> or <code>token</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="7" data-code-annotation="3">Usually <code>openid</code>, <code>openid email</code>, <code>openid email profile</code> will do.</span>
+</dd>
+</dl>
+<p>Notice that there is no <strong>fetch</strong> request in this button. Instead, it simply redirects the page.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The RP does not make a direct API request to the OP. Instead, it redirects the user’s browser to the OP’s authentication page. Since this is a browser-driven interaction, <strong>the only way to pass information is through URL parameters.</strong></p>
+</div>
+</div>
+<p>After the end-user’s <code>username:password</code> input is finished and the login button (of Keycloak’s) is pressed, this is when the first API request is invoked.</p>
+<p>The click of a login button will invoke the authentication request, and Keycloak will validate the user’s credentials. If successful, Keycloak will redirect the user back to the specified <code>redirect_uri</code> with a query parameter containing an authorization code or an authorization token. This can be chosen with the <code>RESPONSE_TYPE</code> parameter by setting <code>code</code> or <code>token</code>.</p>
+<p>For security reasons, the Authorization Code Flow (<code>RESPONSE_TYPE=code</code>) is preferred, as it minimizes the risk of exposing sensitive information through query parameters.</p>
+<p>Sometimes there are some cases when only client service (React etc.) exists. In theses cases the impliclit flow is used by retrieving access token right away.</p>
+</section>
+<section id="token-request" class="level3">
+<h3 class="anchored" data-anchor-id="token-request">Token Request</h3>
+<p>Once the client application receives the authorization code, it needs to exchange this code for an access token. This is done by making a POST request to the Keycloak token endpoint.</p>
+<ul>
+<li><code>grant_type</code>: This should be set to <code>authorization_code</code>.</li>
+<li><code>code</code>: The authorization code received from the previous step.</li>
+<li><code>redirect_uri</code>: The same redirect URI used in the authentication request.</li>
+<li><code>client_id</code>: The client ID of the application.</li>
+<li><code>client_secret</code>: The client secret, if client authentication is required.</li>
+</ul>
+<p>The request should be made with the <code>Content-Type</code> header set to <code>application/x-www-form-urlencoded</code>.</p>
+<p>Here is an example of how to make this request using JavaScript:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> tokenRequest <span class="op">=</span> <span class="kw">async</span> (authCode) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="vs">`https://</span><span class="sc">${</span>HOST<span class="sc">}</span><span class="vs">/auth/realms/</span><span class="sc">${</span>REALM_NAME<span class="sc">}</span><span class="vs">/protocol/openid-connect/token`</span><span class="op">,</span> {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">method</span><span class="op">:</span> <span class="st">'POST'</span><span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">headers</span><span class="op">:</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">'Content-Type'</span><span class="op">:</span> <span class="st">'application/x-www-form-urlencoded'</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">body</span><span class="op">:</span> <span class="kw">new</span> <span class="fu">URLSearchParams</span>({</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">grant_type</span><span class="op">:</span> <span class="st">'authorization_code'</span><span class="op">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">code</span><span class="op">:</span> authCode<span class="op">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">redirect_uri</span><span class="op">:</span> REDIRECT_URI<span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">client_id</span><span class="op">:</span> CLIENT_ID<span class="op">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">client_secret</span><span class="op">:</span> CLIENT_SECRET</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>response<span class="op">.</span><span class="at">ok</span>) {</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">'Token request failed'</span>)<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> tokenData <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> tokenData<span class="op">;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="userinfo-request" class="level3">
+<h3 class="anchored" data-anchor-id="userinfo-request">UserInfo Request</h3>
+<p>After obtaining the access token, the client application can use it to request user information from the Keycloak UserInfo endpoint. This endpoint returns claims about the authenticated user.</p>
+<p>Here is an example of how to make this request using JavaScript:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> userInfoRequest <span class="op">=</span> <span class="kw">async</span> (accessToken) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="vs">`https://</span><span class="sc">${</span>HOST<span class="sc">}</span><span class="vs">/auth/realms/</span><span class="sc">${</span>REALM_NAME<span class="sc">}</span><span class="vs">/protocol/openid-connect/userinfo`</span><span class="op">,</span> {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">method</span><span class="op">:</span> <span class="st">'GET'</span><span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">headers</span><span class="op">:</span> {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">'Authorization'</span><span class="op">:</span> <span class="vs">`Bearer </span><span class="sc">${</span>accessToken<span class="sc">}</span><span class="vs">`</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>response<span class="op">.</span><span class="at">ok</span>) {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">'UserInfo request failed'</span>)<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> userInfo <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> userInfo<span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
