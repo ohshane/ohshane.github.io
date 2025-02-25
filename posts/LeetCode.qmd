@@ -1,0 +1,90 @@
+---
+title: "How to Crack the Coding Interview"
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2025-02-25
+image: false
+categories:
+  - DSA
+---
+
+- https://neetcode.io
+- https://leetcode.com
+
+## Roadmap
+
+```{dot}
+digraph DSA_Topics {
+    rankdir=TB;
+    node [shape=box, fontsize=20];
+
+    "Arrays & Hashing" -> "Two Pointers";
+    "Arrays & Hashing" -> "Stack";
+    
+    "Two Pointers" -> "Binary Search";
+    "Two Pointers" -> "Sliding Window";
+    "Two Pointers" -> "Linked List";
+    
+    "Binary Search" -> "Trees";
+    "Linked List" -> "Trees";
+    
+    "Trees" -> "Tries";
+    "Trees" -> "Heap / Priority Queue";
+    "Trees" -> "Backtracking";
+
+    "Heap / Priority Queue" -> "Intervals";
+    "Heap / Priority Queue" -> "Greedy";
+    "Heap / Priority Queue" -> "Advanced Graphs";
+
+    "Backtracking" -> "Graphs";
+    "Backtracking" -> "1-D DP";
+    
+    "Graphs" -> "Advanced Graphs";
+    "Graphs" -> "2-D DP";
+
+    "1-D DP" -> "2-D DP";
+    
+    "1-D DP" -> "Bit Manipulation";
+    "Graphs" -> "Math & Geometry";
+
+    "Bit Manipulation" -> "Math & Geometry";
+}
+```
+
+## Inputs
+
+For those of you who are Pythonistas like I am:
+
+### Use `while` Loop Instead of `for` Loop
+
+We are uncomfortable at using `while` loop for sure.
+Instead of using `for` loop, use `while` loop.
+
+```{.python}
+s = "Hello, world"
+for c in s:
+    print(c)
+```
+```{.python}
+s = "Hello, world"
+i = 0
+while i < len(s):
+    print(s[i])
+    i += 1 # <1>
+```
+
+### Think of Slices as Parts of Indices
+
+There are many cases when you go back and forth between slices and indices.
+```
+index    0   1   2   3
+array [ 100 200 300 400 ]
+slice  0   1   2   3   4
+```
+```
+index    0   1   2   3
+array [ 100 200 300 400 ]
+slice    0   1   2   3   4  <- faster approach
+```
+
