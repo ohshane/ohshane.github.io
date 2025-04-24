@@ -1,0 +1,154 @@
+---
+title: ""
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2023-08-23
+image: False
+categories:
+  - Mathematics
+---
+
+
+It is important to distinguish a subtle difference rather than simply stating that similar matrices have the same _invariant properties_.
+These properties do not arise directly from the nature of the linear map itself, but rather from the way calculations are performed.
+
+Take a closer look at **trace** and **determinant** first.
+
+## Definitions
+
+### Trace
+
+Trace has a cyclic property. When we assume all matrices are square, we can rotate their positions as if on a conveyor belt.
+Moreover, trace is linear. This does not connect directly to the blog post but always, it is good to know.
+
+$$
+\sum_i[AB]_{ii} = \sum_i \sum_j [A]_{ij} [B]_{ji} = \sum_j \sum_i [B]_{ji} [A]_{ij} = \sum_j [BA]_{jj}
+$$
+
+$$
+\mathrm{tr}(AB) = \mathrm{tr}(BA)
+$$
+
+
+### Det
+
+The determinant is defined as _an alternating $n$-linear form which satisfies_, $\det(\mathbf{e}_1,\cdots,\mathbf{e}_n) = 1$.
+Check the definition for $n$-linear form below.
+
+- $n$-linear form ($\mu: V^n \to F$)
+  - $\mu(\cdots,v+w,\cdots) = \mu(\cdots,v,\cdots) + \mu(\cdots,w,\cdots)$
+  - $\mu(\cdots,av,\cdots) = a\mu(\cdots,v,\cdots)$
+
+Alternating $n$-linear form can be extended to the definition above.
+
+- Alternating $n$-linear form ($\mu: V^n \to F$)
+  - All properties above
+  - $\mu(\cdots,v,\cdots,v,\cdots) = 0$
+  - $\mu(\cdots,v,\cdots,w,\cdots) = -\mu(\cdots,w,\cdots,v,\cdots)$
+    - $\text{pf.}\ \mu(v+w,v+w)=\mu(v,w)+\mu(w,v)=0$.
+
+
+These lead to the Leibniz formula[^wiki-leibniz-formula].
+
+[^wiki-leibniz-formula]: [Leibniz formula for determinants - Wikipedia](https://en.wikipedia.org/wiki/Leibniz_formula_for_determinants)
+
+$$
+\det(A) = \sum_{\tau \in S_n} \mathrm{sgn}(\tau) \prod_i a_{i\tau(i)} = \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_i a_{\sigma(i)i}
+$$
+
+Let there be a $n \times n$ matrix $A$. It can be express as:
+
+$$
+\begin{align*} 
+A &= \mu(a_{11}\mathbf{e}_1 + \cdots + a_{n1}\mathbf{e}_n, \cdots, a_{1n}\mathbf{e}_1 + \cdots + a_{nn}\mathbf{e}_n) \\
+&= \underbrace{\mu(a_{11}\mathbf{e}_1, \cdots, a_{1n}\mathbf{e}_1) + \cdots + \mu(a_{n1}\mathbf{e}_n, \cdots, a_{nn}\mathbf{e}_n)}_{n^n}\\
+&= (a_{11} \cdots a_{1n})\mu(\mathbf{e}_1, \cdots, \mathbf{e}_1) + \cdots + (a_{n1} \cdots a_{nn})\mu(\mathbf{e}_n, \cdots, \mathbf{e}_n) \\
+&= \underbrace{\sum_{\sigma \in S_n}(a_{\sigma(1)1} \cdots a_{\sigma(n)n})\mu(\mathbf{e}_{\sigma(1)}, \cdots, \mathbf{e}_{\sigma(n)})}_{n!} \\
+&= \sum_{\sigma \in S_n} \mathrm{sgn}(\sigma) \prod_i a_{\sigma(i)i}
+\end{align*} 
+$$
+
+The $\sigma$ function in a permutation group $S_n$ ensures injectivity which prevents from selecting same standard basis.
+
+Leibniz form is particularly usefull when proving $\det(AB) = \det(A)\det(B)$.
+
+$$
+\begin{align*}
+\det(AB) 
+&= \det([A]^1 b_{11} + \cdots + [A]^n b_{n1}, \cdots, [A]^1 b_{1n} + \cdots + [A]^n b_{nn}) \\
+&= \sum_{\sigma \in S_n} b_{\sigma(1)1} \cdots b_{\sigma(n)n} \det([A]^{\sigma(1)}, \cdots, [A]^{\sigma(n)}) \\
+&= \sum_{\sigma \in S_n} b_{\sigma(1)1} \cdots b_{\sigma(n)n} \ \mathrm{sgn}(\sigma) \det([A]^1, \cdots, [A]^n) \\
+&= \det(B) \det(A)
+\end{align*}
+$$
+
+
+$$
+\det(AB) = \det(A)\det(B) = \det(B)\det(A) = \det(BA)
+$$
+
+## Invariant properties under similar matricies
+
+Let there be a similar matrix $A \sim B$ from a linear map $L \in \mathcal{L}(V,V)$.
+This implies that $B = U^{-1} A U$. From the definitions above, we can prove the invariant properties are same under similar matricies.
+Keep in mind that $U$ is invertible (full rank).
+
+### Rank
+
+$$
+\mathrm{rank}(A) = \mathrm{rank}(B)
+$$
+
+### Trace
+
+$$
+\mathrm{tr}(B) = \mathrm{tr}(U^{-1} A U) = \mathrm{tr}(UU^{-1}A) = \mathrm{tr}(A)
+$$
+
+### Determinant
+$$
+\det(B) = \det(U^{-1} A U) = \det(U^{-1}) \det(A) \det(U) = \det(A)
+$$
+
+### Characteristic polynomial
+$$
+\begin{align*}
+\phi_B(\lambda)
+&= \det(B - \lambda I) \\
+&= \det(U^{-1}AU - \lambda I)  \\
+&= \det(U^{-1}(A - \lambda I)U)  \\
+&= \det(U^{-1}) \det(A - \lambda I) \det(U) \\
+&= \det(A - \lambda I) \\
+&= \phi_A(\lambda)
+\end{align*}
+$$
+
+## Diagonalization
+
+What if $B = U^{-1} A U$ becomes $D = U^{-1} A U$?
+Despite of which bases are chosen, the invariant properties would hold among similar matrices. 
+Thus, we can try creating such beautifully shaped $D$ to better understand the property of $A$.
+
+Is it always possible to find $D$?
+Unfortunately no. If we successfully find $D$ and represent $A$ as $A = UDU^{-1}$, this is called diagonalization.
+When full diagonalization is not possible, there are possible ways to retrieve some of the values --- the _eigen values_.
+
+### Eigen values
+
+Whether if we are finding a complete $D$ or not, we find each diagonal elements (eigen values) one by one.
+Let's change the original $D = U^{-1} A U$ as follows.
+
+$$
+\begin{align*}
+D &= U^{-1} A U \\
+D &= U^{-1} A U
+\end{align*}
+$$
+
+
+How can we test this out?
+We use the characteristic polynomial to find each diagonal elemenets which is called _eigen values_.
+The values can be seen
+
+
