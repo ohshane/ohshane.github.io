@@ -1,0 +1,37 @@
+---
+title: Bias and Variance
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2023-09-07
+image: false
+categories:
+  - Machine Learning
+---
+
+Refer to the [lecture note](https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote12.html)
+by Kilian Weinberger.
+
+Let $f(x)$ be the unknown function and $\epsilon \sim \mathcal{N}(0, \sigma_\epsilon^2)$ be the noise
+when observing the reality.
+Then, we can set $y = f(x) + \epsilon$.
+
+- $f(\cdot)$: unknown funciton (constant)
+- $\hat{f}_D(\cdot)$: estimated funciton trained with $D$
+- $\bar{f}(\cdot) = \mathbb{E}[\hat{f}_D(\cdot)]$: averaged estimated funciton (constant)
+- $\epsilon \sim \mathcal{N}(0, \sigma_\epsilon^2)$: noise (constant)
+- $y = f(x) + \epsilon$: target (constant)
+
+$$
+\begin{align*}
+\mathbb{E}[((y - \hat{f}_D(x)))^2]
+&= \mathbb{E}[(f(x) + \epsilon - \hat{f}_D(x))^2] \\
+&= \mathbb{E}[(f(x) - \hat{f}_D(x))^2 + 2\epsilon(f(x) - \hat{f}_D(x)) + \epsilon^2] \\
+&= \mathbb{E}[(f(x) - \hat{f}_D(x))^2] + 2\mathbb{E}[\epsilon(f(x) - \hat{f}_D(x))] + \mathbb{E}[\epsilon^2] \\
+&= \mathbb{E}[(f(x) - \hat{f}_D(x))^2] + 2\mathbb{E}[\epsilon(f(x) - \hat{f}_D(x))] + \mathbb{E}[\epsilon^2] \\
+&= \mathbb{E}[(f(x) - \hat{f}_D(x))^2] + \sigma_\epsilon^2 \\
+&= \mathbb{E}[(f(x) - \bar{f}(x) + \bar{f}(x) - \hat{f}_D(x))^2] + \sigma_\epsilon^2 \\
+&= \mathbb{E}[(f(x) - \bar{f}(x))^2 + 2(f(x) - \bar{f}(x))(\bar{f}(x) - \hat{f}_D(x)) + (\bar{f}(x) - \hat{f}_D(x))^2] + \sigma_\epsilon^2 \\
+&= \underbrace{\mathbb{E}[(f(x) - \bar{f}(x))^2]}_{\text{bias}^2} + \underbrace{\mathbb{E}[(\bar{f}(x) - \hat{f}_D(x))^2]}_\text{variance} + \underbrace{\sigma_\epsilon^2}_{\text{noise}} \\
+\end{align*}
+$$
