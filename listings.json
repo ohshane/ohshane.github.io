@@ -3,6 +3,7 @@
     "listing": "/index.html",
     "items": [
       "/posts/Kubeconfig.html",
+      "/posts/BiasVariance.html",
       "/posts/BinaryHeap.html",
       "/posts/CertManager.html",
       "/posts/Cloudflare526.html",
