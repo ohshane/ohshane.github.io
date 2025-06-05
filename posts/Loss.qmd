@@ -9,6 +9,10 @@ categories:
   - Machine Learning
 ---
 
+:::{.callout-note}
+Numerator layout is used for the equations in this post.
+:::
+
 ## Derivatives
 
 ### Binary cross entropy
@@ -31,11 +35,11 @@ H(\mathbf y, \hat{\mathbf y})
 &= \sum_i y_i \log \dfrac{1}{\hat{y}_i} = -\sum_i y_i \log \hat{y}_i \\
 \dfrac{\partial H(\mathbf y, \hat{\mathbf y})}{\partial \hat{\mathbf y}}
 &= 
-- \begin{pmatrix}
+- \begin{bmatrix}
 \dfrac{y_1}{\hat{y}_1}
 & \cdots &
 \dfrac{y_n}{\hat{y}_n}
-\end{pmatrix}
+\end{bmatrix}
 \end{align*}
 $$
 
@@ -65,13 +69,13 @@ $$
 \begin{align*}
 \mathbf J_{\sigma}
 &=
-\begin{pmatrix}
+\begin{bmatrix}
 \dfrac{\partial \sigma_1(\mathbf x)}{\partial x_1} & \cdots & \dfrac{\partial \sigma_1(\mathbf x)}{\partial x_n} \\
 \vdots & \ddots & \vdots \\
 \dfrac{\partial \sigma_n(\mathbf x)}{\partial x_1} & \cdots & \dfrac{\partial \sigma_n(\mathbf x)}{\partial x_n}
-\end{pmatrix} \\
+\end{bmatrix} \\
 &= 
-\begin{pmatrix}
+\begin{bmatrix}
 \dfrac{e^{x_1} \sum_j e^{x_j} - e^{x_1} e^{x_1}}{(\sum_j e^{x_j})^2}
 & \cdots &
 \dfrac{0 \sum_j e^{x_j} - e^{x_1} e^{x_n}}{(\sum_j e^{x_j})^2} \\
@@ -79,9 +83,9 @@ $$
 \dfrac{0 \sum_j e^{x_j} - e^{x_n} e^{x_1}}{(\sum_j e^{x_j})^2}
 & \cdots &
 \dfrac{e^{x_n} \sum_j e^{x_j} - e^{x_n} e^{x_n}}{(\sum_j e^{x_j})^2}
-\end{pmatrix} \\
+\end{bmatrix} \\
 &= 
-\begin{pmatrix}
+\begin{bmatrix}
 \dfrac{e^{x_1}}{\sum_j e^{x_j}}
 \dfrac{\sum_j e^{x_j} - e^{x_1}}{\sum_j e^{x_j}}
 & \cdots &
@@ -91,13 +95,13 @@ $$
 & \cdots &
 \dfrac{e^{x_n}}{\sum_j e^{x_j}}
 \dfrac{\sum_j e^{x_j} - e^{x_n}}{\sum_j e^{x_j}}
-\end{pmatrix} \\
+\end{bmatrix} \\
 &= 
-\begin{pmatrix}
+\begin{bmatrix}
 \sigma_1(\mathbf x)(1-\sigma_1(\mathbf x)) & \cdots & -\sigma_1(\mathbf x) \sigma_n(\mathbf x) \\
 \vdots & \ddots & \vdots \\
 -\sigma_n(\mathbf x) \sigma_1(\mathbf x) & \cdots & \sigma_n(\mathbf x)(1-\sigma_n(\mathbf x)) \\
-\end{pmatrix} \\
+\end{bmatrix} \\
 &= 
 \mathrm{diag}(\sigma(\mathbf x)) -\sigma(\mathbf x) \sigma(\mathbf x)^\top
 \end{align*}
@@ -127,17 +131,53 @@ $$
 \dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \hat{\mathbf y}}
 \dfrac{\partial \hat{\mathbf y}}{\partial \mathbf x} \\
 &= 
-- \begin{pmatrix}
+- \begin{bmatrix}
 \dfrac{y_1}{\hat{y}_1}
 & \cdots &
 \dfrac{y_n}{\hat{y}_n}
-\end{pmatrix}
+\end{bmatrix}
 \left( \mathrm{diag}(\hat{\mathbf y}) - \hat{\mathbf y} \hat{\mathbf y}^\top \right) \\
 &= 
-\begin{pmatrix}
+\begin{bmatrix}
 -y_1 + \sum_i y_i \hat{y}_1
 & \cdots &
 -y_n + \sum_i y_i \hat{y}_n
-\end{pmatrix}
+\end{bmatrix}
 \end{align*}
 $$
+
+
+### Block matrix
+
+$$
+\begin{bmatrix}
+\\
+&A& \vert \mathbf b \\
+\\
+\end{bmatrix}
+\begin{bmatrix}
+\\
+\mathbf x \\
+\\
+\hline
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\\
+\mathbf z \\
+\\
+\end{bmatrix}
+$$
+
+$$
+\begin{align*}
+\dfrac{\partial z_i}{\partial [A]_i^\top} &= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial [A]_i^\top} = \mathbf x^\top \\
+\dfrac{\partial z_i}{\partial b_j} &= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial b_j} = \delta_{ij} \\
+\dfrac{\partial \mathbf z}{\partial \mathbf b} &= I
+\end{align*}
+$$
+
+```{.python}
+
+```
