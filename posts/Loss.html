@@ -160,6 +160,7 @@ window.Quarto = {
   <li><a href="#softmax" id="toc-softmax" class="nav-link" data-scroll-target="#softmax">Softmax</a></li>
   <li><a href="#dfracd-mathcal-l_mathrmbced-mathbf-x" id="toc-dfracd-mathcal-l_mathrmbced-mathbf-x" class="nav-link" data-scroll-target="#dfracd-mathcal-l_mathrmbced-mathbf-x"><span class="math inline">\(\dfrac{d \mathcal L_\mathrm{BCE}}{d \mathbf x}\)</span></a></li>
   <li><a href="#dfracpartial-mathcal-l_mathrmcepartial-mathbf-x" id="toc-dfracpartial-mathcal-l_mathrmcepartial-mathbf-x" class="nav-link" data-scroll-target="#dfracpartial-mathcal-l_mathrmcepartial-mathbf-x"><span class="math inline">\(\dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \mathbf x}\)</span></a></li>
+  <li><a href="#block-matrix" id="toc-block-matrix" class="nav-link" data-scroll-target="#block-matrix">Block matrix</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -201,6 +202,19 @@ window.Quarto = {
 </header>
 
 
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Numerator layout is used for the equations in this post.</p>
+</div>
+</div>
 <section id="derivatives" class="level2">
 <h2 class="anchored" data-anchor-id="derivatives">Derivatives</h2>
 <section id="binary-cross-entropy" class="level3">
@@ -256,13 +270,13 @@ H(\mathbf y, \hat{\mathbf y})
 \begin{align*}
 \mathbf J_{\sigma}
 &amp;=
-\begin{pmatrix}
+\begin{bmatrix}
 \dfrac{\partial \sigma_1(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial \sigma_1(\mathbf x)}{\partial x_n} \\
 \vdots &amp; \ddots &amp; \vdots \\
 \dfrac{\partial \sigma_n(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial \sigma_n(\mathbf x)}{\partial x_n}
-\end{pmatrix} \\
+\end{bmatrix} \\
 &amp;=
-\begin{pmatrix}
+\begin{bmatrix}
 \dfrac{e^{x_1} \sum_j e^{x_j} - e^{x_1} e^{x_1}}{(\sum_j e^{x_j})^2}
 &amp; \cdots &amp;
 \dfrac{0 \sum_j e^{x_j} - e^{x_1} e^{x_n}}{(\sum_j e^{x_j})^2} \\
@@ -270,9 +284,9 @@ H(\mathbf y, \hat{\mathbf y})
 \dfrac{0 \sum_j e^{x_j} - e^{x_n} e^{x_1}}{(\sum_j e^{x_j})^2}
 &amp; \cdots &amp;
 \dfrac{e^{x_n} \sum_j e^{x_j} - e^{x_n} e^{x_n}}{(\sum_j e^{x_j})^2}
-\end{pmatrix} \\
+\end{bmatrix} \\
 &amp;=
-\begin{pmatrix}
+\begin{bmatrix}
 \dfrac{e^{x_1}}{\sum_j e^{x_j}}
 \dfrac{\sum_j e^{x_j} - e^{x_1}}{\sum_j e^{x_j}}
 &amp; \cdots &amp;
@@ -282,13 +296,13 @@ H(\mathbf y, \hat{\mathbf y})
 &amp; \cdots &amp;
 \dfrac{e^{x_n}}{\sum_j e^{x_j}}
 \dfrac{\sum_j e^{x_j} - e^{x_n}}{\sum_j e^{x_j}}
-\end{pmatrix} \\
+\end{bmatrix} \\
 &amp;=
-\begin{pmatrix}
+\begin{bmatrix}
 \sigma_1(\mathbf x)(1-\sigma_1(\mathbf x)) &amp; \cdots &amp; -\sigma_1(\mathbf x) \sigma_n(\mathbf x) \\
 \vdots &amp; \ddots &amp; \vdots \\
 -\sigma_n(\mathbf x) \sigma_1(\mathbf x) &amp; \cdots &amp; \sigma_n(\mathbf x)(1-\sigma_n(\mathbf x)) \\
-\end{pmatrix} \\
+\end{bmatrix} \\
 &amp;=
 \mathrm{diag}(\sigma(\mathbf x)) -\sigma(\mathbf x) \sigma(\mathbf x)^\top
 \end{align*}
@@ -318,11 +332,7 @@ H(\mathbf y, \hat{\mathbf y})
 \dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \hat{\mathbf y}}
 \dfrac{\partial \hat{\mathbf y}}{\partial \mathbf x} \\
 &amp;=
-- \begin{pmatrix}
-\dfrac{y_1}{\hat{y}_1}
-&amp; \cdots &amp;
-\dfrac{y_n}{\hat{y}_n}
-\end{pmatrix}
+- \left( \dfrac{\mathbf y}{\hat{\mathbf y}} \right)^\top
 \left( \mathrm{diag}(\hat{\mathbf y}) - \hat{\mathbf y} \hat{\mathbf y}^\top \right) \\
 &amp;=
 \begin{pmatrix}
@@ -330,6 +340,36 @@ H(\mathbf y, \hat{\mathbf y})
 &amp; \cdots &amp;
 -y_n + \sum_i y_i \hat{y}_n
 \end{pmatrix}
+\end{align*}
+\]</span></p>
+</section>
+<section id="block-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="block-matrix">Block matrix</h3>
+<p><span class="math display">\[
+\begin{bmatrix}
+\\
+&amp;A&amp; \vert \mathbf b \\
+\\
+\end{bmatrix}
+\begin{bmatrix}
+\\
+\mathbf x \\
+\\
+\hline
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\\
+\mathbf z \\
+\\
+\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align*}
+\dfrac{\partial z_i}{\partial [A]_i^\top} &amp;= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial [A]_i^\top} = \mathbf x^\top \\
+\dfrac{\partial z_i}{\partial b_j} &amp;= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial b_j} = \delta_{ij} \\
+\dfrac{\partial \mathbf z}{\partial \mathbf b} &amp;= I
 \end{align*}
 \]</span></p>
 
