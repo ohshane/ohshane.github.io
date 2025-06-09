@@ -35,11 +35,11 @@ H(\mathbf y, \hat{\mathbf y})
 &= \sum_i y_i \log \dfrac{1}{\hat{y}_i} = -\sum_i y_i \log \hat{y}_i \\
 \dfrac{\partial H(\mathbf y, \hat{\mathbf y})}{\partial \hat{\mathbf y}}
 &= 
-- \begin{bmatrix}
+- \begin{pmatrix}
 \dfrac{y_1}{\hat{y}_1}
 & \cdots &
 \dfrac{y_n}{\hat{y}_n}
-\end{bmatrix}
+\end{pmatrix}
 \end{align*}
 $$
 
@@ -131,18 +131,14 @@ $$
 \dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \hat{\mathbf y}}
 \dfrac{\partial \hat{\mathbf y}}{\partial \mathbf x} \\
 &= 
-- \begin{bmatrix}
-\dfrac{y_1}{\hat{y}_1}
-& \cdots &
-\dfrac{y_n}{\hat{y}_n}
-\end{bmatrix}
+- \left( \dfrac{\mathbf y}{\hat{\mathbf y}} \right)^\top
 \left( \mathrm{diag}(\hat{\mathbf y}) - \hat{\mathbf y} \hat{\mathbf y}^\top \right) \\
 &= 
-\begin{bmatrix}
+\begin{pmatrix}
 -y_1 + \sum_i y_i \hat{y}_1
 & \cdots &
 -y_n + \sum_i y_i \hat{y}_n
-\end{bmatrix}
+\end{pmatrix}
 \end{align*}
 $$
 
@@ -177,7 +173,3 @@ $$
 \dfrac{\partial \mathbf z}{\partial \mathbf b} &= I
 \end{align*}
 $$
-
-```{.python}
-
-```
