@@ -1,0 +1,297 @@
+---
+title: "Derivatives of Neural Net Layers"
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2023-09-07
+image: false
+categories:
+  - Machine Learning
+---
+
+:::{.callout-note}
+Numerator layout is used for the equations in this post.
+:::
+
+## Preliminaries
+
+### Chain rule
+
+$$
+\begin{align*}
+\dfrac{d}{dx} h(g(f(x)))
+&= \underbrace{h'(\overbrace{g(f(x))}^{\text{forward}})}_{\text{backward}}
+\quad \underbrace{g'(\overbrace{f(x)}^{\text{forward}})}_{\text{backward}}
+\quad \underbrace{f'(x)}_{\text{backward}} \\
+\dfrac{\partial}{\partial \mathbf x} h(\mathbf g(\mathbf f(\mathbf x)))
+&= \dfrac{\partial h}{\partial \mathbf g} \dfrac{\partial \mathbf g}{\partial \mathbf f} \dfrac{\partial \mathbf f}{\partial \mathbf x} 
+= \nabla h(\mathbf g( \mathbf f(\mathbf x))) \ \mathbf J_\mathbf g(\mathbf f(\mathbf x)) \ \mathbf J_\mathbf f(\mathbf x)
+\end{align*}
+$$
+
+## Derivatives
+
+### $\mathcal{L}_\mathrm{BCE}$
+
+$$
+\begin{align*}
+H(y, \hat{y})
+&= y \log\dfrac{1}{\hat{y}} + (1-y) \log\dfrac{1}{1-\hat{y}} \\
+&= -\left\{ y \log{\hat{y}} + (1-y) \log(1-\hat{y}) \right\} \\
+\dfrac{d H(y, \hat{y})}{d\hat{y}}
+&= -\dfrac{y}{\hat y} + \dfrac{1-y}{1-\hat y} = \dfrac{\hat y - y}{\hat y (1-\hat y)}
+\end{align*}
+$$
+
+### $\mathcal{L}_\mathrm{CE}$
+
+$$
+\begin{align*}
+H(\mathbf y, \hat{\mathbf y})
+&= \sum_i y_i \log \dfrac{1}{\hat{y}_i} = -\sum_i y_i \log \hat{y}_i \\
+\dfrac{\partial H(\mathbf y, \hat{\mathbf y})}{\partial \hat{\mathbf y}}
+&= 
+- \begin{pmatrix}
+\dfrac{y_1}{\hat{y}_1}
+& \cdots &
+\dfrac{y_n}{\hat{y}_n}
+\end{pmatrix}
+\end{align*}
+$$
+
+### Sigmoid
+
+Let $\sigma : \mathbb R \to \mathbb R$.
+
+$$
+\begin{align*}
+\dfrac{d}{dx} \sigma(x)
+&= \dfrac{d}{dx} (1 + e^{-x})^{-1} \\
+&= e^{-x}(1 + e^{-x})^{-2}
+ = \dfrac{1}{1 + e^{-x}} \dfrac{e^{-x}}{1 + e^{-x}} \\
+&= \sigma(x) (1-\sigma(x))
+\end{align*}
+$$
+
+### Softmax
+
+Let $\mathbf{s} : \mathbb R^n \to \mathbb R^n$.
+
+- $\mathbf x = (x_1 \cdots x_n)^\top$
+- $\mathbf{s} = (s_1 \cdots s_n)^\top$
+- $s_i(\mathbf x) = \frac{e^{x_i}}{\sum_j e^{x_j}} \quad (s_i:\mathbb R^n \to \mathbb R)$
+
+$$
+\begin{align*}
+\mathbf J_{\mathbf{s}}
+&=
+\begin{bmatrix}
+\dfrac{\partial s_1(\mathbf x)}{\partial x_1} & \cdots & \dfrac{\partial s_1(\mathbf x)}{\partial x_n} \\
+\vdots & \ddots & \vdots \\
+\dfrac{\partial s_n(\mathbf x)}{\partial x_1} & \cdots & \dfrac{\partial s_n(\mathbf x)}{\partial x_n}
+\end{bmatrix} \\
+&= 
+\begin{bmatrix}
+\dfrac{e^{x_1} \sum_j e^{x_j} - e^{x_1} e^{x_1}}{(\sum_j e^{x_j})^2}
+& \cdots &
+\dfrac{0 \sum_j e^{x_j} - e^{x_1} e^{x_n}}{(\sum_j e^{x_j})^2} \\
+\vdots & \ddots & \vdots \\
+\dfrac{0 \sum_j e^{x_j} - e^{x_n} e^{x_1}}{(\sum_j e^{x_j})^2}
+& \cdots &
+\dfrac{e^{x_n} \sum_j e^{x_j} - e^{x_n} e^{x_n}}{(\sum_j e^{x_j})^2}
+\end{bmatrix} \\
+&= 
+\begin{bmatrix}
+\dfrac{e^{x_1}}{\sum_j e^{x_j}}
+\dfrac{\sum_j e^{x_j} - e^{x_1}}{\sum_j e^{x_j}}
+& \cdots &
+- \dfrac{e^{x_1}}{\sum_j e^{x_j}} \dfrac{e^{x_n}}{\sum_j e^{x_j}} \\
+\vdots & \ddots & \vdots \\
+- \dfrac{e^{x_n}}{\sum_j e^{x_j}} \dfrac{e^{x_i}}{\sum_j e^{x_j}}
+& \cdots &
+\dfrac{e^{x_n}}{\sum_j e^{x_j}}
+\dfrac{\sum_j e^{x_j} - e^{x_n}}{\sum_j e^{x_j}}
+\end{bmatrix} \\
+&= 
+\begin{bmatrix}
+s_1(\mathbf x)(1-s_1(\mathbf x)) & \cdots & -s_1(\mathbf x) s_n(\mathbf x) \\
+\vdots & \ddots & \vdots \\
+-s_n(\mathbf x) s_1(\mathbf x) & \cdots & s_n(\mathbf x)(1-s_n(\mathbf x)) \\
+\end{bmatrix} \\
+&= 
+\mathrm{diag}(\mathbf{s}(\mathbf x)) -\mathbf{s}(\mathbf x) \mathbf{s}(\mathbf x)^\top
+\end{align*}
+$$
+
+### Sigmoid -> $\mathcal L_\mathrm{BCE}$
+
+$$
+\begin{align*}
+\dfrac{d \mathcal L_\mathrm{BCE}}{d x}
+&= 
+\dfrac{d \mathcal L_\mathrm{BCE}}{d \hat{y}}
+\dfrac{d \hat{y}}{dx} \\
+&=
+\dfrac{\hat y - y}{\hat y (1-\hat y)} {\hat y (1-\hat y)} \\
+&=
+\hat y - y
+\end{align*}
+$$
+
+### Softmax -> $\mathcal L_\mathrm{CE}$
+
+$$
+\begin{align*}
+\dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \mathbf x}
+&= 
+\dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \hat{\mathbf y}}
+\dfrac{\partial \hat{\mathbf y}}{\partial \mathbf x} \\
+&= 
+- \left( \dfrac{\mathbf y}{\hat{\mathbf y}} \right)^\top
+\left( \mathrm{diag}(\hat{\mathbf y}) - \hat{\mathbf y} \hat{\mathbf y}^\top \right) \\
+&= 
+\begin{pmatrix}
+-y_1 + \sum_i y_i \hat{y}_1
+& \cdots &
+-y_n + \sum_i y_i \hat{y}_n
+\end{pmatrix}
+\end{align*}
+$$
+
+
+### Linear
+
+$$
+\begin{bmatrix}
+\\
+&A& \vert \mathbf b \\
+\\
+\end{bmatrix}
+\begin{bmatrix}
+\\
+\mathbf x \\
+\\
+\hline
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\\
+\mathbf z \\
+\\
+\end{bmatrix}
+$$
+
+$$
+\begin{align*}
+\dfrac{\partial z_i}{\partial [A]_i^\top} &= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial [A]_i^\top} = \mathbf x^\top \\
+\dfrac{\partial z_i}{\partial b_j} &= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial b_j} = \delta_{ij} \\
+\dfrac{\partial \mathbf z}{\partial \mathbf b} &= I
+\end{align*}
+$$
+
+### ReLU
+
+```{python}
+import numpy as np
+
+class ReLU:
+    def __init__(self):
+        self.grad = None
+
+    def derivative(self, x):
+        """∂ReLU(x)/∂x"""
+        return np.where(x>0, 1.0, 0.0) # <1>
+      
+    def __call__(self, x):
+        self.grad = self.derivative(x)
+        return np.maximum(0, x)
+  
+relu = ReLU()
+x = np.random.randn(3,3)
+
+print(x)
+print(relu(x))
+print(relu.grad)
+```
+1. Mathmatically, `np.diag(np.ravel(np.where(x>0,1,0)))` is correct.
+
+### Linear -> ReLU
+
+$$
+\begin{bmatrix}
+\\
+&A& \vert \mathbf b \\
+\\
+\end{bmatrix}
+\begin{bmatrix}
+\\
+\mathbf x \\
+\\
+\hline
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\\
+\mathbf y \\
+\\
+\end{bmatrix},
+\quad \mathrm{ReLU}(\mathbf y) = \mathbf z
+$$
+
+$$
+\dfrac{\partial \mathcal L}{\partial \begin{bmatrix}&[A]_i&|b_i\end{bmatrix}^\top}
+=
+\begin{bmatrix}
+&\mathbf x^\top& \vert 1 \\
+\end{bmatrix}
+\mathbb{1}_{y_i > 0}(y_i)
+\frac{\partial \mathcal L}{\partial z_i}
+$$
+
+### Convolution
+
+- $\mathbf x_{4 \times 4}$: input
+- $\kappa_{3 \times 3}$: kernel
+- $\mathbf z_{2 \times 2}$: output
+
+$$
+\begin{bmatrix}
+x_{11} & x_{12} & x_{13} & x_{14} \\
+x_{21} & x_{22} & x_{23} & x_{24} \\
+x_{31} & x_{32} & x_{33} & x_{34} \\
+x_{41} & x_{42} & x_{43} & x_{44}
+\end{bmatrix} \star
+\begin{bmatrix}
+\kappa_{11} & \kappa_{12} & \kappa_{13} \\
+\kappa_{21} & \kappa_{22} & \kappa_{23} \\
+\kappa_{31} & \kappa_{32} & \kappa_{33}
+\end{bmatrix} =
+\begin{bmatrix}
+z_{11} & z_{12} \\
+z_{21} & z_{22}
+\end{bmatrix}
+$$
+
+$$
+\dfrac{\partial \mathbf z}{\partial \kappa}
+$$
+
+$$
+\dfrac{\partial \mathbf z}{\partial \kappa} =
+\begin{matrix}
+       & \kappa_{11} & \kappa_{12} & \kappa_{13} & \kappa_{21} & \kappa_{22} & \kappa_{23} & \kappa_{31} & \kappa_{32} & \kappa_{33} \\
+z_{11} & x_{11} & x_{12} & x_{13} & x_{21} & x_{22} & x_{23} & x_{31} & x_{32} & x_{33} \\
+z_{12} & x_{12} & x_{13} & x_{14} & x_{22} & x_{23} & x_{24} & x_{32} & x_{33} & x_{34} \\
+z_{21} & x_{21} & x_{22} & x_{23} & x_{31} & x_{32} & x_{33} & x_{41} & x_{42} & x_{43} \\
+z_{22} & x_{22} & x_{23} & x_{24} & x_{32} & x_{33} & x_{34} & x_{42} & x_{43} & x_{44}
+\end{matrix}
+$$
+
+$$
+\dfrac{\partial \mathcal L}{\partial \kappa} = 
+\dfrac{\partial \mathcal L}{\partial \mathbf z}
+\dfrac{\partial \mathbf z}{\partial \kappa}
+$$ 
+
