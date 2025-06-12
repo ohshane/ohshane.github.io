@@ -38,6 +38,7 @@
       transform: translate(-50%, -50%);
       font-size: 18px;
       font-weight: bold;
+      z-index: 1000;
     }
     .error {
       position: fixed;
@@ -47,71 +48,65 @@
       font-size: 16px;
       color: red;
       text-align: center;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/javascript">
-    // React + D3 Knowledge Graph only (no JSX, using CDN)
-    const { useEffect, useRef, useState } = React;
+    // React + D3 Knowledge Graph
+    const { useEffect, useRef } = React;
+    
     function KnowledgeGraph() {
-      const svgRef = React.useRef(null);
-      const [loading, setLoading] = useState(true);
-      const [error, setError] = useState(null);
+      const svgRef = useRef(null);
       
-      React.useEffect(() => {
-        const svg = d3.select(svgRef.current);
-        svg.selectAll("*").remove();
-        
-        async function updateDimensions() {
+      useEffect(() => {
+        async function loadAndRenderGraph() {
           try {
-            setLoading(true);
-            setError(null);
+            console.log('Starting graph loading...');
             
-            svg.selectAll("*").remove();
-            // Set width and height to fill the viewport
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            svg.attr("width", width).attr("height", height)
-             .style("display", "block")
-             .style("position", "fixed")
-             .style("top", 0)
-             .style("left", 0)
-             .style("z-index", 0);
-          
-            // Use Raw GitHub URL - most reliable method
+            // Use Raw GitHub URL
             const baseUrl = 'https://raw.githubusercontent.com/ohshane/ohshane.github.io/main/';
-            console.log('Using Raw GitHub URL:', baseUrl); // 디버깅용
             
             const [nodesResponse, linksResponse] = await Promise.all([
               fetch(baseUrl + 'nodes.json'),
               fetch(baseUrl + 'links.json')
             ]);
             
-            console.log('Nodes response status:', nodesResponse.status); // 디버깅용
-            console.log('Links response status:', linksResponse.status); // 디버깅용
-            
             if (!nodesResponse.ok || !linksResponse.ok) {
-              throw new Error(`Failed to fetch JSON files. Nodes: ${nodesResponse.status}, Links: ${linksResponse.status}`);
+              throw new Error(`Failed to fetch JSON files`);
             }
             
             const nodes = await nodesResponse.json();
             const links = await linksResponse.json();
             
-            console.log('Loaded nodes:', nodes.length); // 디버깅용
-            console.log('Loaded links:', links.length); // 디버깅용
+            console.log('Data loaded - Nodes:', nodes.length, 'Links:', links.length);
             
+            // Clear SVG
+            const svg = d3.select(svgRef.current);
+            svg.selectAll("*").remove();
+            
+            // Set dimensions
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            svg.attr("width", width).attr("height", height);
+            
+            console.log('SVG cleared and dimensions set');
+            
+            // Create simulation
             const simulation = d3.forceSimulation(nodes)
               .force("link", d3.forceLink(links).id(d => d.id).distance(80))
               .force("charge", d3.forceManyBody().strength(-400))
               .force("center", d3.forceCenter(width / 2, height / 2))
               .force("collision", d3.forceCollide().radius(25));
-              
+            
+            // Color scale
             const color = d3.scaleOrdinal()
               .domain([1, 2, 3, 4, 5, 6, 7])
               .range(["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#ffeaa7", "#dda0dd", "#ff9f43"]);
-              
+            
+            // Create links
             const link = svg.append("g")
               .attr("class", "links")
               .selectAll("line")
@@ -120,7 +115,10 @@
               .attr("stroke", "#999")
               .attr("stroke-opacity", 0.6)
               .attr("stroke-width", 1);
-              
+            
+            console.log('Links created:', link.size());
+            
+            // Create link labels
             const linkLabels = svg.append("g")
               .attr("class", "link-labels")
               .selectAll("text")
@@ -130,7 +128,10 @@
               .attr("fill", "#666")
               .attr("text-anchor", "middle")
               .text(d => d.relationship);
-              
+            
+            console.log('Link labels created:', linkLabels.size());
+            
+            // Create nodes
             const node = svg.append("g")
               .attr("class", "nodes")
               .selectAll("circle")
@@ -144,7 +145,10 @@
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended));
-                
+            
+            console.log('Nodes created:', node.size());
+            
+            // Create node labels
             const nodeLabels = svg.append("g")
               .attr("class", "node-labels")
               .selectAll("text")
@@ -155,30 +159,35 @@
               .attr("text-anchor", "middle")
               .attr("dy", 30)
               .text(d => d.id);
-              
+            
+            console.log('Node labels created:', nodeLabels.size());
+            
+            // Add tooltips
             node.append("title")
               .text(d => `${d.id}: ${d.description}`);
-              
+            
+            // Simulation tick function
             simulation.on("tick", () => {
               link
                 .attr("x1", d => Math.max(0, Math.min(width, d.source.x)))
                 .attr("y1", d => Math.max(0, Math.min(height, d.source.y)))
                 .attr("x2", d => Math.max(0, Math.min(width, d.target.x)))
                 .attr("y2", d => Math.max(0, Math.min(height, d.target.y)));
-                
+              
               linkLabels
                 .attr("x", d => (Math.max(0, Math.min(width, d.source.x)) + Math.max(0, Math.min(width, d.target.x))) / 2)
                 .attr("y", d => (Math.max(0, Math.min(height, d.source.y)) + Math.max(0, Math.min(height, d.target.y))) / 2);
-                
+              
               node
                 .attr("cx", d => d.x = Math.max(20, Math.min(width - 20, d.x)))
                 .attr("cy", d => d.y = Math.max(20, Math.min(height - 20, d.y)));
-                
+              
               nodeLabels
                 .attr("x", d => Math.max(30, Math.min(width - 30, d.x)))
                 .attr("y", d => Math.max(40, Math.min(height - 10, d.y)));
             });
             
+            // Drag functions
             function dragstarted(event) {
               if (!event.active) simulation.alphaTarget(0.3).restart();
               event.subject.fx = event.subject.x;
@@ -196,37 +205,31 @@
               event.subject.fy = null;
             }
             
-            setLoading(false);
+            console.log('Graph rendering complete!');
             
-          } catch (err) {
-            console.error('Error loading data:', err);
-            setError(`Failed to load graph data: ${err.message}`);
-            setLoading(false);
+          } catch (error) {
+            console.error('Error loading graph:', error);
           }
         }
         
-        // Initial render
-        updateDimensions();
+        // Load graph
+        loadAndRenderGraph();
         
-        // Add resize event listener
-        window.addEventListener('resize', updateDimensions);
+        // Handle window resize
+        function handleResize() {
+          console.log('Window resized, reloading graph...');
+          loadAndRenderGraph();
+        }
         
-        // Cleanup function
+        window.addEventListener('resize', handleResize);
+        
         return () => {
-          window.removeEventListener('resize', updateDimensions);
+          window.removeEventListener('resize', handleResize);
         };
       }, []);
       
-      if (loading) {
-        return React.createElement('div', { className: 'loading' }, 'Loading knowledge graph...');
-      }
-      
-      if (error) {
-        return React.createElement('div', { className: 'error' }, error);
-      }
-      
       return React.createElement('svg', { 
-        ref: svgRef, 
+        ref: svgRef,
         style: { 
           width: '100vw', 
           height: '100vh', 
@@ -239,6 +242,7 @@
       });
     }
     
+    // Render the component
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(React.createElement(KnowledgeGraph));
   </script>
