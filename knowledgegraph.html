@@ -80,9 +80,9 @@
              .style("left", 0)
              .style("z-index", 0);
           
-            // Dynamic base URL calculation
-            const baseUrl = window.location.origin + window.location.pathname.replace('/knowledgegraph.html', '') + '/';
-            console.log('Base URL:', baseUrl); // 디버깅용
+            // Use Raw GitHub URL - most reliable method
+            const baseUrl = 'https://raw.githubusercontent.com/ohshane/ohshane.github.io/main/';
+            console.log('Using Raw GitHub URL:', baseUrl); // 디버깅용
             
             const [nodesResponse, linksResponse] = await Promise.all([
               fetch(baseUrl + 'nodes.json'),
