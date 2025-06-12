@@ -80,19 +80,27 @@
              .style("left", 0)
              .style("z-index", 0);
           
-            // Load data from JSON files using absolute paths
-            const baseUrl = 'https://ohshane.github.io/';
+            // Dynamic base URL calculation
+            const baseUrl = window.location.origin + window.location.pathname.replace('/knowledgegraph.html', '') + '/';
+            console.log('Base URL:', baseUrl); // 디버깅용
+            
             const [nodesResponse, linksResponse] = await Promise.all([
               fetch(baseUrl + 'nodes.json'),
               fetch(baseUrl + 'links.json')
             ]);
             
+            console.log('Nodes response status:', nodesResponse.status); // 디버깅용
+            console.log('Links response status:', linksResponse.status); // 디버깅용
+            
             if (!nodesResponse.ok || !linksResponse.ok) {
-              throw new Error('Failed to fetch JSON files');
+              throw new Error(`Failed to fetch JSON files. Nodes: ${nodesResponse.status}, Links: ${linksResponse.status}`);
             }
             
             const nodes = await nodesResponse.json();
             const links = await linksResponse.json();
+            
+            console.log('Loaded nodes:', nodes.length); // 디버깅용
+            console.log('Loaded links:', links.length); // 디버깅용
             
             const simulation = d3.forceSimulation(nodes)
               .force("link", d3.forceLink(links).id(d => d.id).distance(80))
@@ -160,7 +168,7 @@
                 
               linkLabels
                 .attr("x", d => (Math.max(0, Math.min(width, d.source.x)) + Math.max(0, Math.min(width, d.target.x))) / 2)
-                .attr("y", d => (Math.max(0, Math.min(height, d.source.y)) + Math.max(0, Math.min(width, d.target.y))) / 2);
+                .attr("y", d => (Math.max(0, Math.min(height, d.source.y)) + Math.max(0, Math.min(height, d.target.y))) / 2);
                 
               node
                 .attr("cx", d => d.x = Math.max(20, Math.min(width - 20, d.x)))
@@ -192,7 +200,7 @@
             
           } catch (err) {
             console.error('Error loading data:', err);
-            setError('Failed to load graph data. Please check the console for details.');
+            setError(`Failed to load graph data: ${err.message}`);
             setLoading(false);
           }
         }
