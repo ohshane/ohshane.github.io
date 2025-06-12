@@ -9,7 +9,7 @@
 <meta name="author" content="Shane Oh">
 <meta name="dcterms.date" content="2023-09-07">
 
-<title>Cross Entropy Loss – Shane</title>
+<title>Derivatives of Neural Net Layers – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -42,7 +77,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-92eb9b7843010ec8d058c6c5ee9dfc6f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-33978562b91bf7e51b113e0e434ca5fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -106,7 +141,7 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Cross Entropy Loss – Shane">
+<meta property="og:title" content="Derivatives of Neural Net Layers – Shane">
 <meta property="og:description" content="">
 <meta property="og:site_name" content="Shane">
 </head>
@@ -136,6 +171,10 @@ window.Quarto = {
     <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../knowledgegraph.html"> 
+<span class="menu-text">View</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -152,15 +191,22 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#derivatives" id="toc-derivatives" class="nav-link active" data-scroll-target="#derivatives">Derivatives</a>
+  <li><a href="#preliminaries" id="toc-preliminaries" class="nav-link active" data-scroll-target="#preliminaries">Preliminaries</a>
   <ul class="collapse">
-  <li><a href="#binary-cross-entropy" id="toc-binary-cross-entropy" class="nav-link" data-scroll-target="#binary-cross-entropy">Binary cross entropy</a></li>
-  <li><a href="#cross-entropy" id="toc-cross-entropy" class="nav-link" data-scroll-target="#cross-entropy">Cross entropy</a></li>
+  <li><a href="#chain-rule" id="toc-chain-rule" class="nav-link" data-scroll-target="#chain-rule">Chain rule</a></li>
+  </ul></li>
+  <li><a href="#derivatives" id="toc-derivatives" class="nav-link" data-scroll-target="#derivatives">Derivatives</a>
+  <ul class="collapse">
+  <li><a href="#mathcall_mathrmbce" id="toc-mathcall_mathrmbce" class="nav-link" data-scroll-target="#mathcall_mathrmbce"><span class="math inline">\(\mathcal{L}_\mathrm{BCE}\)</span></a></li>
+  <li><a href="#mathcall_mathrmce" id="toc-mathcall_mathrmce" class="nav-link" data-scroll-target="#mathcall_mathrmce"><span class="math inline">\(\mathcal{L}_\mathrm{CE}\)</span></a></li>
   <li><a href="#sigmoid" id="toc-sigmoid" class="nav-link" data-scroll-target="#sigmoid">Sigmoid</a></li>
   <li><a href="#softmax" id="toc-softmax" class="nav-link" data-scroll-target="#softmax">Softmax</a></li>
-  <li><a href="#dfracd-mathcal-l_mathrmbced-mathbf-x" id="toc-dfracd-mathcal-l_mathrmbced-mathbf-x" class="nav-link" data-scroll-target="#dfracd-mathcal-l_mathrmbced-mathbf-x"><span class="math inline">\(\dfrac{d \mathcal L_\mathrm{BCE}}{d \mathbf x}\)</span></a></li>
-  <li><a href="#dfracpartial-mathcal-l_mathrmcepartial-mathbf-x" id="toc-dfracpartial-mathcal-l_mathrmcepartial-mathbf-x" class="nav-link" data-scroll-target="#dfracpartial-mathcal-l_mathrmcepartial-mathbf-x"><span class="math inline">\(\dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \mathbf x}\)</span></a></li>
-  <li><a href="#block-matrix" id="toc-block-matrix" class="nav-link" data-scroll-target="#block-matrix">Block matrix</a></li>
+  <li><a href="#sigmoid---mathcal-l_mathrmbce" id="toc-sigmoid---mathcal-l_mathrmbce" class="nav-link" data-scroll-target="#sigmoid---mathcal-l_mathrmbce">Sigmoid -&gt; <span class="math inline">\(\mathcal L_\mathrm{BCE}\)</span></a></li>
+  <li><a href="#softmax---mathcal-l_mathrmce" id="toc-softmax---mathcal-l_mathrmce" class="nav-link" data-scroll-target="#softmax---mathcal-l_mathrmce">Softmax -&gt; <span class="math inline">\(\mathcal L_\mathrm{CE}\)</span></a></li>
+  <li><a href="#linear" id="toc-linear" class="nav-link" data-scroll-target="#linear">Linear</a></li>
+  <li><a href="#relu" id="toc-relu" class="nav-link" data-scroll-target="#relu">ReLU</a></li>
+  <li><a href="#linear---relu" id="toc-linear---relu" class="nav-link" data-scroll-target="#linear---relu">Linear -&gt; ReLU</a></li>
+  <li><a href="#convolution" id="toc-convolution" class="nav-link" data-scroll-target="#convolution">Convolution</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -170,7 +216,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Cross Entropy Loss</h1>
+<h1 class="title">Derivatives of Neural Net Layers</h1>
   <div class="quarto-categories">
     <div class="quarto-category">Machine Learning</div>
   </div>
@@ -215,10 +261,27 @@ Note
 <p>Numerator layout is used for the equations in this post.</p>
 </div>
 </div>
+<section id="preliminaries" class="level2">
+<h2 class="anchored" data-anchor-id="preliminaries">Preliminaries</h2>
+<section id="chain-rule" class="level3">
+<h3 class="anchored" data-anchor-id="chain-rule">Chain rule</h3>
+<p><span class="math display">\[
+\begin{align*}
+\dfrac{d}{dx} h(g(f(x)))
+&amp;= \underbrace{h'(\overbrace{g(f(x))}^{\text{forward}})}_{\text{backward}}
+\quad \underbrace{g'(\overbrace{f(x)}^{\text{forward}})}_{\text{backward}}
+\quad \underbrace{f'(x)}_{\text{backward}} \\
+\dfrac{\partial}{\partial \mathbf x} h(\mathbf g(\mathbf f(\mathbf x)))
+&amp;= \dfrac{\partial h}{\partial \mathbf g} \dfrac{\partial \mathbf g}{\partial \mathbf f} \dfrac{\partial \mathbf f}{\partial \mathbf x}
+= \nabla h(\mathbf g( \mathbf f(\mathbf x))) \ \mathbf J_\mathbf g(\mathbf f(\mathbf x)) \ \mathbf J_\mathbf f(\mathbf x)
+\end{align*}
+\]</span></p>
+</section>
+</section>
 <section id="derivatives" class="level2">
 <h2 class="anchored" data-anchor-id="derivatives">Derivatives</h2>
-<section id="binary-cross-entropy" class="level3">
-<h3 class="anchored" data-anchor-id="binary-cross-entropy">Binary cross entropy</h3>
+<section id="mathcall_mathrmbce" class="level3">
+<h3 class="anchored" data-anchor-id="mathcall_mathrmbce"><span class="math inline">\(\mathcal{L}_\mathrm{BCE}\)</span></h3>
 <p><span class="math display">\[
 \begin{align*}
 H(y, \hat{y})
@@ -229,8 +292,8 @@ H(y, \hat{y})
 \end{align*}
 \]</span></p>
 </section>
-<section id="cross-entropy" class="level3">
-<h3 class="anchored" data-anchor-id="cross-entropy">Cross entropy</h3>
+<section id="mathcall_mathrmce" class="level3">
+<h3 class="anchored" data-anchor-id="mathcall_mathrmce"><span class="math inline">\(\mathcal{L}_\mathrm{CE}\)</span></h3>
 <p><span class="math display">\[
 \begin{align*}
 H(\mathbf y, \hat{\mathbf y})
@@ -257,23 +320,23 @@ H(\mathbf y, \hat{\mathbf y})
 &amp;= \sigma(x) (1-\sigma(x))
 \end{align*}
 \]</span></p>
-<p>Let <span class="math inline">\(\sigma : \mathbb R^n \to \mathbb R^n\)</span> (softmax).</p>
-<ul>
-<li><span class="math inline">\(\mathbf x = (x_1 \cdots x_n)^\top\)</span></li>
-<li><span class="math inline">\(\sigma = (\sigma_1 \cdots \sigma_n)^\top\)</span></li>
-<li><span class="math inline">\(\sigma_i(\mathbf x) = \frac{e^{x_i}}{\sum_j e^{x_j}} \quad (\sigma_i:\mathbb R^n \to \mathbb R)\)</span></li>
-</ul>
 </section>
 <section id="softmax" class="level3">
 <h3 class="anchored" data-anchor-id="softmax">Softmax</h3>
+<p>Let <span class="math inline">\(\mathbf{s} : \mathbb R^n \to \mathbb R^n\)</span>.</p>
+<ul>
+<li><span class="math inline">\(\mathbf x = (x_1 \cdots x_n)^\top\)</span></li>
+<li><span class="math inline">\(\mathbf{s} = (s_1 \cdots s_n)^\top\)</span></li>
+<li><span class="math inline">\(s_i(\mathbf x) = \frac{e^{x_i}}{\sum_j e^{x_j}} \quad (s_i:\mathbb R^n \to \mathbb R)\)</span></li>
+</ul>
 <p><span class="math display">\[
 \begin{align*}
-\mathbf J_{\sigma}
+\mathbf J_{\mathbf{s}}
 &amp;=
 \begin{bmatrix}
-\dfrac{\partial \sigma_1(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial \sigma_1(\mathbf x)}{\partial x_n} \\
+\dfrac{\partial s_1(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial s_1(\mathbf x)}{\partial x_n} \\
 \vdots &amp; \ddots &amp; \vdots \\
-\dfrac{\partial \sigma_n(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial \sigma_n(\mathbf x)}{\partial x_n}
+\dfrac{\partial s_n(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial s_n(\mathbf x)}{\partial x_n}
 \end{bmatrix} \\
 &amp;=
 \begin{bmatrix}
@@ -299,17 +362,17 @@ H(\mathbf y, \hat{\mathbf y})
 \end{bmatrix} \\
 &amp;=
 \begin{bmatrix}
-\sigma_1(\mathbf x)(1-\sigma_1(\mathbf x)) &amp; \cdots &amp; -\sigma_1(\mathbf x) \sigma_n(\mathbf x) \\
+s_1(\mathbf x)(1-s_1(\mathbf x)) &amp; \cdots &amp; -s_1(\mathbf x) s_n(\mathbf x) \\
 \vdots &amp; \ddots &amp; \vdots \\
--\sigma_n(\mathbf x) \sigma_1(\mathbf x) &amp; \cdots &amp; \sigma_n(\mathbf x)(1-\sigma_n(\mathbf x)) \\
+-s_n(\mathbf x) s_1(\mathbf x) &amp; \cdots &amp; s_n(\mathbf x)(1-s_n(\mathbf x)) \\
 \end{bmatrix} \\
 &amp;=
-\mathrm{diag}(\sigma(\mathbf x)) -\sigma(\mathbf x) \sigma(\mathbf x)^\top
+\mathrm{diag}(\mathbf{s}(\mathbf x)) -\mathbf{s}(\mathbf x) \mathbf{s}(\mathbf x)^\top
 \end{align*}
 \]</span></p>
 </section>
-<section id="dfracd-mathcal-l_mathrmbced-mathbf-x" class="level3">
-<h3 class="anchored" data-anchor-id="dfracd-mathcal-l_mathrmbced-mathbf-x"><span class="math inline">\(\dfrac{d \mathcal L_\mathrm{BCE}}{d \mathbf x}\)</span></h3>
+<section id="sigmoid---mathcal-l_mathrmbce" class="level3">
+<h3 class="anchored" data-anchor-id="sigmoid---mathcal-l_mathrmbce">Sigmoid -&gt; <span class="math inline">\(\mathcal L_\mathrm{BCE}\)</span></h3>
 <p><span class="math display">\[
 \begin{align*}
 \dfrac{d \mathcal L_\mathrm{BCE}}{d x}
@@ -323,8 +386,8 @@ H(\mathbf y, \hat{\mathbf y})
 \end{align*}
 \]</span></p>
 </section>
-<section id="dfracpartial-mathcal-l_mathrmcepartial-mathbf-x" class="level3">
-<h3 class="anchored" data-anchor-id="dfracpartial-mathcal-l_mathrmcepartial-mathbf-x"><span class="math inline">\(\dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \mathbf x}\)</span></h3>
+<section id="softmax---mathcal-l_mathrmce" class="level3">
+<h3 class="anchored" data-anchor-id="softmax---mathcal-l_mathrmce">Softmax -&gt; <span class="math inline">\(\mathcal L_\mathrm{CE}\)</span></h3>
 <p><span class="math display">\[
 \begin{align*}
 \dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \mathbf x}
@@ -343,8 +406,8 @@ H(\mathbf y, \hat{\mathbf y})
 \end{align*}
 \]</span></p>
 </section>
-<section id="block-matrix" class="level3">
-<h3 class="anchored" data-anchor-id="block-matrix">Block matrix</h3>
+<section id="linear" class="level3">
+<h3 class="anchored" data-anchor-id="linear">Linear</h3>
 <p><span class="math display">\[
 \begin{bmatrix}
 \\
@@ -371,6 +434,126 @@ H(\mathbf y, \hat{\mathbf y})
 \dfrac{\partial z_i}{\partial b_j} &amp;= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial b_j} = \delta_{ij} \\
 \dfrac{\partial \mathbf z}{\partial \mathbf b} &amp;= I
 \end{align*}
+\]</span></p>
+</section>
+<section id="relu" class="level3">
+<h3 class="anchored" data-anchor-id="relu">ReLU</h3>
+<div id="272ea780" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReLU:</span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.grad <span class="op">=</span> <span class="va">None</span></span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> derivative(<span class="va">self</span>, x):</span>
+<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""∂ReLU(x)/∂x"""</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-9" class="code-annotation-target"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.where(x<span class="op">&gt;</span><span class="dv">0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>)</span>
+<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, x):</span>
+<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.grad <span class="op">=</span> <span class="va">self</span>.derivative(x)</span>
+<span id="annotated-cell-1-13"><a href="#annotated-cell-1-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.maximum(<span class="dv">0</span>, x)</span>
+<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="annotated-cell-1-15"><a href="#annotated-cell-1-15" aria-hidden="true" tabindex="-1"></a>relu <span class="op">=</span> ReLU()</span>
+<span id="annotated-cell-1-16"><a href="#annotated-cell-1-16" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.random.randn(<span class="dv">3</span>,<span class="dv">3</span>)</span>
+<span id="annotated-cell-1-17"><a href="#annotated-cell-1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-1-18"><a href="#annotated-cell-1-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)</span>
+<span id="annotated-cell-1-19"><a href="#annotated-cell-1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(relu(x))</span>
+<span id="annotated-cell-1-20"><a href="#annotated-cell-1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(relu.grad)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="9" data-code-annotation="1">Mathmatically, <code>np.diag(np.ravel(np.where(x&gt;0,1,0)))</code> is correct.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[ 1.0628543   0.20558755 -0.57863322]
+ [-0.26643415 -0.44975708 -1.01479999]
+ [ 1.02175047  0.68703083  0.37419647]]
+[[1.0628543  0.20558755 0.        ]
+ [0.         0.         0.        ]
+ [1.02175047 0.68703083 0.37419647]]
+[[1. 1. 0.]
+ [0. 0. 0.]
+ [1. 1. 1.]]</code></pre>
+</div>
+</div>
+</section>
+<section id="linear---relu" class="level3">
+<h3 class="anchored" data-anchor-id="linear---relu">Linear -&gt; ReLU</h3>
+<p><span class="math display">\[
+\begin{bmatrix}
+\\
+&amp;A&amp; \vert \mathbf b \\
+\\
+\end{bmatrix}
+\begin{bmatrix}
+\\
+\mathbf x \\
+\\
+\hline
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+\\
+\mathbf y \\
+\\
+\end{bmatrix},
+\quad \mathrm{ReLU}(\mathbf y) = \mathbf z
+\]</span></p>
+<p><span class="math display">\[
+\dfrac{\partial \mathcal L}{\partial \begin{bmatrix}&amp;[A]_i&amp;|b_i\end{bmatrix}^\top}
+=
+\begin{bmatrix}
+&amp;\mathbf x^\top&amp; \vert 1 \\
+\end{bmatrix}
+\mathbb{1}_{y_i &gt; 0}(y_i)
+\frac{\partial \mathcal L}{\partial z_i}
+\]</span></p>
+</section>
+<section id="convolution" class="level3">
+<h3 class="anchored" data-anchor-id="convolution">Convolution</h3>
+<ul>
+<li><span class="math inline">\(\mathbf x_{4 \times 4}\)</span>: input</li>
+<li><span class="math inline">\(\kappa_{3 \times 3}\)</span>: kernel</li>
+<li><span class="math inline">\(\mathbf z_{2 \times 2}\)</span>: output</li>
+</ul>
+<p><span class="math display">\[
+\begin{bmatrix}
+x_{11} &amp; x_{12} &amp; x_{13} &amp; x_{14} \\
+x_{21} &amp; x_{22} &amp; x_{23} &amp; x_{24} \\
+x_{31} &amp; x_{32} &amp; x_{33} &amp; x_{34} \\
+x_{41} &amp; x_{42} &amp; x_{43} &amp; x_{44}
+\end{bmatrix} \star
+\begin{bmatrix}
+\kappa_{11} &amp; \kappa_{12} &amp; \kappa_{13} \\
+\kappa_{21} &amp; \kappa_{22} &amp; \kappa_{23} \\
+\kappa_{31} &amp; \kappa_{32} &amp; \kappa_{33}
+\end{bmatrix} =
+\begin{bmatrix}
+z_{11} &amp; z_{12} \\
+z_{21} &amp; z_{22}
+\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\dfrac{\partial \mathbf z}{\partial \kappa}
+\]</span></p>
+<p><span class="math display">\[
+\dfrac{\partial \mathbf z}{\partial \kappa} =
+\begin{matrix}
+       &amp; \kappa_{11} &amp; \kappa_{12} &amp; \kappa_{13} &amp; \kappa_{21} &amp; \kappa_{22} &amp; \kappa_{23} &amp; \kappa_{31} &amp; \kappa_{32} &amp; \kappa_{33} \\
+z_{11} &amp; x_{11} &amp; x_{12} &amp; x_{13} &amp; x_{21} &amp; x_{22} &amp; x_{23} &amp; x_{31} &amp; x_{32} &amp; x_{33} \\
+z_{12} &amp; x_{12} &amp; x_{13} &amp; x_{14} &amp; x_{22} &amp; x_{23} &amp; x_{24} &amp; x_{32} &amp; x_{33} &amp; x_{34} \\
+z_{21} &amp; x_{21} &amp; x_{22} &amp; x_{23} &amp; x_{31} &amp; x_{32} &amp; x_{33} &amp; x_{41} &amp; x_{42} &amp; x_{43} \\
+z_{22} &amp; x_{22} &amp; x_{23} &amp; x_{24} &amp; x_{32} &amp; x_{33} &amp; x_{34} &amp; x_{42} &amp; x_{43} &amp; x_{44}
+\end{matrix}
+\]</span></p>
+<p><span class="math display">\[
+\dfrac{\partial \mathcal L}{\partial \kappa} =
+\dfrac{\partial \mathcal L}{\partial \mathbf z}
+\dfrac{\partial \mathbf z}{\partial \kappa}
 \]</span></p>
 
 
