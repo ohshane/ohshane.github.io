@@ -17,6 +17,8 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
+      - href: knowledgegraph.html
+        text: View
   draft-mode: visible
 format:
   html:
