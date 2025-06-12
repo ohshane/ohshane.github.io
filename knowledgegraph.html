@@ -31,118 +31,170 @@
       margin: 0 !important;
       padding: 0 !important;
     }
+    .loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .error {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+      color: red;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/javascript">
     // React + D3 Knowledge Graph only (no JSX, using CDN)
-    const { useEffect, useRef } = React;
+    const { useEffect, useRef, useState } = React;
     function KnowledgeGraph() {
       const svgRef = React.useRef(null);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+      
       React.useEffect(() => {
         const svg = d3.select(svgRef.current);
         svg.selectAll("*").remove();
         
         async function updateDimensions() {
-          svg.selectAll("*").remove();
-          // Set width and height to fill the viewport
-          const width = window.innerWidth;
-          const height = window.innerHeight;
-          svg.attr("width", width).attr("height", height)
-           .style("display", "block")
-           .style("position", "fixed")
-           .style("top", 0)
-           .style("left", 0)
-           .style("z-index", 0);
-        
-        // Load data from JSON files
-        const [nodesResponse, linksResponse] = await Promise.all([
-          fetch('./nodes.json'),
-          fetch('./links.json')
-        ]);
-        const nodes = await nodesResponse.json();
-        const links = await linksResponse.json();
-        const simulation = d3.forceSimulation(nodes)
-          .force("link", d3.forceLink(links).id(d => d.id).distance(80))
-          .force("charge", d3.forceManyBody().strength(-400))
-          .force("center", d3.forceCenter(width / 2, height / 2))
-          .force("collision", d3.forceCollide().radius(25));
-        const color = d3.scaleOrdinal()
-          .domain([1, 2, 3, 4, 5, 6, 7])
-          .range(["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#ffeaa7", "#dda0dd", "#ff9f43"]);
-        const link = svg.append("g")
-          .attr("class", "links")
-          .selectAll("line")
-          .data(links)
-          .join("line")
-          .attr("stroke", "#999")
-          .attr("stroke-opacity", 0.6)
-          .attr("stroke-width", 1);
-        const linkLabels = svg.append("g")
-          .attr("class", "link-labels")
-          .selectAll("text")
-          .data(links)
-          .join("text")
-          .attr("font-size", "9px")
-          .attr("fill", "#666")
-          .attr("text-anchor", "middle")
-          .text(d => d.relationship);
-        const node = svg.append("g")
-          .attr("class", "nodes")
-          .selectAll("circle")
-          .data(nodes)
-          .join("circle")
-          .attr("r", d => d.group === 1 ? 18 : 12)
-          .attr("fill", d => color(d.group))
-          .attr("stroke", "#fff")
-          .attr("stroke-width", 2)
-          .call(d3.drag()
-            .on("start", dragstarted)
-            .on("drag", dragged)
-            .on("end", dragended));
-        const nodeLabels = svg.append("g")
-          .attr("class", "node-labels")
-          .selectAll("text")
-          .data(nodes)
-          .join("text")
-          .attr("font-size", "10px")
-          .attr("font-weight", "bold")
-          .attr("text-anchor", "middle")
-          .attr("dy", 30)
-          .text(d => d.id);
-        node.append("title")
-          .text(d => `${d.id}: ${d.description}`);
-        simulation.on("tick", () => {
-          link
-            .attr("x1", d => Math.max(0, Math.min(width, d.source.x)))
-            .attr("y1", d => Math.max(0, Math.min(height, d.source.y)))
-            .attr("x2", d => Math.max(0, Math.min(width, d.target.x)))
-            .attr("y2", d => Math.max(0, Math.min(height, d.target.y)));
-          linkLabels
-            .attr("x", d => (Math.max(0, Math.min(width, d.source.x)) + Math.max(0, Math.min(width, d.target.x))) / 2)
-            .attr("y", d => (Math.max(0, Math.min(height, d.source.y)) + Math.max(0, Math.min(height, d.target.y))) / 2);
-          node
-            .attr("cx", d => d.x = Math.max(20, Math.min(width - 20, d.x)))
-            .attr("cy", d => d.y = Math.max(20, Math.min(height - 20, d.y)));
-          nodeLabels
-            .attr("x", d => Math.max(30, Math.min(width - 30, d.x)))
-            .attr("y", d => Math.max(40, Math.min(height - 10, d.y)));
-        });
-        function dragstarted(event) {
-          if (!event.active) simulation.alphaTarget(0.3).restart();
-          event.subject.fx = event.subject.x;
-          event.subject.fy = event.subject.y;
-        }
-        function dragged(event) {
-          event.subject.fx = event.x;
-          event.subject.fy = event.y;
-        }
-        function dragended(event) {
-          if (!event.active) simulation.alphaTarget(0);
-          event.subject.fx = null;
-          event.subject.fy = null;
-        }
+          try {
+            setLoading(true);
+            setError(null);
+            
+            svg.selectAll("*").remove();
+            // Set width and height to fill the viewport
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            svg.attr("width", width).attr("height", height)
+             .style("display", "block")
+             .style("position", "fixed")
+             .style("top", 0)
+             .style("left", 0)
+             .style("z-index", 0);
+          
+            // Load data from JSON files using absolute paths
+            const baseUrl = 'https://ohshane.github.io/';
+            const [nodesResponse, linksResponse] = await Promise.all([
+              fetch(baseUrl + 'nodes.json'),
+              fetch(baseUrl + 'links.json')
+            ]);
+            
+            if (!nodesResponse.ok || !linksResponse.ok) {
+              throw new Error('Failed to fetch JSON files');
+            }
+            
+            const nodes = await nodesResponse.json();
+            const links = await linksResponse.json();
+            
+            const simulation = d3.forceSimulation(nodes)
+              .force("link", d3.forceLink(links).id(d => d.id).distance(80))
+              .force("charge", d3.forceManyBody().strength(-400))
+              .force("center", d3.forceCenter(width / 2, height / 2))
+              .force("collision", d3.forceCollide().radius(25));
+              
+            const color = d3.scaleOrdinal()
+              .domain([1, 2, 3, 4, 5, 6, 7])
+              .range(["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#ffeaa7", "#dda0dd", "#ff9f43"]);
+              
+            const link = svg.append("g")
+              .attr("class", "links")
+              .selectAll("line")
+              .data(links)
+              .join("line")
+              .attr("stroke", "#999")
+              .attr("stroke-opacity", 0.6)
+              .attr("stroke-width", 1);
+              
+            const linkLabels = svg.append("g")
+              .attr("class", "link-labels")
+              .selectAll("text")
+              .data(links)
+              .join("text")
+              .attr("font-size", "9px")
+              .attr("fill", "#666")
+              .attr("text-anchor", "middle")
+              .text(d => d.relationship);
+              
+            const node = svg.append("g")
+              .attr("class", "nodes")
+              .selectAll("circle")
+              .data(nodes)
+              .join("circle")
+              .attr("r", d => d.group === 1 ? 18 : 12)
+              .attr("fill", d => color(d.group))
+              .attr("stroke", "#fff")
+              .attr("stroke-width", 2)
+              .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+                
+            const nodeLabels = svg.append("g")
+              .attr("class", "node-labels")
+              .selectAll("text")
+              .data(nodes)
+              .join("text")
+              .attr("font-size", "10px")
+              .attr("font-weight", "bold")
+              .attr("text-anchor", "middle")
+              .attr("dy", 30)
+              .text(d => d.id);
+              
+            node.append("title")
+              .text(d => `${d.id}: ${d.description}`);
+              
+            simulation.on("tick", () => {
+              link
+                .attr("x1", d => Math.max(0, Math.min(width, d.source.x)))
+                .attr("y1", d => Math.max(0, Math.min(height, d.source.y)))
+                .attr("x2", d => Math.max(0, Math.min(width, d.target.x)))
+                .attr("y2", d => Math.max(0, Math.min(height, d.target.y)));
+                
+              linkLabels
+                .attr("x", d => (Math.max(0, Math.min(width, d.source.x)) + Math.max(0, Math.min(width, d.target.x))) / 2)
+                .attr("y", d => (Math.max(0, Math.min(height, d.source.y)) + Math.max(0, Math.min(width, d.target.y))) / 2);
+                
+              node
+                .attr("cx", d => d.x = Math.max(20, Math.min(width - 20, d.x)))
+                .attr("cy", d => d.y = Math.max(20, Math.min(height - 20, d.y)));
+                
+              nodeLabels
+                .attr("x", d => Math.max(30, Math.min(width - 30, d.x)))
+                .attr("y", d => Math.max(40, Math.min(height - 10, d.y)));
+            });
+            
+            function dragstarted(event) {
+              if (!event.active) simulation.alphaTarget(0.3).restart();
+              event.subject.fx = event.subject.x;
+              event.subject.fy = event.subject.y;
+            }
+            
+            function dragged(event) {
+              event.subject.fx = event.x;
+              event.subject.fy = event.y;
+            }
+            
+            function dragended(event) {
+              if (!event.active) simulation.alphaTarget(0);
+              event.subject.fx = null;
+              event.subject.fy = null;
+            }
+            
+            setLoading(false);
+            
+          } catch (err) {
+            console.error('Error loading data:', err);
+            setError('Failed to load graph data. Please check the console for details.');
+            setLoading(false);
+          }
         }
         
         // Initial render
@@ -156,8 +208,29 @@
           window.removeEventListener('resize', updateDimensions);
         };
       }, []);
-      return React.createElement('svg', { ref: svgRef, style: { width: '100vw', height: '100vh', display: 'block', position: 'fixed', top: 0, left: 0, zIndex: 0 } });
+      
+      if (loading) {
+        return React.createElement('div', { className: 'loading' }, 'Loading knowledge graph...');
+      }
+      
+      if (error) {
+        return React.createElement('div', { className: 'error' }, error);
+      }
+      
+      return React.createElement('svg', { 
+        ref: svgRef, 
+        style: { 
+          width: '100vw', 
+          height: '100vh', 
+          display: 'block', 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          zIndex: 0 
+        } 
+      });
     }
+    
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(React.createElement(KnowledgeGraph));
   </script>
