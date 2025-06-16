@@ -1,0 +1,44 @@
+---
+# title: Bayesian as Clinial Trial
+subtitle: Behind the scenes of COVID-19
+description: ""
+author: Shane Oh
+date: 2025-02-04
+image: "https://upload.wikimedia.org/wikipedia/commons/5/57/Pfizer_%282021%29.svg"
+categories:
+  - Clinical Trials
+  - Statistics
+---
+
+## Definition of Vaccine Efficacy
+
+The efficacy of an arbitrary vaccine is defined by various parameters.
+A [blog post](https://www.who.int/news-room/feature-stories/detail/vaccine-efficacy-effectiveness-and-protection)
+published from the World Health Organization (commonly known as WHO) describes this in much greater detail.
+
+![Vaccine efficacy](PfizerClinicalTrial/images/who-topic-12_80-percent.jpg){width=80%}
+
+Vaccine efficacy (VE) requires two sample groups for calculation.
+Although unequal group sizes are acceptable,
+best practice is to make the sample sizes as equal as possible.
+The control and test groups will be prescribed placebo and vaccine, respectively.
+
+In the context of the protocol, the key consideration is the extent of deviation between
+the actual and the stipulated group sizes.
+The discrepancy in group sizes will later be evaluated using chi-sqaure test.
+
+$$
+\mathrm{VE} = 100 \dfrac{\pi_P - \pi_V}{\pi_P}
+$$
+
+- $\pi_P$: Proportion of subjects infected after receiving the placebo.
+- $\pi_V$: Proportion of subjects infected after vaccinated.
+
+By setting the value of $\pi_P = 0.8$ and $\pi_V = 0.72$,
+the VE can be calculated as $10\%$.
+Notice that VE is theoretically between $-\infty$ and $100$.
+
+For the ease of modeling VE, numerical bound composed with $(0,1)$ is preferred.
+
+For modeling, it is commonly preferred to use the numerical range between $(0,1)$.
+
