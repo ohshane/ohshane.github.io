@@ -1,5 +1,4 @@
-<html>
-  <script>
+<script>
     const images = document.querySelectorAll('.quarto-grid-item > p > img');
     images.forEach(image => {
       image.onload = () => {
@@ -17,13 +16,12 @@
           image.onload();
       }
     });
-  </script>
+</script>
 
-  <footer style="text-align: center; padding: 20px; background-color: #f8f8f8; border-top: 1px solid #ddd; font-size: 14px;">
+<footer style="text-align: center; padding: 20px; background-color: #f8f8f8; border-top: 1px solid #ddd; font-size: 14px;">
       <p>&copy; <span id="year"></span> Shane Oh. All rights reserved.</p>
-  </footer>
+</footer>
 
-  <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-</html>
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
