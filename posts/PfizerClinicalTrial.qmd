@@ -1,5 +1,5 @@
 ---
-# title: Bayesian as Clinial Trial
+title: Bayesian Clinical Trial
 subtitle: Behind the scenes of COVID-19
 description: ""
 author: Shane Oh
@@ -25,7 +25,7 @@ The control and test groups will be prescribed placebo and vaccine, respectively
 
 In the context of the protocol, the key consideration is the extent of deviation between
 the actual and the stipulated group sizes.
-The discrepancy in group sizes will later be evaluated using chi-sqaure test.
+The discrepancy in group sizes will later be evaluated using chi-square test.
 
 $$
 \mathrm{VE} = 100 \dfrac{\pi_P - \pi_V}{\pi_P}
@@ -41,4 +41,25 @@ Notice that VE is theoretically between $-\infty$ and $100$.
 For the ease of modeling VE, numerical bound composed with $(0,1)$ is preferred.
 
 For modeling, it is commonly preferred to use the numerical range between $(0,1)$.
+
+## Pfizer BNT162b2 Phase III Trial
+
+The paper *Safety and Efficacy of the BNT162b2 mRNA Covid‑19 Vaccine* describes a large, placebo‑controlled study of adults aged 16 years and older.
+In total 43,548 volunteers were randomized, and 43,448 actually received injections: 21,720 were given BNT162b2 and 21,728 were given placebo.
+Participants received two doses 21 days apart.  Because the intended allocation was 1:1, a chi‑square test can confirm that the observed split (21,720 vs. 21,728) is consistent with equal group sizes:
+
+$$
+\chi^2 = \sum\frac{(O_i - E_i)^2}{E_i} \approx 1.47\times10^{-3},\quad p\approx0.97.
+$$
+
+The primary endpoint was symptomatic Covid‑19 at least 7 days after the second dose.  The trial reported 170 such cases, with 162 in the placebo arm and 8 in the vaccine arm.
+Plugging these counts into the VE formula gives
+
+$$
+\hat{\mathrm{VE}} = 100\left(1 - \frac{8/21720}{162/21728}\right) \approx 95\%.
+$$
+
+Adopting a non‑informative $\mathrm{Beta}(1,1)$ prior for the infection probabilities of each arm yields posteriors $\mathrm{Beta}(163,21567)$ for placebo and $\mathrm{Beta}(9,21713)$ for vaccine.
+Sampling from these distributions leads to an estimated mean VE of roughly $94\%$ with a $95\%$ credible interval about $90$--$98\%$.
+Such decisive efficacy supported the emergency authorization of BNT162b2 in late 2020.
 
