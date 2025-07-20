@@ -2,114 +2,118 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ohshane.github.io/posts/TraefikHelm.html</loc>
-    <lastmod>2025-06-22T02:10:30.183Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.749Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/RookCeph.html</loc>
-    <lastmod>2025-06-22T02:10:30.183Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.749Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/PfizerClinicalTrial.html</loc>
-    <lastmod>2025-06-22T02:10:30.176Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.742Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/NginxIngress.html</loc>
-    <lastmod>2025-06-22T02:10:30.171Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.738Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/MeasureingDistributions.html</loc>
-    <lastmod>2025-06-22T02:10:30.171Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.737Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/Keycloak.html</loc>
-    <lastmod>2025-06-22T02:10:30.161Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.728Z</lastmod>
   </url>
   <url>
-    <loc>https://ohshane.github.io/posts/JensensInequality.html</loc>
-    <lastmod>2025-06-22T02:10:30.160Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/HuffmanCoding.html</loc>
-    <lastmod>2025-06-22T02:10:30.158Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/GitPrompt.html</loc>
-    <lastmod>2025-06-22T02:10:30.158Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/GeometricSequence.html</loc>
-    <lastmod>2025-06-22T02:10:30.158Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/Entropy.html</loc>
-    <lastmod>2025-06-22T02:10:30.156Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/Cloudflare526.html</loc>
-    <lastmod>2025-06-22T02:10:30.151Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/BinaryHeap.html</loc>
-    <lastmod>2025-06-22T02:10:30.151Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/index.html</loc>
-    <lastmod>2025-06-22T02:10:30.151Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/about.html</loc>
-    <lastmod>2025-06-22T02:10:30.148Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/BiasVariance.html</loc>
-    <lastmod>2025-06-22T02:10:30.151Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/CertManager.html</loc>
-    <lastmod>2025-06-22T02:10:30.151Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/DifferentialEntropy.html</loc>
-    <lastmod>2025-06-22T02:10:30.156Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/GAN.html</loc>
-    <lastmod>2025-06-22T02:10:30.158Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/Git.html</loc>
-    <lastmod>2025-06-22T02:10:30.158Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ohshane.github.io/posts/GoConcurrency.html</loc>
-    <lastmod>2025-06-22T02:10:30.158Z</lastmod>
+    <loc>https://ohshane.github.io/posts/K8sSANs.html</loc>
+    <lastmod>2025-07-20T12:43:27.728Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/InternallyDividingPoint.html</loc>
-    <lastmod>2025-06-22T02:10:30.159Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.726Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/GoConcurrency.html</loc>
+    <lastmod>2025-07-20T12:43:27.725Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/Git.html</loc>
+    <lastmod>2025-07-20T12:43:27.725Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/GAN.html</loc>
+    <lastmod>2025-07-20T12:43:27.724Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/DifferentialEntropy.html</loc>
+    <lastmod>2025-07-20T12:43:27.723Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/CertManager.html</loc>
+    <lastmod>2025-07-20T12:43:27.719Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/BiasVariance.html</loc>
+    <lastmod>2025-07-20T12:43:27.719Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/about.html</loc>
+    <lastmod>2025-07-20T12:43:27.716Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/index.html</loc>
+    <lastmod>2025-07-20T12:43:27.718Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/BinaryHeap.html</loc>
+    <lastmod>2025-07-20T12:43:27.719Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/Cloudflare526.html</loc>
+    <lastmod>2025-07-20T12:43:27.719Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/Entropy.html</loc>
+    <lastmod>2025-07-20T12:43:27.723Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/GeometricSequence.html</loc>
+    <lastmod>2025-07-20T12:43:27.725Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/GitPrompt.html</loc>
+    <lastmod>2025-07-20T12:43:27.725Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/HuffmanCoding.html</loc>
+    <lastmod>2025-07-20T12:43:27.725Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ohshane.github.io/posts/JensensInequality.html</loc>
+    <lastmod>2025-07-20T12:43:27.726Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/Kafka.html</loc>
-    <lastmod>2025-06-22T02:10:30.161Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.728Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/Kubeconfig.html</loc>
-    <lastmod>2025-06-22T02:10:30.171Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.737Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/NNDerivatives.html</loc>
-    <lastmod>2025-06-22T02:10:30.171Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.737Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/OIDC.html</loc>
-    <lastmod>2025-06-22T02:10:30.172Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.738Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/RaspiK8s.html</loc>
-    <lastmod>2025-06-22T02:10:30.177Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.744Z</lastmod>
   </url>
   <url>
     <loc>https://ohshane.github.io/posts/Tmux.html</loc>
-    <lastmod>2025-06-22T02:10:30.183Z</lastmod>
+    <lastmod>2025-07-20T12:43:27.749Z</lastmod>
   </url>
 </urlset>

@@ -27,7 +27,8 @@
       "/posts/OIDC.html",
       "/posts/RookCeph.html",
       "/posts/Tmux.html",
-      "/posts/TraefikHelm.html"
+      "/posts/TraefikHelm.html",
+      "/posts/K8sSANs.html"
     ]
   }
 ]
