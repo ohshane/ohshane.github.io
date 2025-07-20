@@ -1,0 +1,72 @@
+---
+title: certSANs
+subtitle: Post configuration for K8s
+description: ""
+author: Shane Oh
+date: 2024-10-27
+image: false
+categories:
+  - Kubernetes
+  - Networking
+---
+
+After installing `kubeadm` and setting up your cluster, you may need to configure the Subject Alternative Names (SANs) for your certificates. This is particularly important if you are using a custom domain or hostname for your Kubernetes API server.
+
+## Prerequisites
+
+From the control plane node, copy the kubeadm configuration file to your local machine:
+
+```sh
+$ scp root@knode-01:/etc/kubernetes/admin.conf ~/.kube/admin.conf
+```
+Merge the `admin.conf` file to `.kube/config`
+Replace the existing IP address with the hostname or domain you want to use:
+
+```
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: <base64-encoded-ca-cert>
+    server: https://<your-hostname-or-domain>:6443
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+
+current-context: kubernetes-admin@kubernetes
+```
+
+## Update kubeadm configuration
+
+The alternative SANs should have been set during the initial `kubeadm init` command. If you need to update them, you can do so by modifying the kubeadm configuration file.
+
+This process involves creating a new key pair and certificate for the API server with the updated SANs. This can be done by deleting the existing certificates and regenerating them with the new SANs. To reduce the risk of this process, you can create a backup file of the existing certificates before proceeding.
+
+### Backup existing certificates
+
+```sh
+$ cd /etc/kubernetes/pki
+$ mv apiserver.crt apiserver.crt.bak
+$ mv apiserver.key apiserver.key.bak
+```
+
+### Export the kubeadm configuration
+
+```sh
+$ kubectl -n kube-system get configmaps kubeadm-config -o jsonpath='{.data.ClusterConfiguration}' > kubeadm-config.yaml
+```
+
+Edit the `kubeadm-config.yaml` file to include the new SANs under the `apiServer` section. For example:
+```yaml
+apiServer:
+  certSANs:
+  - <your-hostname-or-domain>
+```
+
+### Regenerate the certificates
+
+```sh
+kubeadm init phase certs apiserver --config kubeadm-config.yaml
+```
