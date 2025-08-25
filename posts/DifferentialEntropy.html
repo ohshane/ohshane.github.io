@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.7.33">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -39,10 +39,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-5831f560ab27691cf8d3fa6f0f1d62ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0087ca3d6950331c118bac1ce9f2dbab.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -140,6 +140,10 @@ window.Quarto = {
     <a class="nav-link" href="../knowledgegraph.html"> 
 <span class="menu-text">View</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../jraph.html"> 
+<span class="menu-text">Jraph</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -217,7 +221,7 @@ h(X) = \mathbb E \left[ \log \dfrac{1}{f_X(X)} \right] = \int_{\mathcal X} f_X(x
 <section id="proof" class="level2">
 <h2 class="anchored" data-anchor-id="proof">Proof</h2>
 <p>First, prepare an arbitrary PDF. In this example, we are using <span class="math inline">\(\mathcal N(x;0,1)\)</span>.</p>
-<div id="13fc57d7" class="cell" data-execution_count="1">
+<div id="9dff0c42" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -227,7 +231,7 @@ h(X) = \mathbb E \left[ \log \dfrac{1}{f_X(X)} \right] = \int_{\mathcal X} f_X(x
 </div>
 </div>
 <p>We set <span class="math inline">\(\Delta\)</span> to bin the continuous RV <span class="math inline">\(X\)</span>.</p>
-<div id="7c2c695e" class="cell" data-execution_count="2">
+<div id="dbb1650b" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -241,7 +245,7 @@ h(X) = \mathbb E \left[ \log \dfrac{1}{f_X(X)} \right] = \int_{\mathcal X} f_X(x
 \exists x_i \in [i\Delta, (i+1)\Delta] :
 f_X(x_i) \Delta = \int_{i\Delta}^{(i+1)\Delta} f_X(x) dx
 \]</span></p>
-<div id="672b0f03" class="cell" data-execution_count="3">
+<div id="26ebf821" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -253,7 +257,7 @@ f_X(x_i) \Delta = \int_{i\Delta}^{(i+1)\Delta} f_X(x) dx
 <p><span class="math display">\[
 p_{X^\Delta}(x_i) \triangleq f_X(x_i) \Delta
 \]</span></p>
-<div id="df19dbc2" class="cell" data-execution_count="4">
+<div id="7e95f72c" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">

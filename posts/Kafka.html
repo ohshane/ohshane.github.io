@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.7.33">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,10 +74,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-5831f560ab27691cf8d3fa6f0f1d62ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-0087ca3d6950331c118bac1ce9f2dbab.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -146,6 +146,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li class="nav-item">
     <a class="nav-link" href="../knowledgegraph.html"> 
 <span class="menu-text">View</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../jraph.html"> 
+<span class="menu-text">Jraph</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -259,7 +263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="producers-and-consumers" class="level3">
 <h3 class="anchored" data-anchor-id="producers-and-consumers">Producers and Consumers</h3>
-<p><strong>Producers</strong> are those client applications that publish (write) events to Kafka, &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD and <strong>consumers</strong> are those that subscribe to (read and process) these events by polling. ======= and <strong>consumers</strong> are those that subscribe to (read and process) these events. &gt;&gt;&gt;&gt;&gt;&gt;&gt; d484588 (new file: posts/Kafka.qmd)</p>
+<p><strong>Producers</strong> are those client applications that publish (write) events to Kafka, and <strong>consumers</strong> are those that subscribe to (read and process) these events by polling.</p>
 <p>In modern architectures, it is common to have multiple producers and consumers interacting — producers are likely to be pumping data at a high rate, while consumers may handle data at their own pace. This makes it crucial to decouple the data producers from the consumers.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
