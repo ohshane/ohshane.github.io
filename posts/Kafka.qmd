@@ -64,11 +64,7 @@ It is also called record or **message**. The key components of a message are as 
 
 ### Producers and Consumers
 **Producers** are those client applications that publish (write) events to Kafka,
-<<<<<<< HEAD
 and **consumers** are those that subscribe to (read and process) these events by polling.
-=======
-and **consumers** are those that subscribe to (read and process) these events.
->>>>>>> d484588 (new file:   posts/Kafka.qmd)
 
 In modern architectures, it is common to have multiple producers and consumers interacting ---
 producers are likely to be pumping data at a high rate,

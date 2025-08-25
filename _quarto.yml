@@ -19,6 +19,8 @@ website:
       - about.qmd
       - href: knowledgegraph.html
         text: View
+      - href: jraph.html
+        text: Jraph
   draft-mode: visible
 format:
   html:
