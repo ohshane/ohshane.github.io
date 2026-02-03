@@ -4,7 +4,7 @@ subtitle: Pushing images to an in-cluster registry using BuildKit
 description: ""
 author: Shane Oh
 date: 2026-02-03
-image: false
+image: "https://raw.githubusercontent.com/GoogleContainerTools/skaffold/refs/heads/main/logo/skaffold.png"
 categories:
   - Kubernetes
   - Skaffold
