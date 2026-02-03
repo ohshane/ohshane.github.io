@@ -1,0 +1,262 @@
+---
+title: "Lisp and Scheme"
+subtitle: "Code as Data, Data as Code"
+description: "Exploring the elegant homoiconicity of Lisp where programs and data share the same beautiful structure"
+author: Shane Oh
+date: 2025-12-17
+image: "https://upload.wikimedia.org/wikipedia/commons/4/48/Lisp_logo.svg"
+categories:
+  - Programming
+  - Functional Programming
+---
+
+One of Lisp's most distinctive traits is that source code and data share the same representation: the **s-expression** (symbolic expression). This property, called **homoiconicity**, means that Lisp programs are themselves valid Lisp data structures. The code you write *is* the data structure - there's no hidden compilation magic separating what you see from what the machine processes.
+
+Scheme is a minimalist dialect of Lisp that emphasizes a mathematical approach and clean semantics. It strips away complexity to reveal the pure essence of Lisp's ideas.
+
+## The S-Expression: Where Code Meets Data
+
+In most languages, there's a fundamental separation between "code" and "data." But in Lisp, everything is built from the same primitive: the **list**.
+
+```{.scheme}
+; This is data - a list of numbers
+'(1 2 3 4 5)
+
+; This is code - a function call
+(+ 1 2 3 4 5)
+```
+
+The only difference? The quote (`'`). When you quote an expression, you're saying "treat this as data, not code." Without the quote, Lisp evaluates it as a function call.
+
+Both are lists. Both have the same structure. This is the heart of Lisp's elegance.
+
+## Lists All the Way Down
+
+A list in Lisp is constructed from **cons cells** - pairs that link elements together:
+
+```{.scheme}
+; Building a list from cons cells
+(cons 1 (cons 2 (cons 3 '())))  ; => (1 2 3)
+
+; The same list, written directly
+'(1 2 3)
+
+; Nested lists - trees emerge naturally
+'(1 (2 3) (4 (5 6)))
+```
+
+This tree structure is exactly how code is represented:
+
+```{.scheme}
+; A simple arithmetic expression
+(+ (* 2 3) (- 10 4))
+
+; Its structure as a tree:
+;        +
+;       / \
+;      *   -
+;     / \ / \
+;    2  3 10 4
+```
+
+The code *is* the tree. When you write `(+ (* 2 3) (- 10 4))`, you're literally constructing a tree data structure that the interpreter walks to evaluate your program.
+
+## Seeing the Structure
+
+Let's visualize how code structure maps directly to data structure:
+
+```{.scheme}
+; Define a function
+(define (square x)
+  (* x x))
+
+; This is stored as the list:
+'(define (square x) (* x x))
+
+; Which breaks down as:
+'(define           ; symbol
+  (square x)       ; list: function name and parameters
+  (* x x))         ; list: function body
+```
+
+Every piece of syntax is just a list. The function definition, the parameter list, the body - all lists containing symbols and other lists.
+
+## Manipulating Code as Data
+
+Because code is data, you can manipulate programs with programs:
+
+```{.scheme}
+; A piece of code, stored as data
+(define my-code '(+ 1 2 3))
+
+; Inspect it
+(car my-code)    ; => +
+(cdr my-code)    ; => (1 2 3)
+(length my-code) ; => 4
+
+; Modify it - change the operation
+(cons '* (cdr my-code))  ; => (* 1 2 3)
+
+; Evaluate the original
+(eval my-code)   ; => 6
+
+; Evaluate the modified version
+(eval (cons '* (cdr my-code)))  ; => 6 (1 * 2 * 3)
+```
+
+This is remarkably powerful. You can write programs that write programs, analyze code structure, or transform one program into another.
+
+## The Beauty of Recursive Structure
+
+Consider how naturally recursive data maps to recursive code:
+
+```{.scheme}
+; A tree data structure
+(define tree '(1 (2 (3) (4)) (5 (6) (7))))
+
+;       1
+;      / \
+;     2   5
+;    / \ / \
+;   3  4 6  7
+
+; Sum all values in the tree
+(define (sum-tree t)
+  (cond
+    ((null? t) 0)
+    ((number? t) t)
+    (else (+ (sum-tree (car t))
+             (sum-tree (cdr t))))))
+
+(sum-tree tree)  ; => 28
+```
+
+The recursive structure of the data naturally leads to recursive code. The function's shape mirrors the data's shape.
+
+## Macros: Code that Writes Code
+
+The ultimate expression of homoiconicity is the **macro**. Macros transform code before it runs:
+
+```{.scheme}
+; Define a macro that creates a 'when' construct
+(define-syntax when
+  (syntax-rules ()
+    ((when condition body ...)
+     (if condition
+         (begin body ...)
+         #f))))
+
+; Use it
+(when (> 5 3)
+  (display "Five is greater!")
+  (newline))
+```
+
+The macro receives code as a list, transforms it into different code, and returns that new code to be evaluated. You're writing a program that manipulates the structure of another program.
+
+Here's a more explicit example showing the transformation:
+
+```{.scheme}
+; Input code (data):
+'(when (> x 0) (print "positive"))
+
+; Transformed to (data):
+'(if (> x 0)
+     (begin (print "positive"))
+     #f)
+```
+
+The macro sees the input as a list, pattern-matches on its structure, and constructs a new list (the output code).
+
+## A DSL in 10 Lines
+
+Because code is data, creating domain-specific languages becomes natural:
+
+```{.scheme}
+; A mini-language for describing shapes
+(define shapes
+  '((circle (center 0 0) (radius 5))
+    (rectangle (corner 10 10) (width 20) (height 15))
+    (triangle (points (0 0) (5 10) (10 0)))))
+
+; The "interpreter" for our shape language
+(define (describe-shape shape)
+  (let ((type (car shape))
+        (props (cdr shape)))
+    (display type)
+    (display ": ")
+    (for-each (lambda (prop)
+                (display (car prop))
+                (display "=")
+                (display (cdr prop))
+                (display " "))
+              props)
+    (newline)))
+
+(for-each describe-shape shapes)
+```
+
+The shape descriptions are valid Lisp data structures. We can read them, transform them, save them to files, or generate them programmatically - because they're just lists.
+
+## Quote, Quasiquote, and Unquote
+
+Lisp provides elegant tools for mixing code and data:
+
+```{.scheme}
+; Regular quote - everything is literal
+'(+ 1 2)  ; => (+ 1 2)
+
+; Quasiquote with unquote - selective evaluation
+(define x 10)
+`(+ 1 ,x)  ; => (+ 1 10)
+
+; Unquote-splicing - splice a list into place
+(define nums '(2 3 4))
+`(+ 1 ,@nums 5)  ; => (+ 1 2 3 4 5)
+```
+
+These tools make it easy to construct code templates with dynamic parts - perfect for macros and code generation.
+
+## The Profound Simplicity
+
+Consider what this unification gives us:
+
+```{.scheme}
+; Parse JSON? It's already a tree
+(define json-like
+  '((name . "Alice")
+    (age . 30)
+    (hobbies . ("reading" "coding" "hiking"))))
+
+; Parse XML? Also a tree
+(define xml-like
+  '(html
+    (head (title "My Page"))
+    (body
+      (h1 "Welcome")
+      (p "Hello, world!"))))
+
+; Parse code? Same tree
+(define code
+  '(define (factorial n)
+     (if (<= n 1)
+         1
+         (* n (factorial (- n 1))))))
+```
+
+JSON, XML, ASTs, configuration files, code itself - they're all trees, and Lisp represents all trees the same way. One data structure to rule them all.
+
+## Conclusion
+
+Lisp's homoiconicity isn't just a curiosity - it's a profound design choice that collapses the barrier between programs and data. When you write Lisp, you're directly manipulating tree structures. The parentheses aren't clutter; they're the visible skeleton of the tree you're building.
+
+This transparency has practical benefits:
+
+- **Macros** become natural extensions of the language
+- **Metaprogramming** is just programming
+- **DSLs** emerge from data structure definitions
+- **Code analysis** uses the same tools as data analysis
+
+But beyond practicality, there's an aesthetic beauty here. In most languages, syntax obscures structure. In Lisp, syntax *is* structure. What you see is exactly what's there - no more, no less.
+
+As Alan Kay said: "Lisp isn't a language, it's a building material."
