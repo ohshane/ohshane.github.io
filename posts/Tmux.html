@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,14 +70,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../image/favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-0087ca3d6950331c118bac1ce9f2dbab.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ec910ee5adc06c77bcd731fc31498a58.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="../site_libs/quarto-contrib/kbd/kbd.js"></script>
 <link href="../site_libs/quarto-contrib/kbd/kbd.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -128,7 +129,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../image/logo.png" alt="" class="navbar-logo">
+    <img src="../image/logo.png" alt="" class="navbar-logo light-content">
+    <img src="../image/logo.png" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -216,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Start off with installing <code>tmux</code> with homebrew on Mac.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install tmux</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install tmux</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="fig-tmux">
 
   <div class="--box --session">
@@ -307,19 +309,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="pane" class="level2">
 <h2 class="anchored" data-anchor-id="pane">Pane</h2>
-<p>Split the <code>pane</code> using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">%</kbd><span class="visually-hidden">%</span> and <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">"</kbd><span class="visually-hidden">"</span>.</p>
-<p>The <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> works as a <code>prefix</code> to send a command — later below.</p>
-<p>Navigate through the panes using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">↑</kbd><span class="visually-hidden">↑</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">→</kbd><span class="visually-hidden">→</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">↓</kbd><span class="visually-hidden">↓</span>, <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">←</kbd><span class="visually-hidden">←</span>.</p>
+<p>Split the <code>pane</code> using <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="%" aria-hidden="true">%</kbd><span class="visually-hidden">%</span> and <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="" "="" aria-hidden="true">"</kbd><span class="visually-hidden">"</span>.</p>
+<p>The <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> works as a <code>prefix</code> to send a command — later below.</p>
+<p>Navigate through the panes using <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="↑" aria-hidden="true">↑</kbd><span class="visually-hidden">↑</span>, <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="→" aria-hidden="true">→</kbd><span class="visually-hidden">→</span>, <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="↓" aria-hidden="true">↓</kbd><span class="visually-hidden">↓</span>, <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="←" aria-hidden="true">←</kbd><span class="visually-hidden">←</span>.</p>
 </section>
 <section id="window" class="level2">
 <h2 class="anchored" data-anchor-id="window">Window</h2>
-<p>Open a new <code>window</code> with <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">c</kbd><span class="visually-hidden">c</span>.</p>
+<p>Open a new <code>window</code> with <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="c" aria-hidden="true">c</kbd><span class="visually-hidden">c</span>.</p>
 <p>See the windows you opened on the bottom green bar? This gives us some information about the <code>window</code>s in the <code>session</code>. The current window you are seeing is marked with an <code>*</code>.</p>
-<p>Navigate through the windows using <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">n</kbd><span class="visually-hidden">n</span> — <code>n</code> is for next. This will cycle through all the windows in the current session. Reverse navigate with <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">p</kbd><span class="visually-hidden">p</span> — <code>p</code> is for previous. You can also navigate directly to a <code>window</code> using the index. The bindings will be like <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">1</kbd><span class="visually-hidden">1</span>.</p>
+<p>Navigate through the windows using <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="n" aria-hidden="true">n</kbd><span class="visually-hidden">n</span> — <code>n</code> is for next. This will cycle through all the windows in the current session. Reverse navigate with <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="p" aria-hidden="true">p</kbd><span class="visually-hidden">p</span> — <code>p</code> is for previous. You can also navigate directly to a <code>window</code> using the index. The bindings will be like <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="1" aria-hidden="true">1</kbd><span class="visually-hidden">1</span>.</p>
 </section>
 <section id="session" class="level2">
 <h2 class="anchored" data-anchor-id="session">Session</h2>
-<p>From the very <a href="#intro">first</a>, right after the <code>tmux</code> command, you are attached to a session with an auto generated index. Detach the session with the <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd aria-hidden="true">d</kbd><span class="visually-hidden">d</span> command — and <code>d</code> is for detach. It’s almost the same as starting the <code>bash</code> session and detaching with the <code>exit</code> command. Tmux can also be detached using the <code>exit</code> command, but this can be tedious because each split pane needs to be closed individually with the <code>exit</code> command.</p>
+<p>From the very <a href="#intro">first</a>, right after the <code>tmux</code> command, you are attached to a session with an auto generated index. Detach the session with the <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> <kbd title="d" aria-hidden="true">d</kbd><span class="visually-hidden">d</span> command — and <code>d</code> is for detach. It’s almost the same as starting the <code>bash</code> session and detaching with the <code>exit</code> command. Tmux can also be detached using the <code>exit</code> command, but this can be tedious because each split pane needs to be closed individually with the <code>exit</code> command.</p>
 </section>
 <section id="configurations" class="level2">
 <h2 class="anchored" data-anchor-id="configurations">Configurations</h2>
@@ -328,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-with-filename-file">
 <pre><strong>~/.tmux.conf</strong></pre>
 </div>
-<div class="sourceCode" id="annotated-cell-2" data-filename="~/.tmux.conf"><pre class="sourceCode sh code-overflow-wrap code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unbind-key</span> C-b</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-2" data-filename="~/.tmux.conf"><pre class="sourceCode sh code-overflow-wrap code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-2-1"><a href="#annotated-cell-2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">unbind-key</span> C-b</span>
 <span id="annotated-cell-2-2"><a href="#annotated-cell-2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-g</span> prefix C-a</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-2-3" class="code-annotation-target"><a href="#annotated-cell-2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">bind-key</span> C-a send-prefix</span>
 <span id="annotated-cell-2-4"><a href="#annotated-cell-2-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -348,12 +350,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="annotated-cell-2-18"><a href="#annotated-cell-2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> l select-pane <span class="at">-R</span></span>
 <span id="annotated-cell-2-19"><a href="#annotated-cell-2-19" aria-hidden="true" tabindex="-1"></a></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-2-20" class="code-annotation-target"><a href="#annotated-cell-2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> x kill-pane</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-2-21" class="code-annotation-target"><a href="#annotated-cell-2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> X kill-window</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-2" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-2-21" class="code-annotation-target"><a href="#annotated-cell-2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">bind</span> X kill-window</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-2" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Replace the prefix key from <kbd aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> to <kbd aria-hidden="true">Ctrl-a</kbd><span class="visually-hidden">Ctrl-a</span>. When you are using a keyboard like HHKB, this will come in pretty handy. Let’s talk more about HHKB in some other posts.</span>
+<span data-code-cell="annotated-cell-2" data-code-lines="3" data-code-annotation="1">Replace the prefix key from <kbd title="Ctrl-b" aria-hidden="true">Ctrl-b</kbd><span class="visually-hidden">Ctrl-b</span> to <kbd title="Ctrl-a" aria-hidden="true">Ctrl-a</kbd><span class="visually-hidden">Ctrl-a</span>. When you are using a keyboard like HHKB, this will come in pretty handy. Let’s talk more about HHKB in some other posts.</span>
 </dd>
 <dt data-target-cell="annotated-cell-2" data-target-annotation="2">2</dt>
 <dd>
@@ -393,13 +395,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-with-filename-file">
 <pre><strong>.zshrc</strong></pre>
 </div>
-<div class="sourceCode" id="annotated-cell-3" data-filename=".zshrc"><pre class="sourceCode sh code-overflow-wrap code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmux()</span> <span class="kw">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="annotated-cell-3" data-filename=".zshrc"><pre class="sourceCode sh code-overflow-wrap code-annotation-code code-with-copy code-annotated"><code class="sourceCode bash"><span id="annotated-cell-3-1"><a href="#annotated-cell-3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmux()</span> <span class="kw">{</span></span>
 <span id="annotated-cell-3-2"><a href="#annotated-cell-3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="st">"</span><span class="va">$#</span><span class="st">"</span> <span class="ot">-eq</span> 0 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-3" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-3-3" class="code-annotation-target"><a href="#annotated-cell-3-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">command</span> tmux new-session <span class="at">-A</span> <span class="at">-s</span> default</span>
 <span id="annotated-cell-3-4"><a href="#annotated-cell-3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
 <span id="annotated-cell-3-5"><a href="#annotated-cell-3-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">command</span> tmux <span class="st">"</span><span class="va">$@</span><span class="st">"</span></span>
 <span id="annotated-cell-3-6"><a href="#annotated-cell-3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
-<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="annotated-cell-3-7"><a href="#annotated-cell-3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-3" data-target-annotation="1">1</dt>
@@ -463,13 +465,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

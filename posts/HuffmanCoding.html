@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -70,14 +70,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../image/favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-0087ca3d6950331c118bac1ce9f2dbab.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ec910ee5adc06c77bcd731fc31498a58.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -127,7 +128,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -157,7 +158,8 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../image/logo.png" alt="" class="navbar-logo">
+    <img src="../image/logo.png" alt="" class="navbar-logo light-content">
+    <img src="../image/logo.png" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -263,7 +265,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="b0ab5d38" class="cell" data-execution_count="2">
+<div id="c563cbbf" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -287,8 +289,8 @@ compression rate: 0.0%</code></pre>
 <h3 class="anchored" data-anchor-id="sec-huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="5149b6d7" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<div id="41d44f29" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
 <span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, char<span class="op">=</span><span class="st">''</span>, freq<span class="op">=</span><span class="dv">0</span>, left<span class="op">=</span><span class="va">None</span>, right<span class="op">=</span><span class="va">None</span>):</span>
@@ -347,7 +349,7 @@ compression rate: 0.0%</code></pre>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-57" class="code-annotation-target"><a href="#annotated-cell-1-57" aria-hidden="true" tabindex="-1"></a>            dfs(node.left,  path<span class="op">+</span><span class="st">'0'</span>)</span>
 <span id="annotated-cell-1-58"><a href="#annotated-cell-1-58" aria-hidden="true" tabindex="-1"></a>            dfs(node.right, path<span class="op">+</span><span class="st">'1'</span>)</span>
 <span id="annotated-cell-1-59"><a href="#annotated-cell-1-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-60"><a href="#annotated-cell-1-60" aria-hidden="true" tabindex="-1"></a>        dfs(<span class="va">self</span>.root)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="annotated-cell-1-60"><a href="#annotated-cell-1-60" aria-hidden="true" tabindex="-1"></a>        dfs(<span class="va">self</span>.root)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
@@ -371,67 +373,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-140637169108176[36]
-140637169108176 -- 0 --&gt; 140637169114576
-140637169108176 -- 1 --&gt; 140637169110800
-140637169114576[21]
-140637169114576 -- 0 --&gt; 140637169117328
-140637169114576 -- 1 --&gt; 140637169121104
-140637169110800[15]
-140637169110800 -- 0 --&gt; 140637169113232
-140637169110800 -- 1 --&gt; 140637169241808
-140637169117328[13]
-140637169117328 -- 0 --&gt; 140637169088528
-140637169117328 -- 1 --&gt; 140637169084944
-140637169121104[8]
-140637169121104 -- 0 --&gt; 140637169239760
-140637169121104 -- 1 --&gt; 140637169248272
-140637169113232[8]
-140637169113232 -- 0 --&gt; 140637169238864
-140637169113232 -- 1 --&gt; 140637169238096
-140637169241808[7]
-140637169241808 -- 0 --&gt; 140637168970000
-140637169241808 -- 1 --&gt; 140637168968080
-140637169088528[' ': 7]
-140637169084944['A': 6]
-140637169239760[4]
-140637169239760 -- 0 --&gt; 140637169239376
-140637169239760 -- 1 --&gt; 140637169238672
-140637169248272[4]
-140637169248272 -- 0 --&gt; 140637169253008
-140637169248272 -- 1 --&gt; 140637169239632
-140637169238864[4]
-140637169238864 -- 0 --&gt; 140637168960976
-140637169238864 -- 1 --&gt; 140637168966992
-140637169238096[4]
-140637169238096 -- 0 --&gt; 140637168960144
-140637169238096 -- 1 --&gt; 140637168965520
-140637168970000['E': 4]
-140637168968080['P': 3]
-140637169239376[2]
-140637169239376 -- 0 --&gt; 140637169239056
-140637169239376 -- 1 --&gt; 140637169241680
-140637169238672[2]
-140637169238672 -- 0 --&gt; 140637169241360
-140637169238672 -- 1 --&gt; 140637168971536
-140637169253008[2]
-140637169253008 -- 0 --&gt; 140637168967184
-140637169253008 -- 1 --&gt; 140637168972496
-140637169239632[2]
-140637169239632 -- 0 --&gt; 140637168962192
-140637169239632 -- 1 --&gt; 140637169088464
-140637168960976['O': 2]
-140637168966992['T': 2]
-140637168960144['Y': 2]
-140637168965520['D': 2]
-140637169239056['W': 1]
-140637169241680['R': 1]
-140637169241360['C': 1]
-140637168971536['H': 1]
-140637168967184['S': 1]
-140637168972496['K': 1]
-140637168962192['L': 1]
-140637169088464['N': 1]
+140300879400080[36]
+140300879400080 -- 0 --&gt; 140300881271760
+140300879400080 -- 1 --&gt; 140300879406544
+140300881271760[21]
+140300881271760 -- 0 --&gt; 140300879401232
+140300881271760 -- 1 --&gt; 140300879399184
+140300879406544[15]
+140300879406544 -- 0 --&gt; 140300881265488
+140300879406544 -- 1 --&gt; 140300879476240
+140300879401232[13]
+140300879401232 -- 0 --&gt; 140300881228624
+140300879401232 -- 1 --&gt; 140300881218000
+140300879399184[8]
+140300879399184 -- 0 --&gt; 140300879477264
+140300879399184 -- 1 --&gt; 140300879463824
+140300881265488[8]
+140300881265488 -- 0 --&gt; 140300879468048
+140300881265488 -- 1 --&gt; 140300879470672
+140300879476240[7]
+140300879476240 -- 0 --&gt; 140300879326416
+140300879476240 -- 1 --&gt; 140300881229456
+140300881228624[' ': 7]
+140300881218000['A': 6]
+140300879477264[4]
+140300879477264 -- 0 --&gt; 140300879469072
+140300879477264 -- 1 --&gt; 140300879467984
+140300879463824[4]
+140300879463824 -- 0 --&gt; 140300879476944
+140300879463824 -- 1 --&gt; 140300879471696
+140300879468048[4]
+140300879468048 -- 0 --&gt; 140300879468432
+140300879468048 -- 1 --&gt; 140300879465104
+140300879470672[4]
+140300879470672 -- 0 --&gt; 140300879472016
+140300879470672 -- 1 --&gt; 140300879321296
+140300879326416['E': 4]
+140300881229456['P': 3]
+140300879469072[2]
+140300879469072 -- 0 --&gt; 140300879463568
+140300879469072 -- 1 --&gt; 140300879468880
+140300879467984[2]
+140300879467984 -- 0 --&gt; 140300879464912
+140300879467984 -- 1 --&gt; 140300879468560
+140300879476944[2]
+140300879476944 -- 0 --&gt; 140300879327824
+140300879476944 -- 1 --&gt; 140300879466768
+140300879471696[2]
+140300879471696 -- 0 --&gt; 140300879321040
+140300879471696 -- 1 --&gt; 140300881231504
+140300879468432['O': 2]
+140300879465104['T': 2]
+140300879472016['Y': 2]
+140300879321296['D': 2]
+140300879463568['W': 1]
+140300879468880['R': 1]
+140300879464912['C': 1]
+140300879468560['H': 1]
+140300879327824['S': 1]
+140300879466768['K': 1]
+140300879321040['L': 1]
+140300881231504['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -442,7 +444,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="8f4134b9" class="cell" data-execution_count="8">
+<div id="38975370" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -455,7 +457,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="a932cf66" class="cell" data-execution_count="10">
+<div id="f25dfeb6" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
@@ -637,13 +639,14 @@ Figure&nbsp;2: Kraft-McMillan inequality
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
