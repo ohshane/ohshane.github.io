@@ -1,0 +1,129 @@
+---
+title: In-Cluster Insecure Registry with Skaffold
+subtitle: Pushing images to an in-cluster registry using BuildKit
+description: ""
+author: Shane Oh
+date: 2026-02-03
+image: false
+categories:
+  - Kubernetes
+  - Skaffold
+  - Docker
+---
+
+When developing with Skaffold, you may want to push images directly to an in-cluster
+registry. This guide walks through configuring Docker Desktop, deploying an insecure
+registry inside K3s, and configuring K3s nodes to pull from it.
+
+## Configure Docker Desktop for Insecure Registry
+
+1. Open Docker Desktop and click the Settings (gear icon)
+1. Go to the **Docker Engine** tab
+1. Add the insecure registry to the JSON config:
+
+```{.json}
+{
+  "insecure-registries": [
+    "192.168.50.114:30500"
+  ]
+}
+```
+
+## Deploy In-Cluster Registry
+
+Deploy a Docker Registry inside your K3s cluster exposed via NodePort.
+
+```{.yaml filename="registry.yaml"}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: registry
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      containers:
+        - name: registry
+          image: registry:latest
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1024Mi"
+          ports:
+            - containerPort: 5000
+      volumes:
+        - name: certs
+          secret:
+            secretName: registry-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  type: NodePort
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30500 # <1>
+  selector:
+    app: registry
+```
+1. The registry is exposed on NodePort `30500`, making it accessible at `<node-ip>:30500`.
+
+Apply the manifest:
+
+```{.sh}
+kubectl apply -f registry.yaml
+```
+
+## Configure K3s for Insecure Registry
+
+K3s nodes need to be configured to pull images from the insecure registry.
+On **each K3s node**, create or edit `/etc/rancher/k3s/registries.yaml`:
+
+```{.yaml filename="/etc/rancher/k3s/registries.yaml"}
+mirrors:
+  "192.168.50.114:30500":
+    endpoint:
+      - "http://192.168.50.114:30500"
+configs: {}
+```
+
+Then restart K3s on each node:
+
+```{.sh}
+# For k3s server (control plane)
+sudo systemctl restart k3s
+
+# For k3s agents (worker nodes)
+sudo systemctl restart k3s-agent
+```
+
+## Run Skaffold
+
+After Docker Desktop and K3s are both configured, run Skaffold with the `--default-repo` flag
+pointing to your in-cluster registry:
+
+```{.sh}
+skaffold dev --default-repo 192.168.50.114:30500
+```
+
+Skaffold will now build images using BuildKit and push them directly to your in-cluster
+insecure registry. The K3s nodes will be able to pull these images for pod creation.
