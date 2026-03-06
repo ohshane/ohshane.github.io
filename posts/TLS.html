@@ -7,9 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2023-09-07">
+<meta name="dcterms.date" content="2025-12-17">
+<meta name="description" content="A deep dive into the cryptographic principles and handshake mechanisms that underpin TLS, the protocol that secures our online interactions.">
 
-<title>Bias and Variance – Shane</title>
+<title>TLS Cryptography and Handshake Overview – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -75,40 +76,14 @@ ul.task-list li input[type="checkbox"] {
 <link rel="apple-touch-startup-image" href="image/profile.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Bias and Variance – Shane">
-<meta property="og:description" content="">
+<meta property="og:title" content="TLS Cryptography and Handshake Overview – Shane">
+<meta property="og:description" content="A deep dive into the cryptographic principles and handshake mechanisms that underpin TLS, the protocol that secures our online interactions.">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -157,20 +132,45 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#types-of-ciphers" id="toc-types-of-ciphers" class="nav-link" data-scroll-target="#types-of-ciphers">Types of Ciphers</a>
+  <ul class="collapse">
+  <li><a href="#symmetric-key-cryptography" id="toc-symmetric-key-cryptography" class="nav-link" data-scroll-target="#symmetric-key-cryptography">Symmetric Key Cryptography</a></li>
+  <li><a href="#asymmetric-key-cryptography" id="toc-asymmetric-key-cryptography" class="nav-link" data-scroll-target="#asymmetric-key-cryptography">Asymmetric Key Cryptography</a></li>
+  <li><a href="#hash-functions" id="toc-hash-functions" class="nav-link" data-scroll-target="#hash-functions">Hash Functions</a></li>
+  </ul></li>
+  <li><a href="#tls-overview" id="toc-tls-overview" class="nav-link" data-scroll-target="#tls-overview">TLS Overview</a>
+  <ul class="collapse">
+  <li><a href="#tls-1.2" id="toc-tls-1.2" class="nav-link" data-scroll-target="#tls-1.2">TLS 1.2</a></li>
+  <li><a href="#tls-1.3" id="toc-tls-1.3" class="nav-link" data-scroll-target="#tls-1.3">TLS 1.3</a></li>
+  <li><a href="#certificate-authorities-cas" id="toc-certificate-authorities-cas" class="nav-link" data-scroll-target="#certificate-authorities-cas">Certificate Authorities (CAs)</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Bias and Variance</h1>
+<h1 class="title">TLS Cryptography and Handshake Overview</h1>
+<p class="subtitle lead">Understanding the Foundations of Secure Communication</p>
   <div class="quarto-categories">
-    <div class="quarto-category">Machine Learning</div>
+    <div class="quarto-category">Networking</div>
+    <div class="quarto-category">Security</div>
   </div>
   </div>
 
+<div>
+  <div class="description">
+    A deep dive into the cryptographic principles and handshake mechanisms that underpin TLS, the protocol that secures our online interactions.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -185,7 +185,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 7, 2023</p>
+      <p class="date">December 17, 2025</p>
     </div>
   </div>
   
@@ -197,30 +197,273 @@ window.Quarto = {
 </header>
 
 
-<p>Refer to the <a href="https://www.cs.cornell.edu/courses/cs4780/2018fa/lectures/lecturenote12.html">lecture note</a> by Kilian Weinberger.</p>
-<p>Let <span class="math inline">\(f(x)\)</span> be the unknown function and <span class="math inline">\(\epsilon \sim \mathcal{N}(0, \sigma_\epsilon^2)\)</span> be the noise when observing the reality. Then, we can set <span class="math inline">\(y = f(x) + \epsilon\)</span>.</p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Transport Layer Security (TLS) is the backbone of secure communication on the internet. It ensures that data transmitted between clients and servers remains confidential and authenticated.</p>
 <ul>
-<li><span class="math inline">\(f(\cdot)\)</span>: unknown funciton (constant)</li>
-<li><span class="math inline">\(\hat{f}_D(\cdot)\)</span>: estimated funciton trained with <span class="math inline">\(D\)</span></li>
-<li><span class="math inline">\(\bar{f}(\cdot) = \mathbb{E}[\hat{f}_D(\cdot)]\)</span>: averaged estimated funciton (constant)</li>
-<li><span class="math inline">\(\epsilon \sim \mathcal{N}(0, \sigma_\epsilon^2)\)</span>: noise (constant)</li>
-<li><span class="math inline">\(y = f(x) + \epsilon\)</span>: target (constant)</li>
+<li>Types of Ciphers
+<ul>
+<li>Symmetric Key Cryptography</li>
+<li>Asymmetric Key Cryptography</li>
+<li>Hash Functions</li>
+</ul></li>
+<li>TLS Overview
+<ul>
+<li>TLS 1.2</li>
+<li>TLS 1.3</li>
+</ul></li>
+<li>Certificate Authorities (CAs)</li>
 </ul>
-<p><span class="math display">\[
-\begin{align*}
-\mathbb{E}[((y - \hat{f}_D(x)))^2]
-&amp;= \mathbb{E}[(f(x) + \epsilon - \hat{f}_D(x))^2] \\
-&amp;= \mathbb{E}[(f(x) - \hat{f}_D(x))^2 + 2\epsilon(f(x) - \hat{f}_D(x)) + \epsilon^2] \\
-&amp;= \mathbb{E}[(f(x) - \hat{f}_D(x))^2] + 2\mathbb{E}[\epsilon(f(x) - \hat{f}_D(x))] + \mathbb{E}[\epsilon^2] \\
-&amp;= \mathbb{E}[(f(x) - \hat{f}_D(x))^2] + 2\mathbb{E}[\epsilon(f(x) - \hat{f}_D(x))] + \mathbb{E}[\epsilon^2] \\
-&amp;= \mathbb{E}[(f(x) - \hat{f}_D(x))^2] + \sigma_\epsilon^2 \\
-&amp;= \mathbb{E}[(f(x) - \bar{f}(x) + \bar{f}(x) - \hat{f}_D(x))^2] + \sigma_\epsilon^2 \\
-&amp;= \mathbb{E}[(f(x) - \bar{f}(x))^2 + 2(f(x) - \bar{f}(x))(\bar{f}(x) - \hat{f}_D(x)) + (\bar{f}(x) - \hat{f}_D(x))^2] + \sigma_\epsilon^2 \\
-&amp;= \underbrace{\mathbb{E}[(f(x) - \bar{f}(x))^2]}_{\text{bias}^2} + \underbrace{\mathbb{E}[(\bar{f}(x) - \hat{f}_D(x))^2]}_\text{variance} + \underbrace{\sigma_\epsilon^2}_{\text{noise}} \\
-\end{align*}
-\]</span></p>
+</section>
+<section id="types-of-ciphers" class="level1">
+<h1>Types of Ciphers</h1>
+<section id="symmetric-key-cryptography" class="level2">
+<h2 class="anchored" data-anchor-id="symmetric-key-cryptography">Symmetric Key Cryptography</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Cipher</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AES</td>
+<td>Modern standard, widely used in TLS (AES-GCM, AES-CBC)</td>
+</tr>
+<tr class="even">
+<td>ChaCha20</td>
+<td>Fast in software, used in TLS as ChaCha20-Poly1305</td>
+</tr>
+<tr class="odd">
+<td>DES</td>
+<td>Insecure, banned in modern TLS</td>
+</tr>
+<tr class="even">
+<td>3DES</td>
+<td>Legacy, slow and small block size; being phased out in TLS</td>
+</tr>
+<tr class="odd">
+<td>RC4</td>
+<td>Severe weaknesses, banned in TLS</td>
+</tr>
+<tr class="even">
+<td>Blowfish</td>
+<td>Legacy, 64-bit block size limits suitability for TLS</td>
+</tr>
+<tr class="odd">
+<td>Twofish</td>
+<td>AES finalist, used in some systems</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="asymmetric-key-cryptography" class="level2">
+<h2 class="anchored" data-anchor-id="asymmetric-key-cryptography">Asymmetric Key Cryptography</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Cipher</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RSA</td>
+<td>Widely used for key exchange and digital signatures in TLS (RSA key exchange, RSA signatures)</td>
+</tr>
+<tr class="even">
+<td>DSA</td>
+<td>Digital Signature Algorithm (signature-only; not used for encryption or key exchange). Legacy in TLS and not used in TLS 1.3.</td>
+</tr>
+<tr class="odd">
+<td>ECDSA</td>
+<td>Used for digital signatures in TLS (ECDSA signatures)</td>
+</tr>
+<tr class="even">
+<td>Diffie-Hellman (DH)</td>
+<td>Used for secure key exchange in TLS (DHE)</td>
+</tr>
+<tr class="odd">
+<td>Elliptic Curve Diffie-Hellman (ECDH)</td>
+<td>Used for secure key exchange in TLS (ECDHE)</td>
+</tr>
+<tr class="even">
+<td>Ed25519</td>
+<td>Modern signature scheme, not widely used in TLS yet</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hash-functions" class="level2">
+<h2 class="anchored" data-anchor-id="hash-functions">Hash Functions</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Hash Function</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SHA-256</td>
+<td>Widely used in TLS for message authentication and digital signatures</td>
+</tr>
+<tr class="even">
+<td>SHA-384</td>
+<td>Used in TLS for stronger security (e.g., in ECDSA signatures)</td>
+</tr>
+<tr class="odd">
+<td>SHA-1</td>
+<td>Insecure, banned in modern TLS</td>
+</tr>
+<tr class="even">
+<td>MD5</td>
+<td>Insecure, banned in modern TLS</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="tls-overview" class="level1">
+<h1>TLS Overview</h1>
+<p>HTTPS is the secure version of HTTP, and it relies on TLS to encrypt the communication between the client and the server. The TLS handshake is the process that establishes a secure connection by negotiating cryptographic parameters and exchanging keys.</p>
+<p>HTTPS connection consists of two phases:</p>
+<ol type="1">
+<li><strong>TCP three-way handshake:</strong> SYN, SYN-ACK, ACK to establish a TCP connection.</li>
+<li><strong>TLS handshake:</strong> The client and server negotiate cipher suites, verify the server’s certificate, and derive a shared session key.</li>
+</ol>
+<p>After this process, the client and server can securely transmit data using the established TLS connection.</p>
+<section id="tls-1.2" class="level2">
+<h2 class="anchored" data-anchor-id="tls-1.2">TLS 1.2</h2>
+<p>TLS 1.2 requires <strong>2 round trips</strong> (2-RTT) for the handshake. The server sends its certificate and the client encrypts a pre-master secret with the server’s public key (RSA key exchange), or they use ECDHE for forward secrecy.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Server
+
+    Note over Client,Server: TCP three-way Handshake
+    Client-&gt;&gt;Server: SYN
+    Server-&gt;&gt;Client: SYN-ACK
+    Client-&gt;&gt;Server: ACK
+
+    Note over Client,Server: TLS 1.2 Handshake (2-RTT)
+    Client-&gt;&gt;Server: ClientHello (TLS version, cipher suites, client random)
+    Server-&gt;&gt;Client: ServerHello (chosen cipher suite, server random)
+    Server-&gt;&gt;Client: Certificate (server cert chain, signed by CA)
+    Server-&gt;&gt;Client: ServerHelloDone
+
+    Note over Client: Verify certificate chain
+    Note over Client: Generate pre-master secret
+    Note over Client,Server: Key Exchange
+    Client-&gt;&gt;Server: ClientKeyExchange (pre-master secret, encrypted with server pubkey)
+    Client-&gt;&gt;Server: ChangeCipherSpec
+    Client-&gt;&gt;Server: Finished (HMAC of handshake)
+
+    Note over Server: Derive session key
+    Server-&gt;&gt;Client: ChangeCipherSpec
+    Server-&gt;&gt;Client: Finished (HMAC of handshake)
+
+    Note over Client,Server: Encrypted Communication
+    Client-&gt;&gt;Server: Application Data
+    Server-&gt;&gt;Client: Application Data
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="tls-1.3" class="level2">
+<h2 class="anchored" data-anchor-id="tls-1.3">TLS 1.3</h2>
+<p>TLS 1.3 reduces the handshake to <strong>1 round trip</strong> (1-RTT) by embedding the key share in the ClientHello. It removes weak algorithms (RSA key exchange, MD5, SHA-1, CBC mode) and mandates forward secrecy via ECDHE.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Server
+
+    Note over Client,Server: TCP three-way Handshake
+    Client-&gt;&gt;Server: SYN
+    Server-&gt;&gt;Client: SYN-ACK
+    Client-&gt;&gt;Server: ACK
+
+    Note over Client,Server: TLS 1.3 Handshake (1-RTT)
+    Client-&gt;&gt;Server: ClientHello (TLS 1.3, cipher suites, ECDHE key share, client random)
+
+    Note over Server: Select cipher suite
+    Note over Server: Generate ECDHE key share
+    Note over Server: Derive handshake keys
+    Server-&gt;&gt;Client: ServerHello (chosen cipher suite, ECDHE key share)
+    Server-&gt;&gt;Client: EncryptedExtensions
+    Server-&gt;&gt;Client: Certificate (server cert chain, signed by CA)
+    Server-&gt;&gt;Client: CertificateVerify (signature over handshake)
+    Server-&gt;&gt;Client: Finished (HMAC)
+
+    Note over Client: Verify certificate &amp; signature
+    Note over Client: Derive session keys
+    Client-&gt;&gt;Server: Finished (HMAC)
+
+    Note over Client,Server: Encrypted Communication
+    Client-&gt;&gt;Server: Application Data
+    Server-&gt;&gt;Client: Application Data
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="certificate-authorities-cas" class="level2">
+<h2 class="anchored" data-anchor-id="certificate-authorities-cas">Certificate Authorities (CAs)</h2>
+<p>Certificate Authorities (CAs) are trusted entities that issue digital certificates to verify the identity of websites and organizations. When a client connects to a server, the certificate presented by the server is signed by a CA, showing that the server owns the domain and is trustworthy.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Server
+    participant CA
+
+    Note over Server: Generate key pair (public and private keys)
+    Note over Server: Create certificate signing request (CSR) to CA
+    Server-&gt;&gt;CA: CSR (public key and domain info)
+    Note over CA: Challenge server (e.g. HTTP-01, DNS-01) 
+    CA-&gt;&gt;Server: Certificate (signed by CA's private key)
+
+    Note over Client,Server: TLS Handshake
+    Client-&gt;&gt;Server: ClientHello
+    Server-&gt;&gt;Client: ServerHello
+    Server-&gt;&gt;Client: Certificate (signed by CA)
+
+    Note over Client: Verify using CA's public key
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
