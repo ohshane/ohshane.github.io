@@ -22,6 +22,7 @@ It ensures that data transmitted between clients and servers remains confidentia
 - TLS Overview
   - TLS 1.2
   - TLS 1.3
+- Certificate Authorities (CAs)
 
 # Types of Ciphers
 
@@ -140,4 +141,29 @@ sequenceDiagram
     Note over Client,Server: Encrypted Communication
     Client->>Server: Application Data
     Server->>Client: Application Data
+```
+
+## Certificate Authorities (CAs)
+
+Certificate Authorities (CAs) are trusted entities that issue digital certificates to verify the identity of websites and organizations.
+When a client connects to a server, the certificate presented by the server is signed by a CA, showing that the server owns the domain and is trustworthy.
+
+```{mermaid}
+sequenceDiagram
+    participant Client
+    participant Server
+    participant CA
+
+    Note over Server: Generate key pair (public and private keys)
+    Note over Server: Create certificate signing request (CSR) to CA
+    Server->>CA: CSR (public key and domain info)
+    Note over CA: Challenge server (e.g. HTTP-01, DNS-01) 
+    CA->>Server: Certificate (signed by CA's private key)
+
+    Note over Client,Server: TLS Handshake
+    Client->>Server: ClientHello
+    Server->>Client: ServerHello
+    Server->>Client: Certificate (signed by CA)
+
+    Note over Client: Verify using CA's public key
 ```
