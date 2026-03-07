@@ -1,0 +1,27 @@
+---
+title: "Operating DGX H200 infrastructure" 
+subtitle: ""
+description: ""
+author: Shane Oh
+date: 2026-03-07
+image: "H200/images/dgx-h200.jpg"
+categories:
+  - Infrastructure
+  - GPU
+---
+
+# How do GPUs work?
+
+In many AI projects, we use GPUs to help accelerate the matrix computations that are common in machine learning algorithms.
+GPUs are designed to handle many operations in parallel, which makes them much faster than CPUs for certain tasks.
+
+# Allocating GPU memory with `torch`
+
+```{.python}
+import torch
+
+torch.empty(1, device="cuda")
+```
+
+
+This 
