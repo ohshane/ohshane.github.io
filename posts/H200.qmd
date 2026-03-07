@@ -10,18 +10,30 @@ categories:
   - GPU
 ---
 
-# How do GPUs work?
+## How do GPUs work?
 
 In many AI projects, we use GPUs to help accelerate the matrix computations that are common in machine learning algorithms.
 GPUs are designed to handle many operations in parallel, which makes them much faster than CPUs for certain tasks.
 
-# Allocating GPU memory with `torch`
+## Allocating GPU memory with `torch`
 
 ```{.python}
 import torch
-
-torch.empty(1, device="cuda")
+x = torch.empty(1, device="cuda")
 ```
 
+This simple line of code allocates a small amount of memory on the GPU directly.
+Let's take a look how much memory is allocated:
 
-This 
+```{.python}
+torch.cuda.memory_allocated()
+```
+```
+256
+```
+
+This will show us the amount of memory allocated on the GPU in **bytes**. In this case, it shows that 256 bytes of memory have been allocated.
+
+The data type (which can be specified with the `dtype` parameter) is defaulted to `torch.float32`.
+This means that each element in the tensor will take up 4 bytes (32 bits)  of memory.
+
