@@ -10,12 +10,12 @@ categories:
   - GPU
 ---
 
-## How do GPUs work?
+## How do floating points work?
 
 In many AI projects, we use GPUs to help accelerate the matrix computations that are common in machine learning algorithms.
 GPUs are designed to handle many operations in parallel, which makes them much faster than CPUs for certain tasks.
 
-## Allocating GPU memory with `torch`
+### Allocating memory with `torch`
 
 ```{.python}
 import torch
@@ -37,3 +37,123 @@ This will show us the amount of memory allocated on the GPU in **bytes**. In thi
 The data type (which can be specified with the `dtype` parameter) is defaulted to `torch.float32`.
 This means that each element in the tensor will take up 4 bytes (32 bits)  of memory.
 
+But why 256 bytes? There is something called memory pooling, which is a technique used by PyTorch to manage GPU memory more efficiently.
+When you allocate memory on the GPU, PyTorch may allocate more memory than you requested to reduce fragmentation and improve performance.
+
+
+#### Precision of `torch.float32`
+
+The `torch.float32` data type, has a precision of approximately 7 decimal digits.
+This is defined with IEEE 754 standard for floating-point arithmetic.
+Let's see how this works:
+
+```
+   1        8          23               = 32 bits
+[ sign | exponent | fraction (mantissa) ]
+
+(-1)^sign × 1.fraction × 2^(exponent - 127)
+```
+
+Precision is determined by the fraction part, which has 23 bits. This allows for approximately 7 decimal digits of precision.
+
+| Data Type             | exponent | fraction | Usage |
+|-----------------------|----------|----------|-------|
+| torch.float64         | 11       | 52       | Higher precision |
+| torch.float32         | 8        | 23       | Standard precision |
+| torch.bfloat16        | 8        | 7        | Modern LLM training |
+| torch.float16         | 5        | 10       | Standard half-precision |
+| torch.float8_e4m3fn   | 4        | 3        | FP8 training |
+| torch.float8_e4m3fnuz | 4        | 3        | FP8 training |
+| torch.float8_e5m2fn   | 5        | 2        | FP8 training |
+| torch.float8_e5m2fnuz | 5        | 2        | FP8 training |
+| torch.float8_e8m0fnu  | 8        | 0        | Scale format |
+
+## Architecture of DGX H200
+
+The DGX H200 is a powerful AI system designed for high-performance computing tasks, particularly in the field of machine learning and deep learning.
+
+DGX H200 consists of 8 $\times$ H200 GPUs, which are connected using NVLink.
+Each has 141 GB of memory, and the entire system has a total of 1,128 GB of GPU memory.
+
+Usually, system memory is configured to be 2 $\times$ the GPU memory, resuling in 2TB of system memory.
+
+```{.sh}
+$ nvidia-smi
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.124.06             Driver Version: 570.124.06     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H200                    On  |   00000000:1B:00.0 Off |                    0 |
+| N/A   26C    P0             75W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H200                    On  |   00000000:43:00.0 Off |                    0 |
+| N/A   28C    P0             75W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA H200                    On  |   00000000:52:00.0 Off |                    0 |
+| N/A   30C    P0             76W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA H200                    On  |   00000000:61:00.0 Off |                    0 |
+| N/A   28C    P0             76W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA H200                    On  |   00000000:9D:00.0 Off |                    0 |
+| N/A   28C    P0             75W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA H200                    On  |   00000000:C3:00.0 Off |                    0 |
+| N/A   26C    P0             76W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA H200                    On  |   00000000:D1:00.0 Off |                    0 |
+| N/A   29C    P0             76W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA H200                    On  |   00000000:DF:00.0 Off |                    0 |
+| N/A   30C    P0             76W /  700W |       1MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+```
+
+### NVLink and NVSwitch for intra-node communication
+
+NVLink and NVSwitch are technologies for intra-node communication between GPUs in a DGX system.
+Each GPU has 18 NVLink connections, distributed as 5, 5, 4, 4 links to NVSwitches 0–3 respectively.
+
+![DGX H200 System topology](H200/images/dgx-h200-system-topology.png)
+
+#### Bandwidth Comparison
+
+- **PCIe 5.0**: 2 $\times$ 4 GB/s per lane (one-way) $\times$ 16 lanes = 128 GB/s
+- **NVLink 4.0**: 2 $\times$ 25 GB/s per lane (one-way) $\times$ 18 lanes = 900 GB/s
+
+This dramatically reduces overhead, as data can be transferred directly between them without needing to go through the CPU.
+
+
+```
+PCIe communication (CPU involved)
+┌─────┐        ┌────────────┐        ┌─────┐
+│ GPU ├──PCIe──┤ CPU/Switch ├──PCIe──┤ GPU │
+└─────┘        └────────────┘        └─────┘
+
+NVLink communication (GPU fabric)
+┌─────┐        ┌────────────┐        ┌─────┐
+│ GPU ├─NVLink─┤  NVSwitch  ├─NVLink─┤ GPU │
+└─────┘        └────────────┘        └─────┘
+```
+
+
+
+### InfiniBand vs RoCE for inter-node communication
+
+RDMA (Remote Direct Memory Access) is a network echnology that allows for direct memory access from one computer to another without involving the CPU, which can significantly reduce latency and increase throughput in distributed computing environments.
+
+InfiniBand and RoCE (RDMA over Converged Ethernet) are both high-speed networking technologies used in data centers, which is used to connect multiple nodes together for distributed training.
+
+Currently DGX H200 supports both InfiniBand and RoCE, with a speed of 400 Gbps (50 GB/s).
+Each node is equipped with 8 ports, resulting in a total of 3.2 Tbps (400 Gbps $\times$ 8 ports) of inter-node bandwidth, 6.4 Tbps (800 GB/s) for full-duplex communication. This can be powerful when configuring DGX SuperPODs for large-scale distributed training.
