@@ -141,3 +141,46 @@ sequenceDiagram
     Client->>Server: Application Data
     Server->>Client: Application Data
 ```
+
+## Certificate Authorities (CAs)
+
+Certificate Authorities (CAs) ensures that the owner of a domain is who they claim to be.
+
+```{mermaid}
+flowchart TD
+    CA[Certificate Authority]
+    S[Server / Domain Owner]
+    C[Client]
+
+    S -->|"① CSR (Certificate Signing Request; Server pubkey + Domain)"| CA
+    CA -->|"② Signed Certificate"| S
+    S -->|"③ Signed Certificate"| C
+    C -->|"④ Verify with Root CA certificate (local)"| C
+```
+
+1. **Server** creates a public/private key pair and generates a **Certificate Signing Request (CSR)** containing the public key and domain information.
+1.	The **Certificate Authority** (CA) verifies domain ownership (e.g., DNS challenge, HTTP challenge, or email validation) and **signs the server’s public key and certificate metadata with the CA’s private key, creating an X.509 certificate.**
+1.	The **server** receives the signed certificate and **presents it to clients during the TLS handshake.**
+1.	The **client verifies the certificate** locally by checking the signature using the CA’s public key contained in a trusted root certificate that is pre-installed in the client’s trust store.
+
+:::{.callout-note}
+# Encryption and Signatures
+In asymmetric cryptography, encryption can be performed with both public and private keys, but the usage differs based on the context:
+
+- **Encryption:** **public key** is used to encrypt data -> **private key** is used to decrypt data
+- **Signatures:** **private key** is used to sign data -> **public key** is used to verify the signature
+:::
+
+:::{.callout-note}
+# How does SSH work?
+
+SSH uses asymmetric cryptography to authenticate clients using signatures.
+
+1. The **client** generates a public/private **key pair** and shares the public key with the server.
+1. The server stores the client's public key in `~/.ssh/authorized_keys`.
+1. When the client initiates an SSH connection, the **server sends a challenge** (a random string) to the client.
+1. The **client signs the challenge using its private key** (Digital Signature).
+1. The **server verifies the signature using the client's public key**, confirming that the client possesses the corresponding private key.
+1. Once authenticated, the **client and server establish a secure channel using symmetric encryption** (e.g., AES) with a shared session key derived from the key exchange.
+:::
+
