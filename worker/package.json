@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "mkdir -p public && cp ../chat.html public/index.html",
+    "build": "mkdir -p public && rm -f public/index.html && cp ../chat.html public/index.html",
     "dev:setup": "mkdir -p public && ln -sf ../../chat.html public/index.html",
     "dev": "npm run dev:setup && npx wrangler dev",
     "deploy": "npm run build && npx wrangler deploy"

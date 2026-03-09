@@ -514,6 +514,7 @@
         padding: 0 16px;
         scrollbar-width: none;
         -ms-overflow-style: none;
+        scroll-behavior: smooth;
       }
       .messages-area::-webkit-scrollbar {
         display: none;
@@ -532,6 +533,20 @@
         display: flex;
         gap: 16px;
         align-items: flex-start;
+        animation: msg-appear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+
+      @keyframes msg-appear {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+          filter: blur(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+        }
       }
 
       .msg-row.user {
@@ -540,7 +555,7 @@
 
       .msg-content {
         font-size: 15px;
-        line-height: 1.6;
+        line-height: 1.5;
         white-space: pre-wrap;
         overflow-wrap: anywhere;
         word-break: break-word;
@@ -551,8 +566,12 @@
         padding-top: 3px;
         flex: 1;
         min-width: 0;
+        transition: opacity 0.2s ease-in-out;
       }
       .msg-row.bot .msg-wrap {
+        flex: 1;
+        min-width: 0;
+      }
         flex: 1;
         min-width: 0;
       }
@@ -560,6 +579,11 @@
         display: flex;
         justify-content: flex-start;
         margin-top: 0px;
+        animation: fade-in 0.3s ease-in;
+      }
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
       .msg-copy-btn {
         width: 28px;
@@ -582,17 +606,19 @@
 
       .cursor {
         display: inline-block;
-        width: 6px;
+        width: 8px;
         height: 18px;
         background: var(--text-primary);
-        margin-left: 2px;
+        margin-left: 4px;
         vertical-align: middle;
-        animation: blink 1s step-end infinite;
+        animation: pulse 1s ease-in-out infinite;
+        border-radius: 1px;
+        box-shadow: 0 0 4px var(--text-tertiary);
       }
 
-      @keyframes blink {
-        from, to { opacity: 1; }
-        50% { opacity: 0; }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
       }
 
       .msg-row.user .msg-content {
@@ -602,7 +628,7 @@
         max-width: min(80%, 600px);
       }
 
-      /* ── Markdown styles ── */
+      /* Markdown styles */
       .msg-row.bot .msg-content p { margin: 0 0 12px; }
       .msg-row.bot .msg-content p:last-child { margin-bottom: 0; }
       .msg-row.bot .msg-content h1,
@@ -615,12 +641,15 @@
       .msg-row.bot .msg-content h1:first-child,
       .msg-row.bot .msg-content h2:first-child,
       .msg-row.bot .msg-content h3:first-child { margin-top: 0; }
+      
       .msg-row.bot .msg-content ul,
       .msg-row.bot .msg-content ol {
         margin: 8px 0;
         padding-left: 24px;
       }
       .msg-row.bot .msg-content li { margin: 4px 0; }
+      .msg-row.bot .msg-content li > p { margin: 0; }
+      
       .msg-row.bot .msg-content code {
         background: var(--code-bg);
         padding: 2px 5px;
@@ -1275,10 +1304,25 @@
           el.style.overflowY = scrollH > INPUT_MAX_HEIGHT ? "auto" : "hidden";
         }, []);
 
-        useEffect(() => {
+        // Scroll to bottom on initial load and whenever messages or streaming state changes
+        useLayoutEffect(() => {
           if (!scrollRef.current) return;
-          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+          scrollRef.current.scrollTo({
+            top: scrollRef.current.scrollHeight,
+            behavior: streaming ? "auto" : "smooth"
+          });
         }, [messages, streaming]);
+
+        // Force scroll to bottom when switching conversations (activeId changes)
+        useLayoutEffect(() => {
+          if (!scrollRef.current) return;
+          const timer = setTimeout(() => {
+            if (scrollRef.current) {
+              scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+            }
+          }, 0);
+          return () => clearTimeout(timer);
+        }, [activeId]);
 
         useEffect(() => {
           localStorage.setItem("chat-sidebar", sidebarOpen);
