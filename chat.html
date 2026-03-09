@@ -555,7 +555,7 @@
       .msg-actions {
         display: flex;
         justify-content: flex-start;
-        margin-top: 8px;
+        margin-top: 4px;
       }
       .msg-copy-btn {
         width: 28px;
@@ -1330,7 +1330,6 @@
           setActiveId(null);
           setInput("");
           setStreaming(false);
-          setSidebarOpen(false);
         };
 
         const handleSelectConvo = (id) => {
@@ -1640,7 +1639,7 @@
                 ) : (
                   <div ref={scrollRef} className="messages-area">
                     <div className="messages-container">
-                      {messages.map((msg) => (
+                      {messages.map((msg, idx) => (
                         <div key={msg.id} className={`msg-row ${msg.role}`}>
                           {msg.role === "bot" && (
                             <div className="msg-avatar bot-avatar">
@@ -1655,32 +1654,35 @@
                                   onCopyCode={handleCopyCode}
                                 />
                               </div>
-                              <div className="msg-actions">
-                                <button
-                                  type="button"
-                                  className="msg-copy-btn"
-                                  onClick={() => handleCopyMessage(msg)}
-                                  title={
-                                    copiedMessageId === msg.id
-                                      ? "Copied"
-                                      : "Copy"
-                                  }
-                                  aria-label={
-                                    copiedMessageId === msg.id
-                                      ? "Copied"
-                                      : "Copy message"
-                                  }
-                                >
-                                  <Icon
-                                    name={
+                              {/* Show copy button if not streaming OR if it's not the last message */}
+                              {(!streaming || idx < messages.length - 1) && (
+                                <div className="msg-actions">
+                                  <button
+                                    type="button"
+                                    className="msg-copy-btn"
+                                    onClick={() => handleCopyMessage(msg)}
+                                    title={
                                       copiedMessageId === msg.id
-                                        ? "check"
-                                        : "copy"
+                                        ? "Copied"
+                                        : "Copy"
                                     }
-                                    size={14}
-                                  />
-                                </button>
-                              </div>
+                                    aria-label={
+                                      copiedMessageId === msg.id
+                                        ? "Copied"
+                                        : "Copy message"
+                                    }
+                                  >
+                                    <Icon
+                                      name={
+                                        copiedMessageId === msg.id
+                                          ? "check"
+                                          : "copy"
+                                      }
+                                      size={14}
+                                    />
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           ) : (
                             <div className="msg-content">{msg.content}</div>
