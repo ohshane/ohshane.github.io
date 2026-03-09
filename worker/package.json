@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p public && cp ../chat.html public/index.html",
+    "dev": "npm run build && cp .env .dev.vars && npx wrangler dev",
+    "deploy": "npm run build && npx wrangler deploy"
+  }
+}

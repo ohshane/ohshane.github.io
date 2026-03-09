@@ -1,0 +1,14 @@
+---
+title: Certification Request 
+subtitle: Request with PKCS#10 and respond with X.509
+description: ""
+author: Shane Oh
+date: 2025-02-04
+categories:
+  - Cryptography
+  - Kubernetes
+---
+
+RFC 2986
+
+Certification Request Syntax Specification (PKCS #10) defines the standard format for requesting digital certificates within Public Key Infrastructure (PKI) systems. Published in November 2000 by the Internet Engineering Task Force, it specifies how a certificate request is structured, encoded, and processed by a Certification Authority (CA).

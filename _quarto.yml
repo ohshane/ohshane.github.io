@@ -1,9 +1,11 @@
 project:
   type: website
-  render: 
+  render:
     - "*.qmd"
     - "!*_.qmd"
-  preview: 
+  resources:
+    - chat.html
+  preview:
     port: 8888
 website:
   title: Shane
@@ -18,9 +20,11 @@ website:
         text: Home
       - about.qmd
       - href: knowledgegraph.html
-        text: View
+        text: Knowledge Graph
       - href: jraph.html
         text: Jraph
+      - href: chat.html
+        text: Chat
   draft-mode: visible
 format:
   html:
@@ -30,4 +34,3 @@ format:
     mainfont: Pretendard Variable
     monofont: JetBrains Mono
     include-in-header: header.html
-    

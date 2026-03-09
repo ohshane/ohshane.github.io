@@ -1,0 +1,1728 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat | Shane Oh</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/katex/dist/katex.min.css" />
+    <script src="https://unpkg.com/katex/dist/katex.min.js"></script>
+
+    <style>
+      [data-theme="light"] {
+        --sidebar-bg: #f5f5f5;
+        --sidebar-hover: #e8e8e8;
+        --sidebar-border: #dcdcdc;
+        --sidebar-text: #0d0d0d;
+        --sidebar-muted: #6e6e80;
+        --sidebar-btn-border: #d9d9e3;
+        --sidebar-btn-bg: #ffffff;
+        --page-bg: #ffffff;
+        --chat-bg: #ffffff;
+        --text-primary: #0d0d0d;
+        --text-secondary: #6e6e80;
+        --text-tertiary: #8e8ea0;
+        --user-bubble-bg: #f4f4f4;
+        --user-bubble-border: #e8e8e8;
+        --composer-bg: #ffffff;
+        --composer-border: #d9d9e3;
+        --composer-shadow: 0 0 15px rgba(0, 0, 0, 0.06);
+        --send-bg: #0d0d0d;
+        --send-color: #ffffff;
+        --send-disabled-bg: #d1d1d6;
+        --icon-hover-bg: rgba(0, 0, 0, 0.06);
+        --scrollbar-thumb: #c5c5d2;
+        --code-bg: #f7f7f8;
+      }
+
+      [data-theme="dark"] {
+        --sidebar-bg: #171717;
+        --sidebar-hover: #212121;
+        --sidebar-border: #2e2e2e;
+        --sidebar-text: #ececec;
+        --sidebar-muted: #9b9b9b;
+        --sidebar-btn-border: #3e3e3e;
+        --sidebar-btn-bg: #232323;
+        --page-bg: #212121;
+        --chat-bg: #212121;
+        --text-primary: #ececec;
+        --text-secondary: #9b9b9b;
+        --text-tertiary: #7a7a85;
+        --user-bubble-bg: #2f2f2f;
+        --user-bubble-border: #3a3a3a;
+        --composer-bg: #2f2f2f;
+        --composer-border: #424242;
+        --composer-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        --send-bg: #ffffff;
+        --send-color: #0d0d0d;
+        --send-disabled-bg: #555555;
+        --icon-hover-bg: rgba(255, 255, 255, 0.08);
+        --scrollbar-thumb: #494949;
+        --code-bg: #2b2b2b;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+        background: var(--page-bg);
+        color: var(--text-primary);
+        font-family:
+          "Geist",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+
+      #root {
+        height: 100%;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: 3px;
+      }
+
+      /* ── Layout ── */
+      .app {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        transition: grid-template-columns 0.25s ease;
+        overflow: hidden;
+      }
+
+      .app.sidebar-collapsed {
+        grid-template-columns: 0 1fr;
+      }
+
+      /* ── Sidebar ── */
+      .sidebar {
+        background: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        gap: 2px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition:
+          transform 0.25s ease,
+          opacity 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .app.sidebar-collapsed .sidebar {
+        transform: translateX(-100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .sidebar-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 4px 12px;
+      }
+
+      .sidebar-toggle {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--sidebar-muted);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .sidebar-toggle:hover {
+        background: var(--sidebar-hover);
+        color: var(--sidebar-text);
+      }
+
+      .new-chat-btn {
+        width: 100%;
+        border: 1px solid var(--sidebar-btn-border);
+        background: var(--sidebar-btn-bg);
+        color: var(--sidebar-text);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font: inherit;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .new-chat-btn:hover {
+        background: var(--sidebar-hover);
+      }
+
+      .sidebar-section-label {
+        margin: 16px 6px 6px;
+        color: var(--sidebar-muted);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .sidebar-clear-all {
+        display: none;
+        cursor: pointer;
+        color: var(--sidebar-muted);
+        font-weight: 400;
+      }
+      .sidebar-section-label:hover .sidebar-clear-all {
+        display: inline;
+      }
+      .sidebar-clear-all:hover {
+        color: #ef4444;
+      }
+
+      .sidebar-convos {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex: 1;
+        min-height: 0;
+        margin: 4px 0;
+      }
+      .sidebar-convos::-webkit-scrollbar {
+        display: none;
+      }
+
+      .sidebar-convo {
+        color: var(--sidebar-text);
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        padding: 9px 10px;
+        font: inherit;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        text-align: left;
+        transition: background 0.12s;
+        position: relative;
+      }
+      .sidebar-convo:hover {
+        background: var(--sidebar-hover);
+      }
+      .sidebar-convo.active {
+        background: var(--sidebar-hover);
+      }
+      .sidebar-convo-title {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .sidebar-convo-actions {
+        display: none;
+        position: absolute;
+        right: 6px;
+        gap: 2px;
+        align-items: center;
+      }
+      .sidebar-convo:hover .sidebar-convo-actions {
+        display: inline-flex;
+      }
+      .sidebar-convo-action {
+        width: 24px;
+        height: 24px;
+        border: none;
+        border-radius: 6px;
+        background: var(--sidebar-hover);
+        color: var(--sidebar-muted);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .sidebar-convo-action:hover {
+        color: var(--sidebar-text);
+      }
+      .sidebar-convo-action.del:hover {
+        color: #ef4444;
+      }
+      .sidebar-convo-edit {
+        flex: 1;
+        min-width: 0;
+        border: 1px solid var(--sidebar-muted);
+        border-radius: 4px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-size: 14px;
+        padding: 1px 4px;
+        outline: none;
+      }
+
+      .sidebar-links {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      .sidebar-link {
+        text-decoration: none;
+        color: var(--sidebar-text);
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        cursor: pointer;
+        transition:
+          background 0.12s,
+          color 0.12s;
+      }
+      .sidebar-link:hover {
+        background: var(--sidebar-hover);
+      }
+      .sidebar-link-main {
+        min-width: 0;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sidebar-link-label {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .sidebar-link-trailing {
+        color: var(--sidebar-muted);
+        opacity: 0.8;
+        flex-shrink: 0;
+      }
+      .sidebar-link:hover .sidebar-link-trailing {
+        color: var(--sidebar-text);
+        opacity: 1;
+      }
+
+      .sidebar-footer {
+        margin-top: auto;
+        padding: 12px 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .sidebar-footer-text {
+        color: var(--sidebar-muted);
+        font-size: 12px;
+      }
+
+      .theme-toggle {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--sidebar-muted);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.12s,
+          color 0.12s;
+      }
+      .theme-toggle:hover {
+        background: var(--sidebar-hover);
+        color: var(--sidebar-text);
+      }
+
+      /* ── Chat Main ── */
+      .chat-main {
+        background: var(--chat-bg);
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.2s ease;
+      }
+
+      .chat-header {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        flex-shrink: 0;
+      }
+
+      .chat-header-inner {
+        width: 100%;
+        max-width: 48rem;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .model-select {
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+        background: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 4px 22px 4px 8px;
+        border-radius: 6px;
+        -webkit-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236e6e80' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 6px center;
+      }
+      .model-select:hover {
+        background-color: var(--icon-hover-bg);
+      }
+      .model-select option {
+        background: var(--composer-bg);
+        color: var(--text-primary);
+      }
+
+      .header-actions {
+        margin-left: auto;
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+
+      .header-btn {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.12s;
+      }
+      .header-btn:hover {
+        background: var(--icon-hover-bg);
+      }
+
+      /* ── Messages ── */
+      .messages-area {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 0 16px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .messages-area::-webkit-scrollbar {
+        display: none;
+      }
+
+      .messages-container {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 24px 0 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .msg-row {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .msg-row.user {
+        justify-content: flex-end;
+      }
+
+      .msg-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 2px;
+      }
+
+      .msg-avatar.bot-avatar {
+        background: #19c37d;
+        color: #ffffff;
+      }
+
+      .msg-content {
+        font-size: 15px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        max-width: 100%;
+      }
+
+      .msg-row.bot .msg-content {
+        padding-top: 3px;
+        flex: 1;
+        min-width: 0;
+      }
+      .msg-row.bot .msg-wrap {
+        flex: 1;
+        min-width: 0;
+      }
+      .msg-actions {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 8px;
+      }
+      .msg-copy-btn {
+        width: 28px;
+        height: 28px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text-secondary);
+        border-radius: 8px;
+        padding: 0;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .msg-copy-btn:hover {
+        background: var(--icon-hover-bg);
+        color: var(--text-primary);
+        border-color: var(--composer-border);
+      }
+
+      .msg-row.user .msg-content {
+        background: var(--user-bubble-bg);
+        border-radius: 18px;
+        padding: 10px 16px;
+        max-width: min(80%, 600px);
+      }
+
+      /* ── Markdown styles ── */
+      .msg-row.bot .msg-content p { margin: 0 0 12px; }
+      .msg-row.bot .msg-content p:last-child { margin-bottom: 0; }
+      .msg-row.bot .msg-content h1,
+      .msg-row.bot .msg-content h2,
+      .msg-row.bot .msg-content h3,
+      .msg-row.bot .msg-content h4 {
+        margin: 20px 0 8px;
+        line-height: 1.3;
+      }
+      .msg-row.bot .msg-content h1:first-child,
+      .msg-row.bot .msg-content h2:first-child,
+      .msg-row.bot .msg-content h3:first-child { margin-top: 0; }
+      .msg-row.bot .msg-content ul,
+      .msg-row.bot .msg-content ol {
+        margin: 8px 0;
+        padding-left: 24px;
+      }
+      .msg-row.bot .msg-content li { margin: 4px 0; }
+      .msg-row.bot .msg-content code {
+        background: var(--code-bg);
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+      }
+      .msg-row.bot .msg-content pre {
+        background: var(--code-bg);
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin: 12px 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+        position: relative;
+      }
+      .msg-row.bot .msg-content pre::-webkit-scrollbar { display: none; }
+      .msg-row.bot .msg-content pre code {
+        background: none;
+        padding: 0;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .msg-row.bot .msg-content blockquote {
+        border-left: 3px solid var(--text-tertiary);
+        margin: 12px 0;
+        padding: 4px 16px;
+        color: var(--text-secondary);
+      }
+      .msg-row.bot .msg-content table {
+        border-collapse: collapse;
+        margin: 12px 0;
+        width: 100%;
+        font-size: 14px;
+      }
+      .msg-row.bot .msg-content th,
+      .msg-row.bot .msg-content td {
+        border: 1px solid var(--composer-border);
+        padding: 8px 12px;
+        text-align: left;
+      }
+      .msg-row.bot .msg-content th {
+        background: var(--code-bg);
+        font-weight: 600;
+      }
+      .msg-row.bot .msg-content hr {
+        border: none;
+        border-top: 1px solid var(--composer-border);
+        margin: 16px 0;
+      }
+      .msg-row.bot .msg-content a {
+        color: #2563eb;
+        text-decoration: underline;
+      }
+      .msg-row.bot .msg-content .katex-display {
+        margin: 16px 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .msg-row.bot .msg-content .katex-display::-webkit-scrollbar { display: none; }
+      .code-copy-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        border: 1px solid transparent;
+        background: color-mix(in srgb, var(--code-bg), transparent 15%);
+        color: var(--text-secondary);
+        border-radius: 8px;
+        padding: 0;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .code-copy-btn:hover {
+        color: var(--text-primary);
+        border-color: var(--composer-border);
+      }
+
+      /* ── Composer ── */
+      .composer {
+        flex-shrink: 0;
+        padding: 0 16px 20px;
+      }
+
+      .composer-container {
+        max-width: 48rem;
+        margin: 0 auto;
+      }
+
+      .composer-box {
+        background: var(--composer-bg);
+        border: 1px solid var(--composer-border);
+        border-radius: 24px;
+        padding: 8px 8px 8px 16px;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        box-shadow: var(--composer-shadow);
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s,
+          background 0.2s;
+      }
+
+      .composer-box:focus-within {
+        border-color: var(--text-secondary);
+      }
+
+      .composer-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        resize: none;
+        font-family: inherit;
+        font-size: 15px;
+        line-height: 24px;
+        color: var(--text-primary);
+        padding: 0;
+        margin: 4px 0;
+        height: 24px;
+        max-height: 160px;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .composer-input::-webkit-scrollbar {
+        display: none;
+      }
+
+      .composer-input::placeholder {
+        color: var(--text-tertiary);
+      }
+
+      .send-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        background: var(--send-bg);
+        color: var(--send-color);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition:
+          background 0.15s,
+          opacity 0.15s;
+      }
+
+      .send-btn:disabled {
+        background: var(--send-disabled-bg);
+        cursor: default;
+        opacity: 0.5;
+      }
+
+      .composer-footer {
+        text-align: center;
+        padding: 8px 0 0;
+        color: var(--text-tertiary);
+        font-size: 12px;
+      }
+
+      /* ── Welcome screen ── */
+      .welcome {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding-bottom: 80px;
+      }
+
+      .welcome-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #19c37d;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+
+      .welcome-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .welcome-sub {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      /* ── Modal ── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+      }
+      .modal {
+        background: var(--composer-bg);
+        border: 1px solid var(--composer-border);
+        border-radius: 16px;
+        padding: 24px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+      .modal-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 8px;
+      }
+      .modal-desc {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .modal-btn {
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.12s;
+      }
+      .modal-btn-cancel {
+        background: transparent;
+        color: var(--text-primary);
+      }
+      .modal-btn-cancel:hover {
+        background: var(--icon-hover-bg);
+      }
+      .modal-btn-confirm {
+        background: #ef4444;
+        color: #ffffff;
+      }
+      .modal-btn-confirm:hover {
+        background: #dc2626;
+      }
+
+      /* ── Mobile ── */
+      .mobile-header-btn {
+        display: inline-flex;
+      }
+
+      .sidebar-overlay {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+
+        .app.sidebar-collapsed {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 260px;
+          z-index: 100;
+          transform: translateX(-100%);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
+        }
+
+        .sidebar-overlay {
+          display: block;
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 99;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.25s;
+        }
+
+        .sidebar-overlay.open {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .mobile-header-btn {
+          display: inline-flex;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useEffect, useLayoutEffect, useRef, useState, useCallback } =
+        React;
+
+      /* ── Lucide icon helper ── */
+      const toPascalCase = (name) =>
+        name
+          .split("-")
+          .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+          .join("");
+
+      const Icon = ({ name, size = 18 }) => {
+        const ref = useRef(null);
+        useEffect(() => {
+          if (!window.lucide || !ref.current) return;
+          const iconNode = window.lucide.icons[toPascalCase(name)];
+          if (!iconNode) return;
+          const svg = window.lucide.createElement(iconNode, {
+            width: size,
+            height: size,
+          });
+          ref.current.innerHTML = "";
+          ref.current.appendChild(svg);
+        }, [name, size]);
+        return (
+          <span
+            ref={ref}
+            style={{
+              width: size,
+              height: size,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          />
+        );
+      };
+
+      /* ── Navigation links ── */
+      const NAV_LINKS = [
+        { href: "index.html", label: "Home", icon: "house" },
+        { href: "index.html#posts", label: "Posts", icon: "file-text" },
+        {
+          href: "knowledgegraph.html",
+          label: "Knowledge Graph",
+          icon: "brain",
+        },
+        { href: "about.html", label: "About", icon: "user" },
+        { href: "https://github.com/ohshane", label: "GitHub", icon: "github" },
+      ];
+
+      /* ── Theme hook ── */
+      function useTheme() {
+        const [theme, setTheme] = useState(() => {
+          const saved = localStorage.getItem("chat-theme");
+          if (saved) return saved;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        });
+
+        useEffect(() => {
+          document.documentElement.setAttribute("data-theme", theme);
+          localStorage.setItem("chat-theme", theme);
+        }, [theme]);
+
+        const toggle = useCallback(() => {
+          setTheme((t) => (t === "light" ? "dark" : "light"));
+        }, []);
+
+        return [theme, toggle];
+      }
+
+      /* ── Models ── */
+      const MODELS = [
+        { id: "openai/gpt-4o-mini", label: "GPT-4o mini" },
+        { id: "google/gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite" },
+        { id: "anthropic/claude-haiku-4.5", label: "Claude Haiku 4.5" },
+      ];
+
+      /* ── API ── */
+      const WORKER_URL = (() => {
+        const h = window.location.hostname;
+        if (
+          h === "localhost" ||
+          h === "127.0.0.1" ||
+          h.endsWith(".workers.dev")
+        ) {
+          return "/api/chat";
+        }
+        return "https://chat-proxy.ohshane71.workers.dev/api/chat";
+      })();
+
+      async function streamChat(messages, model, onChunk, onDone, signal) {
+        const apiMessages = messages.map((m) => ({
+          role: m.role === "bot" ? "assistant" : "user",
+          content: m.content,
+        }));
+
+        const res = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: apiMessages, model }),
+          signal,
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(err);
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            const data = line.slice(6);
+            if (data === "[DONE]") {
+              onDone();
+              return;
+            }
+            try {
+              const parsed = JSON.parse(data);
+              const delta = parsed.choices?.[0]?.delta?.content;
+              if (delta) onChunk(delta);
+            } catch {}
+          }
+        }
+        onDone();
+      }
+
+      /* ── Markdown + LaTeX renderer ── */
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function renderMarkdown(text) {
+        if (!text) return "";
+        // Replace LaTeX blocks before markdown parsing
+        // Block math: $$ ... $$
+        let result = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => {
+          try {
+            return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
+          } catch { return _; }
+        });
+        // Inline math: $ ... $ (but not $$ or currency like $100)
+        result = result.replace(/(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)/g, (_, tex) => {
+          try {
+            return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
+          } catch { return _; }
+        });
+        // Block math: \[ ... \]
+        result = result.replace(/\\\[([\s\S]*?)\\\]/g, (_, tex) => {
+          try {
+            return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
+          } catch { return _; }
+        });
+        // Inline math: \( ... \)
+        result = result.replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => {
+          try {
+            return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
+          } catch { return _; }
+        });
+        // Parse markdown (safe fallback if marked failed to load)
+        const parser = window.marked;
+        if (!parser || typeof parser.parse !== "function") {
+          return escapeHtml(result).replace(/\n/g, "<br/>");
+        }
+        return parser.parse(result, { breaks: true });
+      }
+
+      async function writeClipboard(text) {
+        if (!text) return false;
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {
+          try {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            const ok = document.execCommand("copy");
+            document.body.removeChild(ta);
+            return ok;
+          } catch {
+            return false;
+          }
+        }
+      }
+
+      function renderButtonIcon(button, iconName, size = 14) {
+        if (!button) return;
+        button.innerHTML = "";
+        if (!window.lucide || !window.lucide.icons) {
+          button.textContent = iconName === "check" ? "✓" : "⧉";
+          return;
+        }
+        const pascal = toPascalCase(iconName);
+        const node = window.lucide.icons[pascal];
+        if (!node) {
+          button.textContent = iconName === "check" ? "✓" : "⧉";
+          return;
+        }
+        const svg = window.lucide.createElement(node, { width: size, height: size });
+        button.appendChild(svg);
+      }
+
+      const MarkdownContent = ({ content, onCopyCode }) => {
+        const ref = React.useRef(null);
+        React.useEffect(() => {
+          if (ref.current) {
+            ref.current.innerHTML = renderMarkdown(content);
+            ref.current.querySelectorAll("pre").forEach((pre) => {
+              if (pre.querySelector(".code-copy-btn")) return;
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = "code-copy-btn";
+              button.title = "Copy code";
+              button.setAttribute("aria-label", "Copy code");
+              renderButtonIcon(button, "copy");
+              button.addEventListener("click", () => {
+                const codeEl = pre.querySelector("code");
+                const codeText = codeEl ? codeEl.innerText : pre.innerText;
+                onCopyCode?.(codeText, button);
+              });
+              pre.appendChild(button);
+            });
+          }
+        }, [content, onCopyCode]);
+        return React.createElement("div", { ref });
+      };
+
+      /* ── Chat History ── */
+      const STORAGE_KEY = "chat-history";
+
+      function loadHistory() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { activeId: null, conversations: [] };
+          return JSON.parse(raw);
+        } catch { return { activeId: null, conversations: [] }; }
+      }
+
+      function saveHistory(history) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+      }
+
+      /* ── App ── */
+      function App() {
+        const INPUT_MAX_HEIGHT = 160;
+        const [theme, toggleTheme] = useTheme();
+        const [input, setInput] = useState("");
+        const [model, setModel] = useState(MODELS[0].id);
+        const [sidebarOpen, setSidebarOpen] = useState(() => {
+          const saved = localStorage.getItem("chat-sidebar");
+          return saved === null ? true : saved === "true";
+        });
+        const [streaming, setStreaming] = useState(false);
+        const [showClearModal, setShowClearModal] = useState(false);
+        const [copiedMessageId, setCopiedMessageId] = useState(null);
+
+        const [conversations, setConversations] = useState(() => loadHistory().conversations);
+        const [activeId, setActiveId] = useState(() => loadHistory().activeId);
+
+        const messages = activeId
+          ? (conversations.find((c) => c.id === activeId)?.messages || [])
+          : [];
+
+        const setMessages = (updater) => {
+          setConversations((prev) => {
+            const next = prev.map((c) =>
+              c.id === activeId
+                ? { ...c, messages: typeof updater === "function" ? updater(c.messages) : updater, updatedAt: Date.now() }
+                : c
+            );
+            return next;
+          });
+        };
+
+        useEffect(() => {
+          saveHistory({ activeId, conversations });
+        }, [activeId, conversations]);
+
+        const scrollRef = useRef(null);
+        const textareaRef = useRef(null);
+        const abortRef = useRef(null);
+
+        const resizeTextarea = useCallback(() => {
+          const el = textareaRef.current;
+          if (!el) return;
+          el.style.height = "0";
+          const scrollH = el.scrollHeight;
+          const next = Math.min(scrollH, INPUT_MAX_HEIGHT);
+          el.style.height = next + "px";
+          el.style.overflowY = scrollH > INPUT_MAX_HEIGHT ? "auto" : "hidden";
+        }, []);
+
+        useEffect(() => {
+          if (!scrollRef.current) return;
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }, [messages]);
+
+        useEffect(() => {
+          localStorage.setItem("chat-sidebar", sidebarOpen);
+        }, [sidebarOpen]);
+
+        useLayoutEffect(() => {
+          resizeTextarea();
+        }, [input, resizeTextarea]);
+
+        const handleSend = async () => {
+          const text = input.trim();
+          if (!text || streaming) return;
+
+          const userMsg = { id: Date.now(), role: "user", content: text };
+          const botMsg = { id: Date.now() + 1, role: "bot", content: "" };
+
+          let convId = activeId;
+          if (!convId) {
+            convId = "conv_" + Date.now();
+            const title = text.length > 30 ? text.slice(0, 30) + "…" : text;
+            const newConv = { id: convId, title, messages: [], model, updatedAt: Date.now() };
+            setConversations((prev) => [newConv, ...prev]);
+            setActiveId(convId);
+          }
+
+          const updated = [...messages, userMsg];
+
+          setConversations((prev) =>
+            prev.map((c) =>
+              c.id === convId
+                ? { ...c, messages: [...updated, botMsg], updatedAt: Date.now(), title: c.title || (text.length > 30 ? text.slice(0, 30) + "…" : text) }
+                : c
+            )
+          );
+          setInput("");
+          setStreaming(true);
+
+          const controller = new AbortController();
+          abortRef.current = controller;
+
+          try {
+            await streamChat(
+              updated,
+              model,
+              (chunk) => {
+                botMsg.content += chunk;
+                setConversations((prev) =>
+                  prev.map((c) =>
+                    c.id === convId
+                      ? { ...c, messages: [...updated, { ...botMsg }], updatedAt: Date.now() }
+                      : c
+                  )
+                );
+              },
+              () => {},
+              controller.signal,
+            );
+          } catch (e) {
+            if (e.name !== "AbortError") {
+              botMsg.content = botMsg.content || `Error: ${e.message}`;
+              setConversations((prev) =>
+                prev.map((c) =>
+                  c.id === convId
+                    ? { ...c, messages: [...updated, { ...botMsg }], updatedAt: Date.now() }
+                    : c
+                )
+              );
+            }
+          } finally {
+            setStreaming(false);
+            abortRef.current = null;
+          }
+        };
+
+        const handleNewChat = () => {
+          if (abortRef.current) abortRef.current.abort();
+          setActiveId(null);
+          setInput("");
+          setStreaming(false);
+          setSidebarOpen(false);
+        };
+
+        const handleSelectConvo = (id) => {
+          if (streaming) return;
+          setActiveId(id);
+        };
+
+        const handleDeleteConvo = (e, id) => {
+          e.stopPropagation();
+          setConversations((prev) => prev.filter((c) => c.id !== id));
+          if (activeId === id) setActiveId(null);
+        };
+
+        const handlePinConvo = (e, id) => {
+          e.stopPropagation();
+          setConversations((prev) =>
+            prev.map((c) => c.id === id ? { ...c, pinned: !c.pinned } : c)
+          );
+        };
+
+        const [editingId, setEditingId] = useState(null);
+        const editRef = useRef(null);
+
+        const handleRenameStart = (e, id) => {
+          e.stopPropagation();
+          setEditingId(id);
+        };
+
+        const handleRenameCommit = (id, newTitle) => {
+          const trimmed = newTitle.trim();
+          if (trimmed) {
+            setConversations((prev) =>
+              prev.map((c) => c.id === id ? { ...c, title: trimmed } : c)
+            );
+          }
+          setEditingId(null);
+        };
+
+        useEffect(() => {
+          if (editingId && editRef.current) {
+            editRef.current.focus();
+            editRef.current.select();
+          }
+        }, [editingId]);
+
+        const hasMessages = messages.length > 0;
+
+        const handleClearAll = () => {
+          if (abortRef.current) abortRef.current.abort();
+          setConversations([]);
+          setActiveId(null);
+          setStreaming(false);
+          setShowClearModal(false);
+        };
+
+        const handleCopyMessage = async (msg) => {
+          const ok = await writeClipboard(msg.content || "");
+          if (!ok) return;
+          setCopiedMessageId(msg.id);
+          setTimeout(() => {
+            setCopiedMessageId((current) =>
+              current === msg.id ? null : current
+            );
+          }, 1200);
+        };
+
+        const handleCopyCode = async (codeText, buttonEl) => {
+          const ok = await writeClipboard(codeText || "");
+          if (!ok || !buttonEl) return;
+          buttonEl.title = "Copied";
+          buttonEl.setAttribute("aria-label", "Copied");
+          renderButtonIcon(buttonEl, "check");
+          setTimeout(() => {
+            buttonEl.title = "Copy code";
+            buttonEl.setAttribute("aria-label", "Copy code");
+            renderButtonIcon(buttonEl, "copy");
+          }, 1200);
+        };
+
+        return (
+          <>
+            {showClearModal && (
+              <div className="modal-overlay" onClick={() => setShowClearModal(false)}>
+                <div className="modal" onClick={(e) => e.stopPropagation()}>
+                  <p className="modal-title">Clear all chats?</p>
+                  <p className="modal-desc">This will delete all conversation history. This action cannot be undone.</p>
+                  <div className="modal-actions">
+                    <button className="modal-btn modal-btn-cancel" onClick={() => setShowClearModal(false)}>Cancel</button>
+                    <button className="modal-btn modal-btn-confirm" onClick={handleClearAll}>Clear all</button>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div
+              className={`sidebar-overlay ${sidebarOpen ? "open" : ""}`}
+              onClick={() => setSidebarOpen(false)}
+            />
+            <main className={`app ${sidebarOpen ? "" : "sidebar-collapsed"}`}>
+              {/* ── Sidebar ── */}
+              <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+                <div className="sidebar-top">
+                  <button
+                    className="sidebar-toggle"
+                    onClick={() => setSidebarOpen(false)}
+                    title="Close sidebar"
+                  >
+                    <Icon name="panel-left" size={18} />
+                  </button>
+                  <button
+                    className="sidebar-toggle"
+                    onClick={handleNewChat}
+                    title="New chat"
+                  >
+                    <Icon name="square-pen" size={16} />
+                  </button>
+                </div>
+
+                <button className="new-chat-btn" onClick={handleNewChat}>
+                  <span>New chat</span>
+                  <Icon name="plus" size={15} />
+                </button>
+
+                {conversations.some((c) => c.pinned) && (
+                  <>
+                    <p className="sidebar-section-label">Pinned</p>
+                    <div className="sidebar-convos" style={{ flex: "none" }}>
+                      {conversations.filter((c) => c.pinned).map((c) => (
+                        <button
+                          key={c.id}
+                          className={`sidebar-convo ${c.id === activeId ? "active" : ""}`}
+                          onClick={() => editingId !== c.id && handleSelectConvo(c.id)}
+                        >
+                          {editingId === c.id ? (
+                            <input
+                              ref={editRef}
+                              className="sidebar-convo-edit"
+                              defaultValue={c.title}
+                              onClick={(e) => e.stopPropagation()}
+                              onBlur={(e) => handleRenameCommit(c.id, e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") handleRenameCommit(c.id, e.target.value);
+                                if (e.key === "Escape") setEditingId(null);
+                              }}
+                            />
+                          ) : (
+                            <span className="sidebar-convo-title" onDoubleClick={(e) => handleRenameStart(e, c.id)}>{c.title}</span>
+                          )}
+                          {editingId !== c.id && (
+                            <span className="sidebar-convo-actions">
+                              <span className="sidebar-convo-action" onClick={(e) => handleRenameStart(e, c.id)} title="Rename">
+                                <Icon name="pencil" size={13} />
+                              </span>
+                              <span className="sidebar-convo-action" onClick={(e) => handlePinConvo(e, c.id)} title="Unpin">
+                                <Icon name="pin-off" size={13} />
+                              </span>
+                              <span className="sidebar-convo-action del" onClick={(e) => handleDeleteConvo(e, c.id)}>
+                                <Icon name="trash-2" size={13} />
+                              </span>
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {conversations.some((c) => !c.pinned) && (
+                  <>
+                    <p className="sidebar-section-label">
+                      <span>History</span>
+                      <span
+                        className="sidebar-clear-all"
+                        onClick={() => setShowClearModal(true)}
+                      >
+                        Clear all
+                      </span>
+                    </p>
+                    <div className="sidebar-convos">
+                      {conversations.filter((c) => !c.pinned).map((c) => (
+                        <button
+                          key={c.id}
+                          className={`sidebar-convo ${c.id === activeId ? "active" : ""}`}
+                          onClick={() => editingId !== c.id && handleSelectConvo(c.id)}
+                        >
+                          {editingId === c.id ? (
+                            <input
+                              ref={editRef}
+                              className="sidebar-convo-edit"
+                              defaultValue={c.title}
+                              onClick={(e) => e.stopPropagation()}
+                              onBlur={(e) => handleRenameCommit(c.id, e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") handleRenameCommit(c.id, e.target.value);
+                                if (e.key === "Escape") setEditingId(null);
+                              }}
+                            />
+                          ) : (
+                            <span className="sidebar-convo-title" onDoubleClick={(e) => handleRenameStart(e, c.id)}>{c.title}</span>
+                          )}
+                          {editingId !== c.id && (
+                            <span className="sidebar-convo-actions">
+                              <span className="sidebar-convo-action" onClick={(e) => handleRenameStart(e, c.id)} title="Rename">
+                                <Icon name="pencil" size={13} />
+                              </span>
+                              <span className="sidebar-convo-action" onClick={(e) => handlePinConvo(e, c.id)} title="Pin">
+                                <Icon name="pin" size={13} />
+                              </span>
+                              <span className="sidebar-convo-action del" onClick={(e) => handleDeleteConvo(e, c.id)}>
+                                <Icon name="trash-2" size={13} />
+                              </span>
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                <p className="sidebar-section-label">Navigate</p>
+                <nav className="sidebar-links">
+                  {NAV_LINKS.map((item) => (
+                    <a
+                      className="sidebar-link"
+                      key={item.href}
+                      href={item.href}
+                    >
+                      <span className="sidebar-link-main">
+                        <Icon name={item.icon} size={16} />
+                        <span className="sidebar-link-label">{item.label}</span>
+                      </span>
+                      <span className="sidebar-link-trailing">
+                        <Icon name="chevron-right" size={14} />
+                      </span>
+                    </a>
+                  ))}
+                </nav>
+
+                <div className="sidebar-footer">
+                  <span className="sidebar-footer-text">Shane Oh</span>
+                  <button
+                    className="theme-toggle"
+                    onClick={toggleTheme}
+                    title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+                  >
+                    <Icon name={theme === "light" ? "moon" : "sun"} size={16} />
+                  </button>
+                </div>
+              </aside>
+
+              {/* ── Chat area ── */}
+              <section className="chat-main">
+                <header className="chat-header">
+                  <div className="chat-header-inner">
+                    <div className="header-left">
+                      <button
+                        className="header-btn mobile-header-btn"
+                        onClick={() => setSidebarOpen((v) => !v)}
+                        title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+                      >
+                        <Icon name="panel-left" size={18} />
+                      </button>
+                      <select
+                        className="model-select"
+                        value={model}
+                        onChange={(e) => setModel(e.target.value)}
+                      >
+                        {MODELS.map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {m.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="header-actions">
+                      <button
+                        className="header-btn"
+                        onClick={toggleTheme}
+                        title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+                      >
+                        <Icon
+                          name={theme === "light" ? "moon" : "sun"}
+                          size={17}
+                        />
+                      </button>
+                      <button
+                        className="header-btn mobile-header-btn"
+                        onClick={handleNewChat}
+                        title="New chat"
+                      >
+                        <Icon name="square-pen" size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </header>
+
+                {!hasMessages ? (
+                  <div className="welcome">
+                    <div className="welcome-icon">
+                      <Icon name="sparkles" size={20} />
+                    </div>
+                    <h2 className="welcome-title">How can I help?</h2>
+                    <p className="welcome-sub">Ask me anything.</p>
+                  </div>
+                ) : (
+                  <div ref={scrollRef} className="messages-area">
+                    <div className="messages-container">
+                      {messages.map((msg) => (
+                        <div key={msg.id} className={`msg-row ${msg.role}`}>
+                          {msg.role === "bot" && (
+                            <div className="msg-avatar bot-avatar">
+                              <Icon name="sparkles" size={14} />
+                            </div>
+                          )}
+                          {msg.role === "bot" ? (
+                            <div className="msg-wrap">
+                              <div className="msg-content">
+                                <MarkdownContent
+                                  content={msg.content}
+                                  onCopyCode={handleCopyCode}
+                                />
+                              </div>
+                              <div className="msg-actions">
+                                <button
+                                  type="button"
+                                  className="msg-copy-btn"
+                                  onClick={() => handleCopyMessage(msg)}
+                                  title={
+                                    copiedMessageId === msg.id
+                                      ? "Copied"
+                                      : "Copy"
+                                  }
+                                  aria-label={
+                                    copiedMessageId === msg.id
+                                      ? "Copied"
+                                      : "Copy message"
+                                  }
+                                >
+                                  <Icon
+                                    name={
+                                      copiedMessageId === msg.id
+                                        ? "check"
+                                        : "copy"
+                                    }
+                                    size={14}
+                                  />
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="msg-content">{msg.content}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <footer className="composer">
+                  <div className="composer-container">
+                    <div className="composer-box">
+                      <textarea
+                        ref={textareaRef}
+                        className="composer-input"
+                        rows={1}
+                        placeholder="Type your message"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSend();
+                          }
+                        }}
+                      />
+                      {streaming ? (
+                        <button
+                          className="send-btn"
+                          onClick={() => abortRef.current?.abort()}
+                          aria-label="Stop"
+                        >
+                          <Icon name="square" size={14} />
+                        </button>
+                      ) : (
+                        <button
+                          className="send-btn"
+                          onClick={handleSend}
+                          disabled={!input.trim()}
+                          aria-label="Send"
+                        >
+                          <Icon name="arrow-up" size={16} />
+                        </button>
+                      )}
+                    </div>
+                    <p className="composer-footer">
+                      Press Enter to send, Shift+Enter for a new line
+                    </p>
+                  </div>
+                </footer>
+              </section>
+            </main>
+          </>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
