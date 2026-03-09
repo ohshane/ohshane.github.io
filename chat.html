@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Chat | Shane Oh</title>
 
+    <link rel="icon" type="image/x-icon" href="image/favicon.ico" />
+    <link rel="apple-touch-icon" href="image/apple-touch-icon.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,6 +28,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/katex/dist/katex.min.css" />
     <script src="https://unpkg.com/katex/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 
     <!-- Highlight.js for code linting/highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme" />
@@ -572,9 +576,6 @@
         flex: 1;
         min-width: 0;
       }
-        flex: 1;
-        min-width: 0;
-      }
       .msg-actions {
         display: flex;
         justify-content: flex-start;
@@ -710,6 +711,88 @@
         scrollbar-width: none;
       }
       .msg-row.bot .msg-content .katex-display::-webkit-scrollbar { display: none; }
+      /* Source Cards */
+      .msg-status {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        margin-bottom: 8px; /* Increased bottom margin */
+        font-style: italic;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      /* Source Cards Animation */
+      @keyframes card-appear {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .sources-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--sidebar-border);
+      }
+      .source-card {
+        flex: 1;
+        min-width: 200px;
+        max-width: 300px;
+        padding: 10px 12px;
+        background: var(--sidebar-bg);
+        border: 1px solid var(--sidebar-border);
+        border-radius: 8px;
+        text-decoration: none !important;
+        color: inherit;
+        font-size: 13px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        transition: transform 0.1s ease, border-color 0.1s ease;
+        
+        /* Animation */
+        opacity: 0;
+        animation: card-appear 0.4s ease forwards;
+      }
+      .source-card:nth-child(1) { animation-delay: 0.1s; }
+      .source-card:nth-child(2) { animation-delay: 0.25s; }
+      .source-card:nth-child(3) { animation-delay: 0.4s; }
+      
+      .source-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--text-tertiary);
+      }
+      .source-card-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .source-card-section {
+        color: var(--text-secondary);
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .source-card-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--sidebar-muted);
+        font-size: 11px;
+        margin-top: 2px;
+      }
+
       .code-copy-btn {
         position: absolute;
         top: 8px;
@@ -1055,37 +1138,182 @@
       ];
 
       /* ── API ── */
-      const WORKER_URL = (() => {
+      const API_URL = (() => {
         const h = window.location.hostname;
-        if (
-          h === "localhost" ||
-          h === "127.0.0.1" ||
-          h.endsWith(".workers.dev")
-        ) {
+        if (h === "localhost" || h === "127.0.0.1" || h.endsWith(".workers.dev")) {
           return "/api/chat";
         }
         return "https://chat-proxy.ohshane71.workers.dev/api/chat";
       })();
 
-      async function streamChat(messages, model, onChunk, onDone, signal) {
+      let searchData = null;
+
+      async function fetchSearchData() {
+        if (searchData) return searchData;
+        
+        // Try relative path first. 
+        // NOTE: On local dev, the Worker proxies this to http://localhost:8888/search.json
+        const urls = ["/search.json", "https://blog.shaneoh.org/search.json"];
+
+        for (const url of urls) {
+          try {
+            console.log(`Attempting to fetch search data from: ${url}`);
+            const res = await fetch(url);
+            if (res.ok) {
+              searchData = await res.json();
+              console.log(`Successfully loaded search data from: ${url}`);
+              return searchData;
+            } else {
+              console.log(`Fetch failed (HTTP ${res.status}): ${url}`);
+            }
+          } catch (e) {
+            console.warn(`Could not fetch from ${url}:`, e.message);
+          }
+        }
+        
+        console.error("All attempts to fetch search.json failed.");
+        return null;
+      }
+
+      function findRelevantContext(query, data, limit = 3) {
+        if (!data || !query || !window.Fuse) {
+          console.log("[Search] Skipped: No data, query, or Fuse.js not loaded.");
+          return { context: "", sources: [], totalMatches: 0 };
+        }
+
+        console.log(`[Search] Query: "${query}"`);
+
+        const fuse = new Fuse(data, {
+          keys: [
+            { name: "title", weight: 0.5 },
+            { name: "section", weight: 0.3 },
+            { name: "text", weight: 0.2 }
+          ],
+          threshold: 0.6,
+          includeScore: true,
+          ignoreLocation: true,
+          minMatchCharLength: 2
+        });
+
+        const allResults = fuse.search(query);
+        const totalMatches = allResults.length;
+        
+        if (totalMatches === 0) {
+          console.log("[Search] No matches under threshold 0.6.");
+          const topRejected = fuse.search(query, { limit: 5 });
+          if (topRejected.length > 0) {
+            console.log("[Search] Top candidates (rejected):");
+            topRejected.forEach((res, i) => {
+              console.log(`  ${i+1}. ${res.item.title} (${res.item.section || "No section"}) - Score: ${res.score.toFixed(4)}`);
+            });
+          }
+          return { context: "", sources: [], totalMatches: 0 };
+        }
+
+        console.log(`[Search] Found ${totalMatches} matches.`);
+        
+        // Context and Sources: Limit both to top 3 for cleaner UI and focused AI
+        const topResults = allResults.slice(0, limit);
+        
+        const context = topResults
+          .map(res => `[Source: ${res.item.title}${res.item.section ? " - " + res.item.section : ""}]\n${res.item.text}`)
+          .join("\n\n");
+
+        const sources = topResults.map(res => ({
+          title: res.item.title,
+          section: res.item.section,
+          href: res.item.href,
+          score: res.score
+        }));
+
+        return { context, sources, totalMatches };
+      }
+
+      async function extractKeywords(messages, model) {
+        try {
+          const lastMessage = messages[messages.length - 1]?.content || "";
+          console.log("[Keywords] Extracting technical terms...");
+          
+          const contextMessages = messages.slice(-5).map(m => ({
+            role: m.role === "bot" ? "assistant" : "user",
+            content: m.content
+          }));
+
+          const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model,
+              stream: false,
+              messages: [
+                { 
+                  role: "system", 
+                  content: "You are a specialized search query optimizer. Identify 3-5 main technical concepts from the conversation. Return ONLY a space-separated list of keywords in Korean and English. NO explanations, NO full sentences, NO introduction. Example: '힙 정렬 Heap Sort 우선순위 큐 Priority Queue'" 
+                },
+                ...contextMessages
+              ]
+            })
+          });
+
+          if (!res.ok) return lastMessage;
+          
+          const json = await res.json();
+          let extracted = json.choices?.[0]?.message?.content || "";
+          
+          extracted = extracted.replace(/\n/g, " ").replace(/아래는|용어입니다|키워드:|입력:|Keywords:/g, "").trim();
+          console.log(`[Keywords] Extracted: "${extracted || "(none)"}"`);
+          
+          return (extracted.length > 3 && extracted.length < 200) ? `${extracted} ${lastMessage}` : extracted || lastMessage;
+        } catch (e) {
+          console.warn("[Keywords] Extraction failed.", e);
+          return messages[messages.length - 1]?.content || "";
+        }
+      }
+
+      async function streamChat(messages, model, onChunk, onDone, onSources, onStatus, signal) {
+        onStatus("Searching blog posts...");
+        
+        // Let UI update
+        await new Promise(r => setTimeout(r, 0));
+
+        const data = await fetchSearchData();
+        const searchQuery = await extractKeywords(messages, model);
+        const { context, sources, totalMatches } = findRelevantContext(searchQuery, data);
+        
+        if (totalMatches > 0) {
+          onStatus(`Found ${totalMatches} matches`);
+          if (sources.length > 0) {
+            onSources(sources);
+          }
+        } else {
+          onStatus(""); // Clear status instead of showing 'No matching posts found'
+        }
+
         const apiMessages = messages.map((m) => ({
           role: m.role === "bot" ? "assistant" : "user",
           content: m.content,
         }));
 
-        const res = await fetch(WORKER_URL, {
+        if (context) {
+          apiMessages.unshift({
+            role: "system",
+            content: `You are a helpful assistant. Use the following context from the user's blog posts to help answer the question if relevant. If the context doesn't help, just answer normally.\n\nContext:\n${context}`
+          });
+        }
+
+        const chatRes = await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ messages: apiMessages, model }),
           signal,
         });
 
-        if (!res.ok) {
-          const err = await res.text();
+        if (!chatRes.ok) {
+          const err = await chatRes.text();
           throw new Error(err);
         }
 
-        const reader = res.body.getReader();
+        const reader = chatRes.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
 
@@ -1377,7 +1605,36 @@
                   )
                 );
               },
-              () => {},
+              () => {
+                // When done, show sources if any exist
+                if (botMsg.sources && botMsg.sources.length > 0) {
+                  botMsg.showSources = true;
+                  const updatedBotMsg = { ...botMsg };
+                  setConversations((prev) =>
+                    prev.map((c) =>
+                      c.id === convId
+                        ? { ...c, messages: [...updated, updatedBotMsg], updatedAt: Date.now() }
+                        : c
+                    )
+                  );
+                }
+              },
+              (sources) => {
+                botMsg.sources = sources;
+                // No immediate render here
+              },
+              (status) => {
+                botMsg.status = status;
+                // Important: Clone the message object to trigger re-render
+                const updatedBotMsg = { ...botMsg };
+                setConversations((prev) =>
+                  prev.map((c) =>
+                    c.id === convId
+                      ? { ...c, messages: [...updated, updatedBotMsg], updatedAt: Date.now() }
+                      : c
+                  )
+                );
+              },
               controller.signal,
             );
           } catch (e) {
@@ -1713,15 +1970,45 @@
                                                 <div key={msg.id} className={`msg-row ${msg.role}`}>
                                                   {msg.role === "bot" ? (
                                                     <div className="msg-wrap">
-                                                                                    <div className="msg-content">
-                                                                                      <MarkdownContent
-                                                                                        content={msg.content}
-                                                                                        onCopyCode={handleCopyCode}
-                                                                                        isLast={idx === messages.length - 1}
-                                                                                        streaming={streaming}
-                                                                                      />
-                                                                                    </div>
-                                                                                      {/* Show copy button if not streaming OR if it's not the last message */}
+                                                      <div className="msg-content">
+                                                        {msg.status && (
+                                                          <div className="msg-status">
+                                                            <Icon name="search" size={10} />
+                                                            {msg.status}
+                                                          </div>
+                                                        )}
+                                                        <MarkdownContent
+                                                          content={msg.content}
+                                                          onCopyCode={handleCopyCode}
+                                                          isLast={idx === messages.length - 1}
+                                                          streaming={streaming}
+                                                        />
+                                                        {msg.showSources && msg.sources && msg.sources.length > 0 && (
+                                                          <div className="sources-container">
+                                                                                          {(() => {
+                                                                                            const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+                                                                                            const BLOG_BASE_URL = isLocalHost ? "http://localhost:8888/" : "https://blog.shaneoh.org/";
+                                                                                            return msg.sources.map((src, i) => (
+                                                                                              <a
+                                                                                                key={i}
+                                                                                                href={`${BLOG_BASE_URL}${src.href}`}
+                                                                                                target="_blank"
+                                                                                                rel="noopener noreferrer"
+                                                                                                className="source-card"
+                                                                                              >
+                                                                                                <div className="source-card-title">{src.title}</div>
+                                                                                                {src.section && (
+                                                                                                  <div className="source-card-section">{src.section}</div>
+                                                                                                )}
+                                                                                                <div className="source-card-tag">
+                                                                                                  <Icon name="link" size={10} />
+                                                                                                  {isLocalHost ? "localhost:8888" : "blog.shaneoh.org"}
+                                                                                                </div>
+                                                                                              </a>
+                                                                                            ));
+                                                                                          })()}
+                                                                                        </div>
+                                                                                      )}                                                                                    </div>                                                                                      {/* Show copy button if not streaming OR if it's not the last message */}
                                 {(!streaming || idx < messages.length - 1) && (
                                   <div className="msg-actions">
                                     <button

@@ -26,7 +26,35 @@ export default {
 
     // Only handle /api/chat
     if (url.pathname !== "/api/chat") {
-      return new Response("Not found", { status: 404, headers: corsHeaders });
+      try {
+        // 1. Try serving from local assets (the public/ folder)
+        const assetResponse = await env.ASSETS.fetch(request);
+        if (assetResponse.status !== 404) {
+          return assetResponse;
+        }
+
+        // 2. If not found and on local dev, proxy to Quarto (8888)
+        const isLocalHost = url.hostname === "localhost" || url.hostname === "127.0.0.1";
+        if (isLocalHost) {
+          try {
+            const proxyUrl = new URL(url.pathname, "http://localhost:8888");
+            const proxyRes = await fetch(proxyUrl, {
+              method: request.method,
+              headers: request.headers,
+            });
+            
+            // Forward the response with same-origin friendly headers
+            const headers = new Headers(proxyRes.headers);
+            headers.set("Access-Control-Allow-Origin", "*"); 
+            return new Response(proxyRes.body, { ...proxyRes, headers });
+          } catch (e) {
+            return assetResponse; // fallback to 404 if 8888 is down
+          }
+        }
+        return assetResponse;
+      } catch (e) {
+        return new Response("Not Found", { status: 404 });
+      }
     }
 
     if (request.method !== "POST") {
@@ -34,7 +62,8 @@ export default {
     }
 
     try {
-      const { messages, model } = await request.json();
+      const { messages, model, stream } = await request.json();
+      const shouldStream = stream !== false; // Default to true unless explicitly false
 
       if (!messages || !Array.isArray(messages)) {
         return new Response(JSON.stringify({ error: "messages array required" }), {
@@ -52,9 +81,9 @@ export default {
           "X-Title": "Shane Chat",
         },
         body: JSON.stringify({
-          model: model || "google/gemini-2.5-flash-preview",
+          model: model || "google/gemini-2.0-flash-exp",
           messages,
-          stream: true,
+          stream: shouldStream,
         }),
       });
 
@@ -66,13 +95,13 @@ export default {
         });
       }
 
-      return new Response(response.body, {
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache",
-        },
-      });
+      const responseHeaders = {
+        ...corsHeaders,
+        "Content-Type": shouldStream ? "text/event-stream" : "application/json",
+        "Cache-Control": "no-cache",
+      };
+
+      return new Response(response.body, { headers: responseHeaders });
     } catch (e) {
       return new Response(JSON.stringify({ error: e.message }), {
         status: 500,

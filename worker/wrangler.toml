@@ -6,4 +6,4 @@ compatibility_date = "2024-01-01"
 directory = "./public"
 
 [vars]
-ALLOWED_ORIGINS = "https://ohshane.github.io, https://blog.shaneoh.org"
+ALLOWED_ORIGINS = "https://ohshane.github.io,https://blog.shaneoh.org"
