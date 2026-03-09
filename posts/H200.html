@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2024-10-27">
+<meta name="dcterms.date" content="2026-03-07">
 
-<title>certSANs – Shane</title>
+<title>Operating DGX H200 infrastructure – Shane</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -111,10 +111,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="certSANs – Shane">
-<meta property="og:description" content="Post configuration for K8s">
+<meta property="og:title" content="Operating DGX H200 infrastructure – Shane">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://ohshane.github.io/posts/H200/images/dgx-h200.jpg">
 <meta property="og:site_name" content="Shane">
 </head>
 
@@ -172,12 +202,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link active" data-scroll-target="#prerequisites">Prerequisites</a></li>
-  <li><a href="#update-kubeadm-configuration" id="toc-update-kubeadm-configuration" class="nav-link" data-scroll-target="#update-kubeadm-configuration">Update kubeadm configuration</a>
+  <li><a href="#how-do-floating-points-work" id="toc-how-do-floating-points-work" class="nav-link active" data-scroll-target="#how-do-floating-points-work">How do floating points work?</a>
   <ul class="collapse">
-  <li><a href="#backup-existing-certificates" id="toc-backup-existing-certificates" class="nav-link" data-scroll-target="#backup-existing-certificates">Backup existing certificates</a></li>
-  <li><a href="#export-the-kubeadm-configuration" id="toc-export-the-kubeadm-configuration" class="nav-link" data-scroll-target="#export-the-kubeadm-configuration">Export the kubeadm configuration</a></li>
-  <li><a href="#regenerate-the-certificates" id="toc-regenerate-the-certificates" class="nav-link" data-scroll-target="#regenerate-the-certificates">Regenerate the certificates</a></li>
+  <li><a href="#allocating-memory-with-torch" id="toc-allocating-memory-with-torch" class="nav-link" data-scroll-target="#allocating-memory-with-torch">Allocating memory with <code>torch</code></a></li>
+  </ul></li>
+  <li><a href="#architecture-of-dgx-h200" id="toc-architecture-of-dgx-h200" class="nav-link" data-scroll-target="#architecture-of-dgx-h200">Architecture of DGX H200</a>
+  <ul class="collapse">
+  <li><a href="#nvlink-and-nvswitch-for-intra-node-communication" id="toc-nvlink-and-nvswitch-for-intra-node-communication" class="nav-link" data-scroll-target="#nvlink-and-nvswitch-for-intra-node-communication">NVLink and NVSwitch for intra-node communication</a></li>
+  <li><a href="#infiniband-vs-roce-for-inter-node-communication" id="toc-infiniband-vs-roce-for-inter-node-communication" class="nav-link" data-scroll-target="#infiniband-vs-roce-for-inter-node-communication">InfiniBand vs RoCE for inter-node communication</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -187,11 +219,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">certSANs</h1>
-<p class="subtitle lead">Post configuration for K8s</p>
+<h1 class="title">Operating DGX H200 infrastructure</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Kubernetes</div>
-    <div class="quarto-category">Networking</div>
+    <div class="quarto-category">Infrastructure</div>
+    <div class="quarto-category">GPU</div>
   </div>
   </div>
 
@@ -209,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 27, 2024</p>
+      <p class="date">March 7, 2026</p>
     </div>
   </div>
   
@@ -221,47 +252,179 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>After installing <code>kubeadm</code> and setting up your cluster, you may need to configure the Subject Alternative Names (SANs) for your certificates. This is particularly important if you are using a custom domain or hostname for your Kubernetes API server.</p>
-<section id="prerequisites" class="level2">
-<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
-<p>From the control plane node, copy the kubeadm configuration file to your local machine:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> scp root@knode-01:/etc/kubernetes/admin.conf ~/.kube/admin.conf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Merge the <code>admin.conf</code> file to <code>.kube/config</code> Replace the existing IP address with the hostname or domain you want to use:</p>
-<pre><code>apiVersion: v1
-clusters:
-- cluster:
-    certificate-authority-data: &lt;base64-encoded-ca-cert&gt;
-    server: https://&lt;your-hostname-or-domain&gt;:6443
-  name: kubernetes
-contexts:
-- context:
-    cluster: kubernetes
-    user: kubernetes-admin
-  name: kubernetes-admin@kubernetes
+<section id="how-do-floating-points-work" class="level2">
+<h2 class="anchored" data-anchor-id="how-do-floating-points-work">How do floating points work?</h2>
+<p>In many AI projects, we use GPUs to help accelerate the matrix computations that are common in machine learning algorithms. GPUs are designed to handle many operations in parallel, which makes them much faster than CPUs for certain tasks.</p>
+<section id="allocating-memory-with-torch" class="level3">
+<h3 class="anchored" data-anchor-id="allocating-memory-with-torch">Allocating memory with <code>torch</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.empty(<span class="dv">1</span>, device<span class="op">=</span><span class="st">"cuda"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This simple line of code allocates a small amount of memory on the GPU directly. Let’s take a look how much memory is allocated:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>torch.cuda.memory_allocated()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>256</code></pre>
+<p>This will show us the amount of memory allocated on the GPU in <strong>bytes</strong>. In this case, it shows that 256 bytes of memory have been allocated.</p>
+<p>The data type (which can be specified with the <code>dtype</code> parameter) is defaulted to <code>torch.float32</code>. This means that each element in the tensor will take up 4 bytes (32 bits) of memory.</p>
+<p>But why 256 bytes? There is something called memory pooling, which is a technique used by PyTorch to manage GPU memory more efficiently. When you allocate memory on the GPU, PyTorch may allocate more memory than you requested to reduce fragmentation and improve performance.</p>
+<section id="precision-of-torch.float32" class="level4">
+<h4 class="anchored" data-anchor-id="precision-of-torch.float32">Precision of <code>torch.float32</code></h4>
+<p>The <code>torch.float32</code> data type, has a precision of approximately 7 decimal digits. This is defined with IEEE 754 standard for floating-point arithmetic. Let’s see how this works:</p>
+<pre><code>   1        8          23               = 32 bits
+[ sign | exponent | fraction (mantissa) ]
 
-current-context: kubernetes-admin@kubernetes</code></pre>
+(-1)^sign × 1.fraction × 2^(exponent - 127)</code></pre>
+<p>Precision is determined by the fraction part, which has 23 bits. This allows for approximately 7 decimal digits of precision.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 46%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Data Type</th>
+<th>exponent</th>
+<th>fraction</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>torch.float64</td>
+<td>11</td>
+<td>52</td>
+<td>Higher precision</td>
+</tr>
+<tr class="even">
+<td>torch.float32</td>
+<td>8</td>
+<td>23</td>
+<td>Standard precision</td>
+</tr>
+<tr class="odd">
+<td>torch.bfloat16</td>
+<td>8</td>
+<td>7</td>
+<td>Modern LLM training</td>
+</tr>
+<tr class="even">
+<td>torch.float16</td>
+<td>5</td>
+<td>10</td>
+<td>Standard half-precision</td>
+</tr>
+<tr class="odd">
+<td>torch.float8_e4m3fn</td>
+<td>4</td>
+<td>3</td>
+<td>FP8 training</td>
+</tr>
+<tr class="even">
+<td>torch.float8_e4m3fnuz</td>
+<td>4</td>
+<td>3</td>
+<td>FP8 training</td>
+</tr>
+<tr class="odd">
+<td>torch.float8_e5m2fn</td>
+<td>5</td>
+<td>2</td>
+<td>FP8 training</td>
+</tr>
+<tr class="even">
+<td>torch.float8_e5m2fnuz</td>
+<td>5</td>
+<td>2</td>
+<td>FP8 training</td>
+</tr>
+<tr class="odd">
+<td>torch.float8_e8m0fnu</td>
+<td>8</td>
+<td>0</td>
+<td>Scale format</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="update-kubeadm-configuration" class="level2">
-<h2 class="anchored" data-anchor-id="update-kubeadm-configuration">Update kubeadm configuration</h2>
-<p>The alternative SANs should have been set during the initial <code>kubeadm init</code> command. If you need to update them, you can do so by modifying the kubeadm configuration file.</p>
-<p>This process involves creating a new key pair and certificate for the API server with the updated SANs. This can be done by deleting the existing certificates and regenerating them with the new SANs. To reduce the risk of this process, you can create a backup file of the existing certificates before proceeding.</p>
-<section id="backup-existing-certificates" class="level3">
-<h3 class="anchored" data-anchor-id="backup-existing-certificates">Backup existing certificates</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> cd /etc/kubernetes/pki</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mv apiserver.crt apiserver.crt.bak</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> mv apiserver.key apiserver.key.bak</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="export-the-kubeadm-configuration" class="level3">
-<h3 class="anchored" data-anchor-id="export-the-kubeadm-configuration">Export the kubeadm configuration</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> kubectl <span class="at">-n</span> kube-system get configmaps kubeadm-config <span class="at">-o</span> jsonpath=<span class="st">'{.data.ClusterConfiguration}'</span> <span class="op">&gt;</span> kubeadm-config.yaml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Edit the <code>kubeadm-config.yaml</code> file to include the new SANs under the <code>apiServer</code> section. For example:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apiServer</span><span class="kw">:</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">certSANs</span><span class="kw">:</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> &lt;your-hostname-or-domain&gt;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="regenerate-the-certificates" class="level3">
-<h3 class="anchored" data-anchor-id="regenerate-the-certificates">Regenerate the certificates</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">kubeadm</span> init phase certs apiserver <span class="at">--config</span> kubeadm-config.yaml</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="architecture-of-dgx-h200" class="level2">
+<h2 class="anchored" data-anchor-id="architecture-of-dgx-h200">Architecture of DGX H200</h2>
+<p>The DGX H200 is a powerful AI system designed for high-performance computing tasks, particularly in the field of machine learning and deep learning.</p>
+<p>DGX H200 consists of 8 <span class="math inline">\(\times\)</span> H200 GPUs, which are connected using NVLink. Each has 141 GB of memory, and the entire system has a total of 1,128 GB of GPU memory.</p>
+<p>Usually, system memory is configured to be 2 <span class="math inline">\(\times\)</span> the GPU memory, resuling in 2TB of system memory.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> nvidia-smi</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------------------------------------------------------+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">NVIDIA-SMI</span> 570.124.06             Driver Version: 570.124.06     CUDA Version: 12.8     <span class="kw">|</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">GPU</span>  Name                 Persistence-M <span class="kw">|</span> <span class="ex">Bus-Id</span>          Disp.A <span class="kw">|</span> <span class="ex">Volatile</span> Uncorr. ECC <span class="kw">|</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">Fan</span>  Temp   Perf          Pwr:Usage/Cap <span class="kw">|</span>           <span class="ex">Memory-Usage</span> <span class="kw">|</span> <span class="ex">GPU-Util</span>  Compute M. <span class="kw">|</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>               <span class="ex">MIG</span> M. <span class="kw">|</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span><span class="ex">=========================================+========================+======================</span><span class="kw">|</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">0</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:1B:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   26C    P0             75W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">1</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:43:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   28C    P0             75W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">2</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:52:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   30C    P0             76W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">3</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:61:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   28C    P0             76W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">4</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:9D:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   28C    P0             75W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">5</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:C3:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   26C    P0             76W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">6</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:D1:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   29C    P0             76W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>   <span class="ex">7</span>  NVIDIA H200                    On  <span class="kw">|</span>   <span class="ex">00000000:DF:00.0</span> Off <span class="kw">|</span>                    <span class="ex">0</span> <span class="kw">|</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span> <span class="ex">N/A</span>   30C    P0             76W /  700W <span class="kw">|</span>       <span class="ex">1MiB</span> / 143771MiB <span class="kw">|</span>      <span class="ex">0%</span>      Default <span class="kw">|</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="kw">|</span>                                         <span class="kw">|</span>                        <span class="kw">|</span>             <span class="ex">Disabled</span> <span class="kw">|</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="ex">+-----------------------------------------+------------------------+----------------------+</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="nvlink-and-nvswitch-for-intra-node-communication" class="level3">
+<h3 class="anchored" data-anchor-id="nvlink-and-nvswitch-for-intra-node-communication">NVLink and NVSwitch for intra-node communication</h3>
+<p>NVLink and NVSwitch are technologies for intra-node communication between GPUs in a DGX system. Each GPU has 18 NVLink connections, distributed as 5, 5, 4, 4 links to NVSwitches 0–3 respectively.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="H200/images/dgx-h200-system-topology.png" class="img-fluid figure-img"></p>
+<figcaption>DGX H200 System topology</figcaption>
+</figure>
+</div>
+<section id="bandwidth-comparison" class="level4">
+<h4 class="anchored" data-anchor-id="bandwidth-comparison">Bandwidth Comparison</h4>
+<ul>
+<li><strong>PCIe 5.0</strong>: 2 <span class="math inline">\(\times\)</span> 4 GB/s per lane (one-way) <span class="math inline">\(\times\)</span> 16 lanes = 128 GB/s</li>
+<li><strong>NVLink 4.0</strong>: 2 <span class="math inline">\(\times\)</span> 25 GB/s per lane (one-way) <span class="math inline">\(\times\)</span> 18 lanes = 900 GB/s</li>
+</ul>
+<p>This dramatically reduces overhead, as data can be transferred directly between them without needing to go through the CPU.</p>
+<pre><code>PCIe communication (CPU involved)
+┌─────┐        ┌────────────┐        ┌─────┐
+│ GPU ├──PCIe──┤ CPU/Switch ├──PCIe──┤ GPU │
+└─────┘        └────────────┘        └─────┘
+
+NVLink communication (GPU fabric)
+┌─────┐        ┌────────────┐        ┌─────┐
+│ GPU ├─NVLink─┤  NVSwitch  ├─NVLink─┤ GPU │
+└─────┘        └────────────┘        └─────┘</code></pre>
+</section>
+</section>
+<section id="infiniband-vs-roce-for-inter-node-communication" class="level3">
+<h3 class="anchored" data-anchor-id="infiniband-vs-roce-for-inter-node-communication">InfiniBand vs RoCE for inter-node communication</h3>
+<p>RDMA (Remote Direct Memory Access) is a network echnology that allows for direct memory access from one computer to another without involving the CPU, which can significantly reduce latency and increase throughput in distributed computing environments.</p>
+<p>InfiniBand and RoCE (RDMA over Converged Ethernet) are both high-speed networking technologies used in data centers, which is used to connect multiple nodes together for distributed training.</p>
+<p>Currently DGX H200 supports both InfiniBand and RoCE, with a speed of 400 Gbps (50 GB/s). Each node is equipped with 8 ports, resulting in a total of 3.2 Tbps (400 Gbps <span class="math inline">\(\times\)</span> 8 ports) of inter-node bandwidth, 6.4 Tbps (800 GB/s) for full-duplex communication. This can be powerful when configuring DGX SuperPODs for large-scale distributed training.</p>
 
 
 </section>

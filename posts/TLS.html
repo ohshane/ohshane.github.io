@@ -115,11 +115,15 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../knowledgegraph.html"> 
-<span class="menu-text">View</span></a>
+<span class="menu-text">Knowledge Graph</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../jraph.html"> 
 <span class="menu-text">Jraph</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../chat.html"> 
+<span class="menu-text">Chat</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -148,8 +152,8 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#tls-1.2" id="toc-tls-1.2" class="nav-link" data-scroll-target="#tls-1.2">TLS 1.2</a></li>
   <li><a href="#tls-1.3" id="toc-tls-1.3" class="nav-link" data-scroll-target="#tls-1.3">TLS 1.3</a></li>
-  <li><a href="#certificate-authorities-cas" id="toc-certificate-authorities-cas" class="nav-link" data-scroll-target="#certificate-authorities-cas">Certificate Authorities (CAs)</a></li>
   </ul></li>
+  <li><a href="#certificate-authorities-cas" id="toc-certificate-authorities-cas" class="nav-link" data-scroll-target="#certificate-authorities-cas">Certificate Authorities (CAs)</a></li>
   </ul>
 </nav>
     </div>
@@ -197,8 +201,8 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="introduction" class="level1">
-<h1>Introduction</h1>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>Transport Layer Security (TLS) is the backbone of secure communication on the internet. It ensures that data transmitted between clients and servers remains confidential and authenticated.</p>
 <ul>
 <li>Types of Ciphers
@@ -212,13 +216,12 @@ ul.task-list li input[type="checkbox"] {
 <li>TLS 1.2</li>
 <li>TLS 1.3</li>
 </ul></li>
-<li>Certificate Authorities (CAs)</li>
 </ul>
 </section>
-<section id="types-of-ciphers" class="level1">
-<h1>Types of Ciphers</h1>
-<section id="symmetric-key-cryptography" class="level2">
-<h2 class="anchored" data-anchor-id="symmetric-key-cryptography">Symmetric Key Cryptography</h2>
+<section id="types-of-ciphers" class="level2">
+<h2 class="anchored" data-anchor-id="types-of-ciphers">Types of Ciphers</h2>
+<section id="symmetric-key-cryptography" class="level3">
+<h3 class="anchored" data-anchor-id="symmetric-key-cryptography">Symmetric Key Cryptography</h3>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -258,8 +261,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="asymmetric-key-cryptography" class="level2">
-<h2 class="anchored" data-anchor-id="asymmetric-key-cryptography">Asymmetric Key Cryptography</h2>
+<section id="asymmetric-key-cryptography" class="level3">
+<h3 class="anchored" data-anchor-id="asymmetric-key-cryptography">Asymmetric Key Cryptography</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -299,8 +302,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="hash-functions" class="level2">
-<h2 class="anchored" data-anchor-id="hash-functions">Hash Functions</h2>
+<section id="hash-functions" class="level3">
+<h3 class="anchored" data-anchor-id="hash-functions">Hash Functions</h3>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -333,8 +336,8 @@ ul.task-list li input[type="checkbox"] {
 </table>
 </section>
 </section>
-<section id="tls-overview" class="level1">
-<h1>TLS Overview</h1>
+<section id="tls-overview" class="level2">
+<h2 class="anchored" data-anchor-id="tls-overview">TLS Overview</h2>
 <p>HTTPS is the secure version of HTTP, and it relies on TLS to encrypt the communication between the client and the server. The TLS handshake is the process that establishes a secure connection by negotiating cryptographic parameters and exchanging keys.</p>
 <p>HTTPS connection consists of two phases:</p>
 <ol type="1">
@@ -342,8 +345,8 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>TLS handshake:</strong> The client and server negotiate cipher suites, verify the server’s certificate, and derive a shared session key.</li>
 </ol>
 <p>After this process, the client and server can securely transmit data using the established TLS connection.</p>
-<section id="tls-1.2" class="level2">
-<h2 class="anchored" data-anchor-id="tls-1.2">TLS 1.2</h2>
+<section id="tls-1.2" class="level3">
+<h3 class="anchored" data-anchor-id="tls-1.2">TLS 1.2</h3>
 <p>TLS 1.2 requires <strong>2 round trips</strong> (2-RTT) for the handshake. The server sends its certificate and the client encrypts a pre-master secret with the server’s public key (RSA key exchange), or they use ECDHE for forward secrecy.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -386,8 +389,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
-<section id="tls-1.3" class="level2">
-<h2 class="anchored" data-anchor-id="tls-1.3">TLS 1.3</h2>
+<section id="tls-1.3" class="level3">
+<h3 class="anchored" data-anchor-id="tls-1.3">TLS 1.3</h3>
 <p>TLS 1.3 reduces the handshake to <strong>1 round trip</strong> (1-RTT) by embedding the key share in the ClientHello. It removes weak algorithms (RSA key exchange, MD5, SHA-1, CBC mode) and mandates forward secrecy via ECDHE.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
@@ -429,40 +432,76 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </section>
+</section>
 <section id="certificate-authorities-cas" class="level2">
 <h2 class="anchored" data-anchor-id="certificate-authorities-cas">Certificate Authorities (CAs)</h2>
-<p>Certificate Authorities (CAs) are trusted entities that issue digital certificates to verify the identity of websites and organizations. When a client connects to a server, the certificate presented by the server is signed by a CA, showing that the server owns the domain and is trustworthy.</p>
+<p>Certificate Authorities (CAs) ensures that the owner of a domain is who they claim to be.</p>
 <div class="cell" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class="figure"><p></p>
 <div>
-<pre class="mermaid mermaid-js">sequenceDiagram
-    participant Client
-    participant Server
-    participant CA
+<pre class="mermaid mermaid-js">flowchart TD
+    CA[Certificate Authority]
+    S[Server / Domain Owner]
+    C[Client]
 
-    Note over Server: Generate key pair (public and private keys)
-    Note over Server: Create certificate signing request (CSR) to CA
-    Server-&gt;&gt;CA: CSR (public key and domain info)
-    Note over CA: Challenge server (e.g. HTTP-01, DNS-01) 
-    CA-&gt;&gt;Server: Certificate (signed by CA's private key)
-
-    Note over Client,Server: TLS Handshake
-    Client-&gt;&gt;Server: ClientHello
-    Server-&gt;&gt;Client: ServerHello
-    Server-&gt;&gt;Client: Certificate (signed by CA)
-
-    Note over Client: Verify using CA's public key
+    S --&gt;|"① CSR (Certificate Signing Request; Server pubkey + Domain)"| CA
+    CA --&gt;|"② Signed Certificate"| S
+    S --&gt;|"③ Signed Certificate"| C
+    C --&gt;|"④ Verify with Root CA certificate (local)"| C
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
+<ol type="1">
+<li><strong>Server</strong> creates a public/private key pair and generates a <strong>Certificate Signing Request (CSR)</strong> containing the public key and domain information.</li>
+<li>The <strong>Certificate Authority</strong> (CA) verifies domain ownership (e.g., DNS challenge, HTTP challenge, or email validation) and <strong>signs the server’s public key and certificate metadata with the CA’s private key, creating an X.509 certificate.</strong></li>
+<li>The <strong>server</strong> receives the signed certificate and <strong>presents it to clients during the TLS handshake.</strong></li>
+<li>The <strong>client verifies the certificate</strong> locally by checking the signature using the CA’s public key contained in a trusted root certificate that is pre-installed in the client’s trust store.</li>
+</ol>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Encryption and Signatures
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In asymmetric cryptography, encryption can be performed with both public and private keys, but the usage differs based on the context:</p>
+<ul>
+<li><strong>Encryption:</strong> <strong>public key</strong> is used to encrypt data -&gt; <strong>private key</strong> is used to decrypt data</li>
+<li><strong>Signatures:</strong> <strong>private key</strong> is used to sign data -&gt; <strong>public key</strong> is used to verify the signature</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>How does SSH work?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>SSH uses asymmetric cryptography to authenticate clients using signatures.</p>
+<ol type="1">
+<li>The <strong>client</strong> generates a public/private <strong>key pair</strong> and shares the public key with the server.</li>
+<li>The server stores the client’s public key in <code>~/.ssh/authorized_keys</code>.</li>
+<li>When the client initiates an SSH connection, the <strong>server sends a challenge</strong> (a random string) to the client.</li>
+<li>The <strong>client signs the challenge using its private key</strong> (Digital Signature).</li>
+<li>The <strong>server verifies the signature using the client’s public key</strong>, confirming that the client possesses the corresponding private key.</li>
+<li>Once authenticated, the <strong>client and server establish a secure channel using symmetric encryption</strong> (e.g., AES) with a shared session key derived from the key exchange.</li>
+</ol>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

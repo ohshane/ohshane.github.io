@@ -6,6 +6,7 @@
       "/posts/BiasVariance.html",
       "/posts/BinaryHeap.html",
       "/posts/CertManager.html",
+      "/posts/CertificateSigningReqeust.html",
       "/posts/Cloudflare526.html",
       "/posts/PfizerClinicalTrial.html",
       "/posts/NNDerivatives.html",
@@ -27,8 +28,10 @@
       "/posts/MeasureingDistributions.html",
       "/posts/NginxIngress.html",
       "/posts/OIDC.html",
+      "/posts/H200.html",
       "/posts/RookCeph.html",
       "/posts/TLS.html",
+      "/posts/CertManagerNginx.html",
       "/posts/Tmux.html",
       "/posts/TraefikHelm.html",
       "/posts/K8sSANs.html"
