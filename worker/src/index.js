@@ -1,24 +1,32 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const origin = request.headers.get("Origin") || "";
-    const allowed =
-      origin === env.ALLOWED_ORIGIN ||
-      origin.startsWith("http://localhost:");
+    const origin = request.headers.get("Origin");
+    const allowedOriginsStr = env.ALLOWED_ORIGINS;
+    const allowedOrigins = allowedOriginsStr.split(",").map(o => o.trim());
+
+    // Check if the current origin is allowed
+    const isAllowed = origin && (
+      allowedOrigins.includes(origin) ||
+      origin.startsWith("http://localhost") ||
+      origin.startsWith("http://127.0.0.1")
+    );
 
     const corsHeaders = {
-      "Access-Control-Allow-Origin": allowed ? origin : env.ALLOWED_ORIGIN,
+      "Access-Control-Allow-Origin": isAllowed ? origin : allowedOrigins[0],
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Max-Age": "86400",
     };
+
+    // Handle preflight requests
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
 
     // Only handle /api/chat
     if (url.pathname !== "/api/chat") {
-      return new Response("Not found", { status: 404 });
-    }
-
-    if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: corsHeaders });
+      return new Response("Not found", { status: 404, headers: corsHeaders });
     }
 
     if (request.method !== "POST") {
@@ -40,7 +48,7 @@ export default {
         headers: {
           Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
           "Content-Type": "application/json",
-          "HTTP-Referer": env.ALLOWED_ORIGIN,
+          "HTTP-Referer": allowedOrigins[0],
           "X-Title": "Shane Chat",
         },
         body: JSON.stringify({

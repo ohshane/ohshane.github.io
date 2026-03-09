@@ -1,99 +1,109 @@
 # chat-proxy
 
-`ohshane.github.io/chat.html` → OpenRouter API 프록시 (Cloudflare Worker)
+`ohshane.github.io/chat.html` → OpenRouter API Proxy (Cloudflare Worker)
 
-클라이언트에 API 키를 노출하지 않고 OpenRouter를 사용하기 위한 서버리스 프록시.
+A serverless proxy to use OpenRouter without exposing the API key to the client.
 
-## 사전 준비
+## Prerequisites
 
-- [Cloudflare 계정](https://dash.cloudflare.com)
-- [OpenRouter API 키](https://openrouter.ai/keys)
+- [Cloudflare Account](https://dash.cloudflare.com)
+- [OpenRouter API Key](https://openrouter.ai/keys)
 - Node.js 18+
 
-## 배포
+## Deployment
 
 ```bash
 cd worker
 
-# 1. Cloudflare 로그인
+# 1. Login to Cloudflare
 npx wrangler login
 
-# 2. OpenRouter API 키 등록 (secret으로 저장되어 코드/대시보드에 노출 안 됨)
+# 2. Register OpenRouter API key (Saved as a secret, not exposed in code/dashboard)
 npx wrangler secret put OPENROUTER_API_KEY
-# 프롬프트에 키 붙여넣기
+# Paste the key when prompted
 
-# 3. 빌드 + 배포 (chat.html → public/index.html 복사 후 배포)
+# 3. Build + Deploy (chat.html is copied to public/index.html before deployment)
 npm run deploy
 ```
 
-배포 후 `https://chat-proxy.ohshane.workers.dev` 에서 동작.
+Accessible at `https://chat-proxy.ohshane.workers.dev` after deployment.
 
-## 로컬 개발
+## Local Development
 
 ```bash
-# .env 파일에 키 설정
-vi .env
+# Set key in .dev.vars file OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# .dev.vars is the standard for local development secrets in Wrangler.
+vi .dev.vars
 
-# chat.html 복사 + wrangler dev 실행
+# Copy chat.html + run wrangler dev
 npm run dev
 
-# http://localhost:8787 에서 chat.html + API 모두 동작
+# Both chat.html + API run at http://localhost:8787
 ```
 
-`chat.html`은 자동으로 환경을 감지하여:
+`chat.html` automatically detects the environment:
 
-- localhost / workers.dev → 같은 origin의 `/api/chat` 사용
-- GitHub Pages → `https://chat-proxy.ohshane.workers.dev/api/chat` 사용
+- localhost / workers.dev → Uses `/api/chat` from the same origin
+- GitHub Pages → Uses `https://chat-proxy.ohshane71.workers.dev/api/chat`
 
-## API 키 업데이트
+## Configuration (wrangler.toml)
+
+Update the `ALLOWED_ORIGINS` variable in `wrangler.toml` to include your domains (comma-separated):
+
+```toml
+[vars]
+ALLOWED_ORIGINS = "https://ohshane.github.io, https://blog.shaneoh.org"
+```
+
+## Updating API Key
 
 ```bash
 npx wrangler secret put OPENROUTER_API_KEY
-# 새 키 붙여넣기 → 즉시 반영 (재배포 불필요)
+# Paste the new key → Applies immediately (no redeployment needed)
 ```
 
-## API 키 확인
+## Checking API Key
 
-Secret은 조회가 불가능함. 현재 등록된 secret 목록만 확인 가능:
+Secrets cannot be viewed. You can only check the list of currently registered secrets:
 
 ```bash
 npx wrangler secret list
 ```
 
-## 모델 변경
+## Changing Models
 
-모델은 `chat.html`의 `MODELS` 배열에서 관리. Worker 수정 불필요.
+Models are managed in the `MODELS` array of `chat.html`. No modification to the Worker is needed.
 
 ```js
 const MODELS = [
   { id: "openai/gpt-4.1-nano", label: "GPT-4.1 Nano" },
   { id: "openai/gpt-4.1-mini", label: "GPT-4.1 Mini" },
-  // 여기에 추가/삭제
+  // Add/remove here
 ];
 ```
 
-클라이언트가 모델을 선택하지 않으면 Worker에서 `openai/gpt-4.1-nano`를 기본값으로 사용.
+If the client doesn't select a model, the Worker defaults to `openai/gpt-4.1-nano`.
 
-## 삭제
+## Deletion
 
 ```bash
-# Worker 삭제 (되돌릴 수 없음)
+# Delete Worker (Irreversible)
 npx wrangler delete
 ```
 
-Cloudflare 대시보드에서도 삭제 가능:
+Can also be deleted from the Cloudflare Dashboard:
 Workers & Pages → chat-proxy → Settings → Delete
 
-## 구조
+## Structure
 
 ```
 worker/
-├── package.json    # build/dev/deploy 스크립트
-├── wrangler.toml   # Worker 설정, assets 설정
-├── .gitignore      # public/, .env 제외
-├── .env       # 로컬 개발용 API 키 (git 제외)
-├── public/         # 빌드 시 chat.html이 복사되는 곳 (git 제외)
+├── package.json    # build/dev/deploy scripts
+├── wrangler.toml   # Worker configuration, ALLOWED_ORIGINS
+├── .gitignore      # Excludes public/, .dev.vars
+├── .dev.vars       # API key for local dev (excluded from git)
+├── public/         # Where chat.html is copied during build
 │   └── index.html
 └── src/
-    └── index.js    # POST /api/chat → OpenRouter 프록시
+    └── index.js    # POST /api/chat → OpenRouter proxy
 ```
