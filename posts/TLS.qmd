@@ -183,4 +183,3 @@ SSH uses asymmetric cryptography to authenticate clients using signatures.
 1. The **server verifies the signature using the client's public key**, confirming that the client possesses the corresponding private key.
 1. Once authenticated, the **client and server establish a secure channel using symmetric encryption** (e.g., AES) with a shared session key derived from the key exchange.
 :::
-
