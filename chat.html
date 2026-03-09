@@ -26,6 +26,10 @@
     <link rel="stylesheet" href="https://unpkg.com/katex/dist/katex.min.css" />
     <script src="https://unpkg.com/katex/dist/katex.min.js"></script>
 
+    <!-- Highlight.js for code linting/highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
     <style>
       [data-theme="light"] {
         --sidebar-bg: #f5f5f5;
@@ -410,6 +414,24 @@
         transition: background 0.2s ease;
       }
 
+      .chat-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        transition: all 0.3s ease;
+      }
+
+      .chat-body.centered {
+        justify-content: center;
+        padding-bottom: 10dvh; /* 시각적 균형을 위해 약간 위로 배치 */
+      }
+
+      .chat-body.centered .welcome {
+        flex: none;
+        padding-bottom: 32px;
+      }
+
       .chat-header {
         height: calc(48px + env(safe-area-inset-top));
         display: flex;
@@ -492,6 +514,7 @@
         padding: 0 16px;
         scrollbar-width: none;
         -ms-overflow-style: none;
+        scroll-behavior: smooth;
       }
       .messages-area::-webkit-scrollbar {
         display: none;
@@ -510,33 +533,29 @@
         display: flex;
         gap: 16px;
         align-items: flex-start;
+        animation: msg-appear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+
+      @keyframes msg-appear {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+          filter: blur(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+        }
       }
 
       .msg-row.user {
         justify-content: flex-end;
       }
 
-      .msg-avatar {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        font-weight: 600;
-        margin-top: 2px;
-      }
-
-      .msg-avatar.bot-avatar {
-        background: #19c37d;
-        color: #ffffff;
-      }
-
       .msg-content {
         font-size: 15px;
-        line-height: 1.6;
+        line-height: 1.5;
         white-space: pre-wrap;
         overflow-wrap: anywhere;
         word-break: break-word;
@@ -547,15 +566,24 @@
         padding-top: 3px;
         flex: 1;
         min-width: 0;
+        transition: opacity 0.2s ease-in-out;
       }
       .msg-row.bot .msg-wrap {
+        flex: 1;
+        min-width: 0;
+      }
         flex: 1;
         min-width: 0;
       }
       .msg-actions {
         display: flex;
         justify-content: flex-start;
-        margin-top: 8px;
+        margin-top: 0px;
+        animation: fade-in 0.3s ease-in;
+      }
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
       }
       .msg-copy-btn {
         width: 28px;
@@ -576,6 +604,23 @@
         border-color: var(--composer-border);
       }
 
+      .cursor {
+        display: inline-block;
+        width: 8px;
+        height: 18px;
+        background: var(--text-primary);
+        margin-left: 4px;
+        vertical-align: middle;
+        animation: pulse 1s ease-in-out infinite;
+        border-radius: 1px;
+        box-shadow: 0 0 4px var(--text-tertiary);
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+
       .msg-row.user .msg-content {
         background: var(--user-bubble-bg);
         border-radius: 18px;
@@ -583,7 +628,7 @@
         max-width: min(80%, 600px);
       }
 
-      /* ── Markdown styles ── */
+      /* Markdown styles */
       .msg-row.bot .msg-content p { margin: 0 0 12px; }
       .msg-row.bot .msg-content p:last-child { margin-bottom: 0; }
       .msg-row.bot .msg-content h1,
@@ -596,12 +641,15 @@
       .msg-row.bot .msg-content h1:first-child,
       .msg-row.bot .msg-content h2:first-child,
       .msg-row.bot .msg-content h3:first-child { margin-top: 0; }
+      
       .msg-row.bot .msg-content ul,
       .msg-row.bot .msg-content ol {
         margin: 8px 0;
         padding-left: 24px;
       }
       .msg-row.bot .msg-content li { margin: 4px 0; }
+      .msg-row.bot .msg-content li > p { margin: 0; }
+      
       .msg-row.bot .msg-content code {
         background: var(--code-bg);
         padding: 2px 5px;
@@ -771,25 +819,11 @@
 
       /* ── Welcome screen ── */
       .welcome {
-        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        padding-bottom: 80px;
-      }
-
-      .welcome-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #19c37d;
-        color: #ffffff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 8px;
       }
 
       .welcome-title {
@@ -996,6 +1030,14 @@
         useEffect(() => {
           document.documentElement.setAttribute("data-theme", theme);
           localStorage.setItem("chat-theme", theme);
+
+          // Update Highlight.js theme CSS
+          const themeLink = document.getElementById("hljs-theme");
+          if (themeLink) {
+            themeLink.href = theme === "dark" 
+              ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+              : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+          }
         }, [theme]);
 
         const toggle = useCallback(() => {
@@ -1082,40 +1124,42 @@
           .replace(/'/g, "&#39;");
       }
 
-      function renderMarkdown(text) {
-        if (!text) return "";
-        // Replace LaTeX blocks before markdown parsing
-        // Block math: $$ ... $$
-        let result = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => {
-          try {
-            return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
-          } catch { return _; }
-        });
-        // Inline math: $ ... $ (but not $$ or currency like $100)
-        result = result.replace(/(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)/g, (_, tex) => {
-          try {
-            return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
-          } catch { return _; }
-        });
-        // Block math: \[ ... \]
-        result = result.replace(/\\\[([\s\S]*?)\\\]/g, (_, tex) => {
-          try {
-            return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
-          } catch { return _; }
-        });
-        // Inline math: \( ... \)
-        result = result.replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => {
-          try {
-            return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
-          } catch { return _; }
-        });
-        // Parse markdown (safe fallback if marked failed to load)
-        const parser = window.marked;
-        if (!parser || typeof parser.parse !== "function") {
-          return escapeHtml(result).replace(/\n/g, "<br/>");
-        }
-        return parser.parse(result, { breaks: true });
-      }
+            function renderMarkdown(text) {
+              if (!text) return "";
+              
+              // Block math: $$ ... $$
+              let result = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => {
+                try {
+                  return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
+                } catch { return _; }
+              });
+              // Inline math: $ ... $
+              result = result.replace(/(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)/g, (_, tex) => {
+                try {
+                  return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
+                } catch { return _; }
+              });
+              // Block math: \[ ... \]
+              result = result.replace(/\\\[([\s\S]*?)\\\]/g, (_, tex) => {
+                try {
+                  return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
+                } catch { return _; }
+              });
+              // Inline math: \( ... \)
+              result = result.replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => {
+                try {
+                  return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
+                } catch { return _; }
+              });
+      
+              const parser = window.marked;
+              if (!parser || typeof parser.parse !== "function") {
+                return escapeHtml(result).replace(/\n/g, "<br/>");
+              }
+      
+              return parser.parse(result, { breaks: true });
+            }
+      
 
       async function writeClipboard(text) {
         if (!text) return false;
@@ -1157,11 +1201,24 @@
         button.appendChild(svg);
       }
 
-      const MarkdownContent = ({ content, onCopyCode }) => {
+      const MarkdownContent = ({ content, onCopyCode, isLast, streaming }) => {
         const ref = React.useRef(null);
         React.useEffect(() => {
           if (ref.current) {
-            ref.current.innerHTML = renderMarkdown(content);
+            let html = renderMarkdown(content);
+            // Show cursor ONLY when content is empty and streaming is true (Loading state)
+            if (isLast && streaming && !content.trim()) {
+              html = '<span class="cursor"></span>';
+            }
+            ref.current.innerHTML = html;
+
+            // Manual highlighting
+            if (window.hljs) {
+              ref.current.querySelectorAll("pre code").forEach((block) => {
+                hljs.highlightElement(block);
+              });
+            }
+
             ref.current.querySelectorAll("pre").forEach((pre) => {
               if (pre.querySelector(".code-copy-btn")) return;
               const button = document.createElement("button");
@@ -1178,7 +1235,7 @@
               pre.appendChild(button);
             });
           }
-        }, [content, onCopyCode]);
+        }, [content, onCopyCode, isLast, streaming]);
         return React.createElement("div", { ref });
       };
 
@@ -1247,10 +1304,25 @@
           el.style.overflowY = scrollH > INPUT_MAX_HEIGHT ? "auto" : "hidden";
         }, []);
 
-        useEffect(() => {
+        // Scroll to bottom on initial load and whenever messages or streaming state changes
+        useLayoutEffect(() => {
           if (!scrollRef.current) return;
-          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }, [messages]);
+          scrollRef.current.scrollTo({
+            top: scrollRef.current.scrollHeight,
+            behavior: streaming ? "auto" : "smooth"
+          });
+        }, [messages, streaming]);
+
+        // Force scroll to bottom when switching conversations (activeId changes)
+        useLayoutEffect(() => {
+          if (!scrollRef.current) return;
+          const timer = setTimeout(() => {
+            if (scrollRef.current) {
+              scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+            }
+          }, 0);
+          return () => clearTimeout(timer);
+        }, [activeId]);
 
         useEffect(() => {
           localStorage.setItem("chat-sidebar", sidebarOpen);
@@ -1330,7 +1402,6 @@
           setActiveId(null);
           setInput("");
           setStreaming(false);
-          setSidebarOpen(false);
         };
 
         const handleSelectConvo = (id) => {
@@ -1629,109 +1700,108 @@
                   </div>
                 </header>
 
-                {!hasMessages ? (
-                  <div className="welcome">
-                    <div className="welcome-icon">
-                      <Icon name="sparkles" size={20} />
+                <div className={`chat-body ${!hasMessages ? "centered" : ""}`}>
+                  {!hasMessages ? (
+                    <div className="welcome">
+                      <h2 className="welcome-title">How can I help?</h2>
+                      <p className="welcome-sub">Ask me anything.</p>
                     </div>
-                    <h2 className="welcome-title">How can I help?</h2>
-                    <p className="welcome-sub">Ask me anything.</p>
-                  </div>
-                ) : (
-                  <div ref={scrollRef} className="messages-area">
-                    <div className="messages-container">
-                      {messages.map((msg) => (
-                        <div key={msg.id} className={`msg-row ${msg.role}`}>
-                          {msg.role === "bot" && (
-                            <div className="msg-avatar bot-avatar">
-                              <Icon name="sparkles" size={14} />
-                            </div>
-                          )}
-                          {msg.role === "bot" ? (
-                            <div className="msg-wrap">
-                              <div className="msg-content">
-                                <MarkdownContent
-                                  content={msg.content}
-                                  onCopyCode={handleCopyCode}
-                                />
+                  ) : (
+                    <div ref={scrollRef} className="messages-area">
+                      <div className="messages-container">
+                                              {messages.map((msg, idx) => (
+                                                <div key={msg.id} className={`msg-row ${msg.role}`}>
+                                                  {msg.role === "bot" ? (
+                                                    <div className="msg-wrap">
+                                                                                    <div className="msg-content">
+                                                                                      <MarkdownContent
+                                                                                        content={msg.content}
+                                                                                        onCopyCode={handleCopyCode}
+                                                                                        isLast={idx === messages.length - 1}
+                                                                                        streaming={streaming}
+                                                                                      />
+                                                                                    </div>
+                                                                                      {/* Show copy button if not streaming OR if it's not the last message */}
+                                {(!streaming || idx < messages.length - 1) && (
+                                  <div className="msg-actions">
+                                    <button
+                                      type="button"
+                                      className="msg-copy-btn"
+                                      onClick={() => handleCopyMessage(msg)}
+                                      title={
+                                        copiedMessageId === msg.id
+                                          ? "Copied"
+                                          : "Copy"
+                                      }
+                                      aria-label={
+                                        copiedMessageId === msg.id
+                                          ? "Copied"
+                                          : "Copy message"
+                                      }
+                                    >
+                                      <Icon
+                                        name={
+                                          copiedMessageId === msg.id
+                                            ? "check"
+                                            : "copy"
+                                        }
+                                        size={14}
+                                      />
+                                    </button>
+                                  </div>
+                                )}
                               </div>
-                              <div className="msg-actions">
-                                <button
-                                  type="button"
-                                  className="msg-copy-btn"
-                                  onClick={() => handleCopyMessage(msg)}
-                                  title={
-                                    copiedMessageId === msg.id
-                                      ? "Copied"
-                                      : "Copy"
-                                  }
-                                  aria-label={
-                                    copiedMessageId === msg.id
-                                      ? "Copied"
-                                      : "Copy message"
-                                  }
-                                >
-                                  <Icon
-                                    name={
-                                      copiedMessageId === msg.id
-                                        ? "check"
-                                        : "copy"
-                                    }
-                                    size={14}
-                                  />
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="msg-content">{msg.content}</div>
-                          )}
-                        </div>
-                      ))}
+                            ) : (
+                              <div className="msg-content">{msg.content}</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <footer className="composer">
-                  <div className="composer-container">
-                    <div className="composer-box">
-                      <textarea
-                        ref={textareaRef}
-                        className="composer-input"
-                        rows={1}
-                        placeholder="Type your message"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSend();
-                          }
-                        }}
-                      />
-                      {streaming ? (
-                        <button
-                          className="send-btn"
-                          onClick={() => abortRef.current?.abort()}
-                          aria-label="Stop"
-                        >
-                          <Icon name="square" size={14} />
-                        </button>
-                      ) : (
-                        <button
-                          className="send-btn"
-                          onClick={handleSend}
-                          disabled={!input.trim()}
-                          aria-label="Send"
-                        >
-                          <Icon name="arrow-up" size={16} />
-                        </button>
-                      )}
+                  <footer className="composer">
+                    <div className="composer-container">
+                      <div className="composer-box">
+                        <textarea
+                          ref={textareaRef}
+                          className="composer-input"
+                          rows={1}
+                          placeholder="Type your message"
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
+                              handleSend();
+                            }
+                          }}
+                        />
+                        {streaming ? (
+                          <button
+                            className="send-btn"
+                            onClick={() => abortRef.current?.abort()}
+                            aria-label="Stop"
+                          >
+                            <Icon name="square" size={14} />
+                          </button>
+                        ) : (
+                          <button
+                            className="send-btn"
+                            onClick={handleSend}
+                            disabled={!input.trim()}
+                            aria-label="Send"
+                          >
+                            <Icon name="arrow-up" size={16} />
+                          </button>
+                        )}
+                      </div>
+                      <p className="composer-footer">
+                        Press Enter to send, Shift+Enter for a new line
+                      </p>
                     </div>
-                    <p className="composer-footer">
-                      Press Enter to send, Shift+Enter for a new line
-                    </p>
-                  </div>
-                </footer>
+                  </footer>
+                </div>
               </section>
             </main>
           </>
