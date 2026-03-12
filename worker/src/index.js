@@ -25,7 +25,7 @@ export default {
     }
 
     // Only handle /api/chat
-    if (url.pathname !== "/api/chat") {
+    if (url.pathname !== "/api/v1/chat/completions") {
       try {
         // 1. Try serving from local assets (the public/ folder)
         const assetResponse = await env.ASSETS.fetch(request);

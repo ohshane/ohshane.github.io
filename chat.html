@@ -1141,9 +1141,9 @@
       const API_URL = (() => {
         const h = window.location.hostname;
         if (h === "localhost" || h === "127.0.0.1" || h.endsWith(".workers.dev")) {
-          return "/api/chat";
+          return "/api/v1/chat/completions";
         }
-        return "https://chat-proxy.ohshane71.workers.dev/api/chat";
+        return "https://chat-proxy.ohshane71.workers.dev/api/v1/chat/completions";
       })();
 
       let searchData = null;
