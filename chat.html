@@ -2,7 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>Chat | Shane Oh</title>
 
     <link rel="icon" type="image/x-icon" href="image/favicon.ico" />
@@ -31,7 +34,11 @@
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 
     <!-- Highlight.js for code linting/highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-theme" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+      id="hljs-theme"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
     <style>
@@ -583,8 +590,12 @@
         animation: fade-in 0.3s ease-in;
       }
       @keyframes fade-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
       .msg-copy-btn {
         width: 28px;
@@ -618,8 +629,13 @@
       }
 
       @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
       }
 
       .msg-row.user .msg-content {
@@ -630,8 +646,12 @@
       }
 
       /* Markdown styles */
-      .msg-row.bot .msg-content p { margin: 0 0 12px; }
-      .msg-row.bot .msg-content p:last-child { margin-bottom: 0; }
+      .msg-row.bot .msg-content p {
+        margin: 0 0 12px;
+      }
+      .msg-row.bot .msg-content p:last-child {
+        margin-bottom: 0;
+      }
       .msg-row.bot .msg-content h1,
       .msg-row.bot .msg-content h2,
       .msg-row.bot .msg-content h3,
@@ -641,16 +661,22 @@
       }
       .msg-row.bot .msg-content h1:first-child,
       .msg-row.bot .msg-content h2:first-child,
-      .msg-row.bot .msg-content h3:first-child { margin-top: 0; }
-      
+      .msg-row.bot .msg-content h3:first-child {
+        margin-top: 0;
+      }
+
       .msg-row.bot .msg-content ul,
       .msg-row.bot .msg-content ol {
         margin: 8px 0;
         padding-left: 24px;
       }
-      .msg-row.bot .msg-content li { margin: 4px 0; }
-      .msg-row.bot .msg-content li > p { margin: 0; }
-      
+      .msg-row.bot .msg-content li {
+        margin: 4px 0;
+      }
+      .msg-row.bot .msg-content li > p {
+        margin: 0;
+      }
+
       .msg-row.bot .msg-content code {
         background: var(--code-bg);
         padding: 2px 5px;
@@ -667,7 +693,9 @@
         scrollbar-width: none;
         position: relative;
       }
-      .msg-row.bot .msg-content pre::-webkit-scrollbar { display: none; }
+      .msg-row.bot .msg-content pre::-webkit-scrollbar {
+        display: none;
+      }
       .msg-row.bot .msg-content pre code {
         background: none;
         padding: 0;
@@ -710,7 +738,9 @@
         overflow-x: auto;
         scrollbar-width: none;
       }
-      .msg-row.bot .msg-content .katex-display::-webkit-scrollbar { display: none; }
+      .msg-row.bot .msg-content .katex-display::-webkit-scrollbar {
+        display: none;
+      }
       /* Source Cards */
       .msg-status {
         font-size: 11px;
@@ -756,16 +786,24 @@
         display: flex;
         flex-direction: column;
         gap: 4px;
-        transition: transform 0.1s ease, border-color 0.1s ease;
-        
+        transition:
+          transform 0.1s ease,
+          border-color 0.1s ease;
+
         /* Animation */
         opacity: 0;
         animation: card-appear 0.4s ease forwards;
       }
-      .source-card:nth-child(1) { animation-delay: 0.1s; }
-      .source-card:nth-child(2) { animation-delay: 0.25s; }
-      .source-card:nth-child(3) { animation-delay: 0.4s; }
-      
+      .source-card:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .source-card:nth-child(2) {
+        animation-delay: 0.25s;
+      }
+      .source-card:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
       .source-card:hover {
         transform: translateY(-2px);
         border-color: var(--text-tertiary);
@@ -1117,9 +1155,10 @@
           // Update Highlight.js theme CSS
           const themeLink = document.getElementById("hljs-theme");
           if (themeLink) {
-            themeLink.href = theme === "dark" 
-              ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
-              : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
+            themeLink.href =
+              theme === "dark"
+                ? "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+                : "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css";
           }
         }, [theme]);
 
@@ -1140,18 +1179,22 @@
       /* ── API ── */
       const API_URL = (() => {
         const h = window.location.hostname;
-        if (h === "localhost" || h === "127.0.0.1" || h.endsWith(".workers.dev")) {
+        if (
+          h === "localhost" ||
+          h === "127.0.0.1" ||
+          h.endsWith(".workers.dev")
+        ) {
           return "/api/v1/chat/completions";
         }
-        return "https://chat-proxy.ohshane71.workers.dev/api/v1/chat/completions";
+        return "https://quarto-chat.shaneoh.workers.dev/api/v1/chat/completions";
       })();
 
       let searchData = null;
 
       async function fetchSearchData() {
         if (searchData) return searchData;
-        
-        // Try relative path first. 
+
+        // Try relative path first.
         // NOTE: On local dev, the Worker proxies this to http://localhost:8888/search.json
         const urls = ["/search.json", "https://blog.shaneoh.org/search.json"];
 
@@ -1170,14 +1213,16 @@
             console.warn(`Could not fetch from ${url}:`, e.message);
           }
         }
-        
+
         console.error("All attempts to fetch search.json failed.");
         return null;
       }
 
       function findRelevantContext(query, data, limit = 3) {
         if (!data || !query || !window.Fuse) {
-          console.log("[Search] Skipped: No data, query, or Fuse.js not loaded.");
+          console.log(
+            "[Search] Skipped: No data, query, or Fuse.js not loaded.",
+          );
           return { context: "", sources: [], totalMatches: 0 };
         }
 
@@ -1187,43 +1232,48 @@
           keys: [
             { name: "title", weight: 0.5 },
             { name: "section", weight: 0.3 },
-            { name: "text", weight: 0.2 }
+            { name: "text", weight: 0.2 },
           ],
           threshold: 0.6,
           includeScore: true,
           ignoreLocation: true,
-          minMatchCharLength: 2
+          minMatchCharLength: 2,
         });
 
         const allResults = fuse.search(query);
         const totalMatches = allResults.length;
-        
+
         if (totalMatches === 0) {
           console.log("[Search] No matches under threshold 0.6.");
           const topRejected = fuse.search(query, { limit: 5 });
           if (topRejected.length > 0) {
             console.log("[Search] Top candidates (rejected):");
             topRejected.forEach((res, i) => {
-              console.log(`  ${i+1}. ${res.item.title} (${res.item.section || "No section"}) - Score: ${res.score.toFixed(4)}`);
+              console.log(
+                `  ${i + 1}. ${res.item.title} (${res.item.section || "No section"}) - Score: ${res.score.toFixed(4)}`,
+              );
             });
           }
           return { context: "", sources: [], totalMatches: 0 };
         }
 
         console.log(`[Search] Found ${totalMatches} matches.`);
-        
+
         // Context and Sources: Limit both to top 3 for cleaner UI and focused AI
         const topResults = allResults.slice(0, limit);
-        
+
         const context = topResults
-          .map(res => `[Source: ${res.item.title}${res.item.section ? " - " + res.item.section : ""}]\n${res.item.text}`)
+          .map(
+            (res) =>
+              `[Source: ${res.item.title}${res.item.section ? " - " + res.item.section : ""}]\n${res.item.text}`,
+          )
           .join("\n\n");
 
-        const sources = topResults.map(res => ({
+        const sources = topResults.map((res) => ({
           title: res.item.title,
           section: res.item.section,
           href: res.item.href,
-          score: res.score
+          score: res.score,
         }));
 
         return { context, sources, totalMatches };
@@ -1233,10 +1283,10 @@
         try {
           const lastMessage = messages[messages.length - 1]?.content || "";
           console.log("[Keywords] Extracting technical terms...");
-          
-          const contextMessages = messages.slice(-5).map(m => ({
+
+          const contextMessages = messages.slice(-5).map((m) => ({
             role: m.role === "bot" ? "assistant" : "user",
-            content: m.content
+            content: m.content,
           }));
 
           const res = await fetch(API_URL, {
@@ -1246,40 +1296,57 @@
               model,
               stream: false,
               messages: [
-                { 
-                  role: "system", 
-                  content: "You are a specialized search query optimizer. Identify 3-5 main technical concepts from the conversation. Return ONLY a space-separated list of keywords in Korean and English. NO explanations, NO full sentences, NO introduction. Example: '힙 정렬 Heap Sort 우선순위 큐 Priority Queue'" 
+                {
+                  role: "system",
+                  content:
+                    "You are a specialized search query optimizer. Identify 3-5 main technical concepts from the conversation. Return ONLY a space-separated list of keywords in Korean and English. NO explanations, NO full sentences, NO introduction. Example: '힙 정렬 Heap Sort 우선순위 큐 Priority Queue'",
                 },
-                ...contextMessages
-              ]
-            })
+                ...contextMessages,
+              ],
+            }),
           });
 
           if (!res.ok) return lastMessage;
-          
+
           const json = await res.json();
           let extracted = json.choices?.[0]?.message?.content || "";
-          
-          extracted = extracted.replace(/\n/g, " ").replace(/아래는|용어입니다|키워드:|입력:|Keywords:/g, "").trim();
+
+          extracted = extracted
+            .replace(/\n/g, " ")
+            .replace(/아래는|용어입니다|키워드:|입력:|Keywords:/g, "")
+            .trim();
           console.log(`[Keywords] Extracted: "${extracted || "(none)"}"`);
-          
-          return (extracted.length > 3 && extracted.length < 200) ? `${extracted} ${lastMessage}` : extracted || lastMessage;
+
+          return extracted.length > 3 && extracted.length < 200
+            ? `${extracted} ${lastMessage}`
+            : extracted || lastMessage;
         } catch (e) {
           console.warn("[Keywords] Extraction failed.", e);
           return messages[messages.length - 1]?.content || "";
         }
       }
 
-      async function streamChat(messages, model, onChunk, onDone, onSources, onStatus, signal) {
+      async function streamChat(
+        messages,
+        model,
+        onChunk,
+        onDone,
+        onSources,
+        onStatus,
+        signal,
+      ) {
         onStatus("Searching blog posts...");
-        
+
         // Let UI update
-        await new Promise(r => setTimeout(r, 0));
+        await new Promise((r) => setTimeout(r, 0));
 
         const data = await fetchSearchData();
         const searchQuery = await extractKeywords(messages, model);
-        const { context, sources, totalMatches } = findRelevantContext(searchQuery, data);
-        
+        const { context, sources, totalMatches } = findRelevantContext(
+          searchQuery,
+          data,
+        );
+
         if (totalMatches > 0) {
           onStatus(`Found ${totalMatches} matches`);
           if (sources.length > 0) {
@@ -1297,7 +1364,7 @@
         if (context) {
           apiMessages.unshift({
             role: "system",
-            content: `You are a helpful assistant. Use the following context from the user's blog posts to help answer the question if relevant. If the context doesn't help, just answer normally.\n\nContext:\n${context}`
+            content: `You are a helpful assistant. Use the following context from the user's blog posts to help answer the question if relevant. If the context doesn't help, just answer normally.\n\nContext:\n${context}`,
           });
         }
 
@@ -1352,42 +1419,64 @@
           .replace(/'/g, "&#39;");
       }
 
-            function renderMarkdown(text) {
-              if (!text) return "";
-              
-              // Block math: $$ ... $$
-              let result = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => {
-                try {
-                  return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
-                } catch { return _; }
+      function renderMarkdown(text) {
+        if (!text) return "";
+
+        // Block math: $$ ... $$
+        let result = text.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => {
+          try {
+            return katex.renderToString(tex.trim(), {
+              displayMode: true,
+              throwOnError: false,
+            });
+          } catch {
+            return _;
+          }
+        });
+        // Inline math: $ ... $
+        result = result.replace(
+          /(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)/g,
+          (_, tex) => {
+            try {
+              return katex.renderToString(tex.trim(), {
+                displayMode: false,
+                throwOnError: false,
               });
-              // Inline math: $ ... $
-              result = result.replace(/(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)/g, (_, tex) => {
-                try {
-                  return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
-                } catch { return _; }
-              });
-              // Block math: \[ ... \]
-              result = result.replace(/\\\[([\s\S]*?)\\\]/g, (_, tex) => {
-                try {
-                  return katex.renderToString(tex.trim(), { displayMode: true, throwOnError: false });
-                } catch { return _; }
-              });
-              // Inline math: \( ... \)
-              result = result.replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => {
-                try {
-                  return katex.renderToString(tex.trim(), { displayMode: false, throwOnError: false });
-                } catch { return _; }
-              });
-      
-              const parser = window.marked;
-              if (!parser || typeof parser.parse !== "function") {
-                return escapeHtml(result).replace(/\n/g, "<br/>");
-              }
-      
-              return parser.parse(result, { breaks: true });
+            } catch {
+              return _;
             }
-      
+          },
+        );
+        // Block math: \[ ... \]
+        result = result.replace(/\\\[([\s\S]*?)\\\]/g, (_, tex) => {
+          try {
+            return katex.renderToString(tex.trim(), {
+              displayMode: true,
+              throwOnError: false,
+            });
+          } catch {
+            return _;
+          }
+        });
+        // Inline math: \( ... \)
+        result = result.replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => {
+          try {
+            return katex.renderToString(tex.trim(), {
+              displayMode: false,
+              throwOnError: false,
+            });
+          } catch {
+            return _;
+          }
+        });
+
+        const parser = window.marked;
+        if (!parser || typeof parser.parse !== "function") {
+          return escapeHtml(result).replace(/\n/g, "<br/>");
+        }
+
+        return parser.parse(result, { breaks: true });
+      }
 
       async function writeClipboard(text) {
         if (!text) return false;
@@ -1425,7 +1514,10 @@
           button.textContent = iconName === "check" ? "✓" : "⧉";
           return;
         }
-        const svg = window.lucide.createElement(node, { width: size, height: size });
+        const svg = window.lucide.createElement(node, {
+          width: size,
+          height: size,
+        });
         button.appendChild(svg);
       }
 
@@ -1475,7 +1567,9 @@
           const raw = localStorage.getItem(STORAGE_KEY);
           if (!raw) return { activeId: null, conversations: [] };
           return JSON.parse(raw);
-        } catch { return { activeId: null, conversations: [] }; }
+        } catch {
+          return { activeId: null, conversations: [] };
+        }
       }
 
       function saveHistory(history) {
@@ -1496,19 +1590,28 @@
         const [showClearModal, setShowClearModal] = useState(false);
         const [copiedMessageId, setCopiedMessageId] = useState(null);
 
-        const [conversations, setConversations] = useState(() => loadHistory().conversations);
+        const [conversations, setConversations] = useState(
+          () => loadHistory().conversations,
+        );
         const [activeId, setActiveId] = useState(() => loadHistory().activeId);
 
         const messages = activeId
-          ? (conversations.find((c) => c.id === activeId)?.messages || [])
+          ? conversations.find((c) => c.id === activeId)?.messages || []
           : [];
 
         const setMessages = (updater) => {
           setConversations((prev) => {
             const next = prev.map((c) =>
               c.id === activeId
-                ? { ...c, messages: typeof updater === "function" ? updater(c.messages) : updater, updatedAt: Date.now() }
-                : c
+                ? {
+                    ...c,
+                    messages:
+                      typeof updater === "function"
+                        ? updater(c.messages)
+                        : updater,
+                    updatedAt: Date.now(),
+                  }
+                : c,
             );
             return next;
           });
@@ -1537,7 +1640,7 @@
           if (!scrollRef.current) return;
           scrollRef.current.scrollTo({
             top: scrollRef.current.scrollHeight,
-            behavior: streaming ? "auto" : "smooth"
+            behavior: streaming ? "auto" : "smooth",
           });
         }, [messages, streaming]);
 
@@ -1571,7 +1674,13 @@
           if (!convId) {
             convId = "conv_" + Date.now();
             const title = text.length > 30 ? text.slice(0, 30) + "…" : text;
-            const newConv = { id: convId, title, messages: [], model, updatedAt: Date.now() };
+            const newConv = {
+              id: convId,
+              title,
+              messages: [],
+              model,
+              updatedAt: Date.now(),
+            };
             setConversations((prev) => [newConv, ...prev]);
             setActiveId(convId);
           }
@@ -1581,9 +1690,16 @@
           setConversations((prev) =>
             prev.map((c) =>
               c.id === convId
-                ? { ...c, messages: [...updated, botMsg], updatedAt: Date.now(), title: c.title || (text.length > 30 ? text.slice(0, 30) + "…" : text) }
-                : c
-            )
+                ? {
+                    ...c,
+                    messages: [...updated, botMsg],
+                    updatedAt: Date.now(),
+                    title:
+                      c.title ||
+                      (text.length > 30 ? text.slice(0, 30) + "…" : text),
+                  }
+                : c,
+            ),
           );
           setInput("");
           setStreaming(true);
@@ -1600,9 +1716,13 @@
                 setConversations((prev) =>
                   prev.map((c) =>
                     c.id === convId
-                      ? { ...c, messages: [...updated, { ...botMsg }], updatedAt: Date.now() }
-                      : c
-                  )
+                      ? {
+                          ...c,
+                          messages: [...updated, { ...botMsg }],
+                          updatedAt: Date.now(),
+                        }
+                      : c,
+                  ),
                 );
               },
               () => {
@@ -1613,9 +1733,13 @@
                   setConversations((prev) =>
                     prev.map((c) =>
                       c.id === convId
-                        ? { ...c, messages: [...updated, updatedBotMsg], updatedAt: Date.now() }
-                        : c
-                    )
+                        ? {
+                            ...c,
+                            messages: [...updated, updatedBotMsg],
+                            updatedAt: Date.now(),
+                          }
+                        : c,
+                    ),
                   );
                 }
               },
@@ -1630,9 +1754,13 @@
                 setConversations((prev) =>
                   prev.map((c) =>
                     c.id === convId
-                      ? { ...c, messages: [...updated, updatedBotMsg], updatedAt: Date.now() }
-                      : c
-                  )
+                      ? {
+                          ...c,
+                          messages: [...updated, updatedBotMsg],
+                          updatedAt: Date.now(),
+                        }
+                      : c,
+                  ),
                 );
               },
               controller.signal,
@@ -1643,9 +1771,13 @@
               setConversations((prev) =>
                 prev.map((c) =>
                   c.id === convId
-                    ? { ...c, messages: [...updated, { ...botMsg }], updatedAt: Date.now() }
-                    : c
-                )
+                    ? {
+                        ...c,
+                        messages: [...updated, { ...botMsg }],
+                        updatedAt: Date.now(),
+                      }
+                    : c,
+                ),
               );
             }
           } finally {
@@ -1675,7 +1807,7 @@
         const handlePinConvo = (e, id) => {
           e.stopPropagation();
           setConversations((prev) =>
-            prev.map((c) => c.id === id ? { ...c, pinned: !c.pinned } : c)
+            prev.map((c) => (c.id === id ? { ...c, pinned: !c.pinned } : c)),
           );
         };
 
@@ -1691,7 +1823,7 @@
           const trimmed = newTitle.trim();
           if (trimmed) {
             setConversations((prev) =>
-              prev.map((c) => c.id === id ? { ...c, title: trimmed } : c)
+              prev.map((c) => (c.id === id ? { ...c, title: trimmed } : c)),
             );
           }
           setEditingId(null);
@@ -1720,7 +1852,7 @@
           setCopiedMessageId(msg.id);
           setTimeout(() => {
             setCopiedMessageId((current) =>
-              current === msg.id ? null : current
+              current === msg.id ? null : current,
             );
           }, 1200);
         };
@@ -1741,13 +1873,29 @@
         return (
           <>
             {showClearModal && (
-              <div className="modal-overlay" onClick={() => setShowClearModal(false)}>
+              <div
+                className="modal-overlay"
+                onClick={() => setShowClearModal(false)}
+              >
                 <div className="modal" onClick={(e) => e.stopPropagation()}>
                   <p className="modal-title">Clear all chats?</p>
-                  <p className="modal-desc">This will delete all conversation history. This action cannot be undone.</p>
+                  <p className="modal-desc">
+                    This will delete all conversation history. This action
+                    cannot be undone.
+                  </p>
                   <div className="modal-actions">
-                    <button className="modal-btn modal-btn-cancel" onClick={() => setShowClearModal(false)}>Cancel</button>
-                    <button className="modal-btn modal-btn-confirm" onClick={handleClearAll}>Clear all</button>
+                    <button
+                      className="modal-btn modal-btn-cancel"
+                      onClick={() => setShowClearModal(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="modal-btn modal-btn-confirm"
+                      onClick={handleClearAll}
+                    >
+                      Clear all
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1785,42 +1933,67 @@
                   <>
                     <p className="sidebar-section-label">Pinned</p>
                     <div className="sidebar-convos" style={{ flex: "none" }}>
-                      {conversations.filter((c) => c.pinned).map((c) => (
-                        <button
-                          key={c.id}
-                          className={`sidebar-convo ${c.id === activeId ? "active" : ""}`}
-                          onClick={() => editingId !== c.id && handleSelectConvo(c.id)}
-                        >
-                          {editingId === c.id ? (
-                            <input
-                              ref={editRef}
-                              className="sidebar-convo-edit"
-                              defaultValue={c.title}
-                              onClick={(e) => e.stopPropagation()}
-                              onBlur={(e) => handleRenameCommit(c.id, e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") handleRenameCommit(c.id, e.target.value);
-                                if (e.key === "Escape") setEditingId(null);
-                              }}
-                            />
-                          ) : (
-                            <span className="sidebar-convo-title" onDoubleClick={(e) => handleRenameStart(e, c.id)}>{c.title}</span>
-                          )}
-                          {editingId !== c.id && (
-                            <span className="sidebar-convo-actions">
-                              <span className="sidebar-convo-action" onClick={(e) => handleRenameStart(e, c.id)} title="Rename">
-                                <Icon name="pencil" size={13} />
+                      {conversations
+                        .filter((c) => c.pinned)
+                        .map((c) => (
+                          <button
+                            key={c.id}
+                            className={`sidebar-convo ${c.id === activeId ? "active" : ""}`}
+                            onClick={() =>
+                              editingId !== c.id && handleSelectConvo(c.id)
+                            }
+                          >
+                            {editingId === c.id ? (
+                              <input
+                                ref={editRef}
+                                className="sidebar-convo-edit"
+                                defaultValue={c.title}
+                                onClick={(e) => e.stopPropagation()}
+                                onBlur={(e) =>
+                                  handleRenameCommit(c.id, e.target.value)
+                                }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter")
+                                    handleRenameCommit(c.id, e.target.value);
+                                  if (e.key === "Escape") setEditingId(null);
+                                }}
+                              />
+                            ) : (
+                              <span
+                                className="sidebar-convo-title"
+                                onDoubleClick={(e) =>
+                                  handleRenameStart(e, c.id)
+                                }
+                              >
+                                {c.title}
                               </span>
-                              <span className="sidebar-convo-action" onClick={(e) => handlePinConvo(e, c.id)} title="Unpin">
-                                <Icon name="pin-off" size={13} />
+                            )}
+                            {editingId !== c.id && (
+                              <span className="sidebar-convo-actions">
+                                <span
+                                  className="sidebar-convo-action"
+                                  onClick={(e) => handleRenameStart(e, c.id)}
+                                  title="Rename"
+                                >
+                                  <Icon name="pencil" size={13} />
+                                </span>
+                                <span
+                                  className="sidebar-convo-action"
+                                  onClick={(e) => handlePinConvo(e, c.id)}
+                                  title="Unpin"
+                                >
+                                  <Icon name="pin-off" size={13} />
+                                </span>
+                                <span
+                                  className="sidebar-convo-action del"
+                                  onClick={(e) => handleDeleteConvo(e, c.id)}
+                                >
+                                  <Icon name="trash-2" size={13} />
+                                </span>
                               </span>
-                              <span className="sidebar-convo-action del" onClick={(e) => handleDeleteConvo(e, c.id)}>
-                                <Icon name="trash-2" size={13} />
-                              </span>
-                            </span>
-                          )}
-                        </button>
-                      ))}
+                            )}
+                          </button>
+                        ))}
                     </div>
                   </>
                 )}
@@ -1837,42 +2010,67 @@
                       </span>
                     </p>
                     <div className="sidebar-convos">
-                      {conversations.filter((c) => !c.pinned).map((c) => (
-                        <button
-                          key={c.id}
-                          className={`sidebar-convo ${c.id === activeId ? "active" : ""}`}
-                          onClick={() => editingId !== c.id && handleSelectConvo(c.id)}
-                        >
-                          {editingId === c.id ? (
-                            <input
-                              ref={editRef}
-                              className="sidebar-convo-edit"
-                              defaultValue={c.title}
-                              onClick={(e) => e.stopPropagation()}
-                              onBlur={(e) => handleRenameCommit(c.id, e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") handleRenameCommit(c.id, e.target.value);
-                                if (e.key === "Escape") setEditingId(null);
-                              }}
-                            />
-                          ) : (
-                            <span className="sidebar-convo-title" onDoubleClick={(e) => handleRenameStart(e, c.id)}>{c.title}</span>
-                          )}
-                          {editingId !== c.id && (
-                            <span className="sidebar-convo-actions">
-                              <span className="sidebar-convo-action" onClick={(e) => handleRenameStart(e, c.id)} title="Rename">
-                                <Icon name="pencil" size={13} />
+                      {conversations
+                        .filter((c) => !c.pinned)
+                        .map((c) => (
+                          <button
+                            key={c.id}
+                            className={`sidebar-convo ${c.id === activeId ? "active" : ""}`}
+                            onClick={() =>
+                              editingId !== c.id && handleSelectConvo(c.id)
+                            }
+                          >
+                            {editingId === c.id ? (
+                              <input
+                                ref={editRef}
+                                className="sidebar-convo-edit"
+                                defaultValue={c.title}
+                                onClick={(e) => e.stopPropagation()}
+                                onBlur={(e) =>
+                                  handleRenameCommit(c.id, e.target.value)
+                                }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter")
+                                    handleRenameCommit(c.id, e.target.value);
+                                  if (e.key === "Escape") setEditingId(null);
+                                }}
+                              />
+                            ) : (
+                              <span
+                                className="sidebar-convo-title"
+                                onDoubleClick={(e) =>
+                                  handleRenameStart(e, c.id)
+                                }
+                              >
+                                {c.title}
                               </span>
-                              <span className="sidebar-convo-action" onClick={(e) => handlePinConvo(e, c.id)} title="Pin">
-                                <Icon name="pin" size={13} />
+                            )}
+                            {editingId !== c.id && (
+                              <span className="sidebar-convo-actions">
+                                <span
+                                  className="sidebar-convo-action"
+                                  onClick={(e) => handleRenameStart(e, c.id)}
+                                  title="Rename"
+                                >
+                                  <Icon name="pencil" size={13} />
+                                </span>
+                                <span
+                                  className="sidebar-convo-action"
+                                  onClick={(e) => handlePinConvo(e, c.id)}
+                                  title="Pin"
+                                >
+                                  <Icon name="pin" size={13} />
+                                </span>
+                                <span
+                                  className="sidebar-convo-action del"
+                                  onClick={(e) => handleDeleteConvo(e, c.id)}
+                                >
+                                  <Icon name="trash-2" size={13} />
+                                </span>
                               </span>
-                              <span className="sidebar-convo-action del" onClick={(e) => handleDeleteConvo(e, c.id)}>
-                                <Icon name="trash-2" size={13} />
-                              </span>
-                            </span>
-                          )}
-                        </button>
-                      ))}
+                            )}
+                          </button>
+                        ))}
                     </div>
                   </>
                 )}
@@ -1966,49 +2164,65 @@
                   ) : (
                     <div ref={scrollRef} className="messages-area">
                       <div className="messages-container">
-                                              {messages.map((msg, idx) => (
-                                                <div key={msg.id} className={`msg-row ${msg.role}`}>
-                                                  {msg.role === "bot" ? (
-                                                    <div className="msg-wrap">
-                                                      <div className="msg-content">
-                                                        {msg.status && (
-                                                          <div className="msg-status">
-                                                            <Icon name="search" size={10} />
-                                                            {msg.status}
-                                                          </div>
-                                                        )}
-                                                        <MarkdownContent
-                                                          content={msg.content}
-                                                          onCopyCode={handleCopyCode}
-                                                          isLast={idx === messages.length - 1}
-                                                          streaming={streaming}
-                                                        />
-                                                        {msg.showSources && msg.sources && msg.sources.length > 0 && (
-                                                          <div className="sources-container">
-                                                                                          {(() => {
-                                                                                            const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-                                                                                            const BLOG_BASE_URL = isLocalHost ? "http://localhost:8888/" : "https://blog.shaneoh.org/";
-                                                                                            return msg.sources.map((src, i) => (
-                                                                                              <a
-                                                                                                key={i}
-                                                                                                href={`${BLOG_BASE_URL}${src.href}`}
-                                                                                                target="_blank"
-                                                                                                rel="noopener noreferrer"
-                                                                                                className="source-card"
-                                                                                              >
-                                                                                                <div className="source-card-title">{src.title}</div>
-                                                                                                {src.section && (
-                                                                                                  <div className="source-card-section">{src.section}</div>
-                                                                                                )}
-                                                                                                <div className="source-card-tag">
-                                                                                                  <Icon name="link" size={10} />
-                                                                                                  {isLocalHost ? "localhost:8888" : "blog.shaneoh.org"}
-                                                                                                </div>
-                                                                                              </a>
-                                                                                            ));
-                                                                                          })()}
-                                                                                        </div>
-                                                                                      )}                                                                                    </div>                                                                                      {/* Show copy button if not streaming OR if it's not the last message */}
+                        {messages.map((msg, idx) => (
+                          <div key={msg.id} className={`msg-row ${msg.role}`}>
+                            {msg.role === "bot" ? (
+                              <div className="msg-wrap">
+                                <div className="msg-content">
+                                  {msg.status && (
+                                    <div className="msg-status">
+                                      <Icon name="search" size={10} />
+                                      {msg.status}
+                                    </div>
+                                  )}
+                                  <MarkdownContent
+                                    content={msg.content}
+                                    onCopyCode={handleCopyCode}
+                                    isLast={idx === messages.length - 1}
+                                    streaming={streaming}
+                                  />
+                                  {msg.showSources &&
+                                    msg.sources &&
+                                    msg.sources.length > 0 && (
+                                      <div className="sources-container">
+                                        {(() => {
+                                          const isLocalHost =
+                                            window.location.hostname ===
+                                              "localhost" ||
+                                            window.location.hostname ===
+                                              "127.0.0.1";
+                                          const BLOG_BASE_URL = isLocalHost
+                                            ? "http://localhost:8888/"
+                                            : "https://blog.shaneoh.org/";
+                                          return msg.sources.map((src, i) => (
+                                            <a
+                                              key={i}
+                                              href={`${BLOG_BASE_URL}${src.href}`}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="source-card"
+                                            >
+                                              <div className="source-card-title">
+                                                {src.title}
+                                              </div>
+                                              {src.section && (
+                                                <div className="source-card-section">
+                                                  {src.section}
+                                                </div>
+                                              )}
+                                              <div className="source-card-tag">
+                                                <Icon name="link" size={10} />
+                                                {isLocalHost
+                                                  ? "localhost:8888"
+                                                  : "blog.shaneoh.org"}
+                                              </div>
+                                            </a>
+                                          ));
+                                        })()}
+                                      </div>
+                                    )}{" "}
+                                </div>{" "}
+                                {/* Show copy button if not streaming OR if it's not the last message */}
                                 {(!streaming || idx < messages.length - 1) && (
                                   <div className="msg-actions">
                                     <button
