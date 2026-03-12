@@ -1,4 +1,4 @@
-# chat-proxy
+# quarto-chat
 
 `ohshane.github.io/chat.html` → OpenRouter API Proxy (Cloudflare Worker)
 
@@ -26,7 +26,7 @@ npx wrangler secret put OPENROUTER_API_KEY
 npm run deploy
 ```
 
-Accessible at `https://chat-proxy.ohshane.workers.dev` after deployment.
+Accessible at `https://quarto-chat.ohshane.workers.dev` after deployment.
 
 ## Local Development
 
@@ -44,7 +44,7 @@ npm run dev
 `chat.html` automatically detects the environment:
 
 - localhost / workers.dev → Uses `/api/chat` from the same origin
-- GitHub Pages → Uses `https://chat-proxy.ohshane71.workers.dev/api/chat`
+- GitHub Pages → Uses `https://quarto-chat.shaneoh.workers.dev/api/chat`
 
 ## Configuration (wrangler.toml)
 
@@ -92,7 +92,7 @@ npx wrangler delete
 ```
 
 Can also be deleted from the Cloudflare Dashboard:
-Workers & Pages → chat-proxy → Settings → Delete
+Workers & Pages → quarto-chat → Settings → Delete
 
 ## Structure
 
