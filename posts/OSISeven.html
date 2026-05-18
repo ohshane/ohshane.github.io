@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Shane Oh">
-<meta name="dcterms.date" content="2023-09-07">
+<meta name="dcterms.date" content="2025-05-09">
 
-<title>Derivatives of Neural Net Layers – Shane</title>
+<title>The Journey of a Packet – Shane</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -24,41 +24,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -112,6 +77,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="apple-touch-startup-image" href="image/profile.jpg">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -144,9 +112,12 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<meta property="og:title" content="Derivatives of Neural Net Layers – Shane">
+<meta property="og:title" content="The Journey of a Packet – Shane">
 <meta property="og:description" content="">
+<meta property="og:image" content="https://ohshane.github.io/posts/OSISeven/images/200-datalink-frames.png">
 <meta property="og:site_name" content="Shane">
+<meta property="og:image:height" content="632">
+<meta property="og:image:width" content="2018">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -195,23 +166,13 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#preliminaries" id="toc-preliminaries" class="nav-link active" data-scroll-target="#preliminaries">Preliminaries</a>
-  <ul class="collapse">
-  <li><a href="#chain-rule" id="toc-chain-rule" class="nav-link" data-scroll-target="#chain-rule">Chain rule</a></li>
-  </ul></li>
-  <li><a href="#derivatives" id="toc-derivatives" class="nav-link" data-scroll-target="#derivatives">Derivatives</a>
-  <ul class="collapse">
-  <li><a href="#mathcall_mathrmbce" id="toc-mathcall_mathrmbce" class="nav-link" data-scroll-target="#mathcall_mathrmbce"><span class="math inline">\(\mathcal{L}_\mathrm{BCE}\)</span></a></li>
-  <li><a href="#mathcall_mathrmce" id="toc-mathcall_mathrmce" class="nav-link" data-scroll-target="#mathcall_mathrmce"><span class="math inline">\(\mathcal{L}_\mathrm{CE}\)</span></a></li>
-  <li><a href="#sigmoid" id="toc-sigmoid" class="nav-link" data-scroll-target="#sigmoid">Sigmoid</a></li>
-  <li><a href="#softmax" id="toc-softmax" class="nav-link" data-scroll-target="#softmax">Softmax</a></li>
-  <li><a href="#sigmoid---mathcal-l_mathrmbce" id="toc-sigmoid---mathcal-l_mathrmbce" class="nav-link" data-scroll-target="#sigmoid---mathcal-l_mathrmbce">Sigmoid -&gt; <span class="math inline">\(\mathcal L_\mathrm{BCE}\)</span></a></li>
-  <li><a href="#softmax---mathcal-l_mathrmce" id="toc-softmax---mathcal-l_mathrmce" class="nav-link" data-scroll-target="#softmax---mathcal-l_mathrmce">Softmax -&gt; <span class="math inline">\(\mathcal L_\mathrm{CE}\)</span></a></li>
-  <li><a href="#linear" id="toc-linear" class="nav-link" data-scroll-target="#linear">Linear</a></li>
-  <li><a href="#relu" id="toc-relu" class="nav-link" data-scroll-target="#relu">ReLU</a></li>
-  <li><a href="#linear---relu" id="toc-linear---relu" class="nav-link" data-scroll-target="#linear---relu">Linear -&gt; ReLU</a></li>
-  <li><a href="#convolution" id="toc-convolution" class="nav-link" data-scroll-target="#convolution">Convolution</a></li>
-  </ul></li>
+  <li><a href="#physical-layer" id="toc-physical-layer" class="nav-link active" data-scroll-target="#physical-layer">Physical Layer</a></li>
+  <li><a href="#data-link-layer" id="toc-data-link-layer" class="nav-link" data-scroll-target="#data-link-layer">Data Link Layer</a></li>
+  <li><a href="#network-layer" id="toc-network-layer" class="nav-link" data-scroll-target="#network-layer">Network Layer</a></li>
+  <li><a href="#transport-layer" id="toc-transport-layer" class="nav-link" data-scroll-target="#transport-layer">Transport Layer</a></li>
+  <li><a href="#session-layer" id="toc-session-layer" class="nav-link" data-scroll-target="#session-layer">Session Layer</a></li>
+  <li><a href="#presentation-layer" id="toc-presentation-layer" class="nav-link" data-scroll-target="#presentation-layer">Presentation Layer</a></li>
+  <li><a href="#application-layer" id="toc-application-layer" class="nav-link" data-scroll-target="#application-layer">Application Layer</a></li>
   </ul>
 </nav>
     </div>
@@ -220,9 +181,9 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Derivatives of Neural Net Layers</h1>
+<h1 class="title">The Journey of a Packet</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Machine Learning</div>
+    <div class="quarto-category">Networking</div>
   </div>
   </div>
 
@@ -240,7 +201,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 7, 2023</p>
+      <p class="date">May 9, 2025</p>
     </div>
   </div>
   
@@ -252,316 +213,327 @@ window.Quarto = {
 </header>
 
 
+<p>Internet has revolutionized the way we communicate. <strong>In the year 1969, the ARPANET</strong> was created as a project funded by the U.S. Department of Defense to connect computers at various universities and research institutions.</p>
+<p>When we talk about TCP/IP, we often start with a diagram called the OSI 7 layer model. Let’s first take a look at the OSI model and some mnemonics to remember the layers and then we will compare with the TCP/IP model. There is a detailed <strong>blog post from Cloudflare about the OSI model</strong> <a href="https://www.cloudflare.com/learning/ddos/glossary/open-systems-interconnection-model-osi/">here</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/1/15/OSI_vs_TCP_models.svg" class="img-fluid figure-img" width="300"></p>
+<figcaption>OSI 7 layer model</figcaption>
+</figure>
+</div>
+<p>The mnemonics to remember the OSI layers are:</p>
+<blockquote class="blockquote">
+<p><strong>P</strong>lease <strong>D</strong>o <strong>N</strong>ot <strong>T</strong>hrow <strong>S</strong>ausage <strong>P</strong>izza <strong>A</strong>way</p>
+</blockquote>
+<section id="physical-layer" class="level3">
+<h3 class="anchored" data-anchor-id="physical-layer">Physical Layer</h3>
+<p>Think of a cable sending <strong>electrical signals using bits</strong>. The physical layer is responsible only for delivering raw bits over the medium — error detection (parity bits, CRC/FCS) is the job of higher layers, starting from the data link layer.</p>
+</section>
+<section id="data-link-layer" class="level3">
+<h3 class="anchored" data-anchor-id="data-link-layer">Data Link Layer</h3>
+<p>This layer is the first layer that deals with source and destination addresses. The switch operates at this layer, and it uses the <strong>MAC address</strong> to forward data (<strong>frames</strong>; on Ethernet, the payload is typically 46 ~ 1500 bytes) to the correct destination. Take a look at the video from Ace Networker <a href="https://youtu.be/JsYqqDqmQaE?si=nRT_zVF86KMlfSj_">here</a> for more.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./OSISeven/images/200-datalink-frames.png" class="img-fluid figure-img" width="500"></p>
+<figcaption>Frames in Data Link Layer</figcaption>
+</figure>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+<span class="screen-reader-only">Note</span>MAC Address
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Numerator layout is used for the equations in this post.</p>
+<p>A MAC address looks like this: <code>00:1A:2B:3C:4D:5E</code>. Each pair of hexadecimal digits represents 8 bits (a byte), and the entire MAC address is <strong>48 bits (6 bytes) long</strong>. The first half represent the <strong>Organizationally Unique Identifier (OUI)</strong>, which identifies the manufacturer of the network device. The remaining 24 bits are assigned by the manufacturer and are unique to each device.</p>
 </div>
 </div>
-<section id="preliminaries" class="level2">
-<h2 class="anchored" data-anchor-id="preliminaries">Preliminaries</h2>
-<section id="chain-rule" class="level3">
-<h3 class="anchored" data-anchor-id="chain-rule">Chain rule</h3>
-<p><span class="math display">\[
-\begin{align*}
-\dfrac{d}{dx} h(g(f(x)))
-&amp;= \underbrace{h'(\overbrace{g(f(x))}^{\text{forward}})}_{\text{backward}}
-\quad \underbrace{g'(\overbrace{f(x)}^{\text{forward}})}_{\text{backward}}
-\quad \underbrace{f'(x)}_{\text{backward}} \\
-\dfrac{\partial}{\partial \mathbf x} h(\mathbf g(\mathbf f(\mathbf x)))
-&amp;= \dfrac{\partial h}{\partial \mathbf g} \dfrac{\partial \mathbf g}{\partial \mathbf f} \dfrac{\partial \mathbf f}{\partial \mathbf x}
-= \nabla h(\mathbf g( \mathbf f(\mathbf x))) \ \mathbf J_\mathbf g(\mathbf f(\mathbf x)) \ \mathbf J_\mathbf f(\mathbf x)
-\end{align*}
-\]</span></p>
+<p>L2 switches in this layer have a <strong>CAM (Content Addressable Memory)</strong> table that maps MAC addresses to physical ports. When a frame arrives at the switch, it looks at the destination MAC address and forwards the frame to the appropriate port based on the CAM table. If the destination MAC address is not in the CAM table, the switch will broadcast the frame to all ports except the one it arrived on.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./OSISeven/images/201-datalink-cam-table.png" class="img-fluid figure-img" width="500"></p>
+<figcaption>CAM table</figcaption>
+</figure>
+</div>
+<p>When network topology is cyclic, there are infinitely many paths to the destination. This will cause broadcast storms, where frames are continuously broadcasted. To prevent this, we use the <strong>Spanning Tree Protocol (STP)</strong> to elect a root switch and block redundant paths, ensuring a loop-free topology.</p>
+</section>
+<section id="network-layer" class="level3">
+<h3 class="anchored" data-anchor-id="network-layer">Network Layer</h3>
+<p>In this layer, <strong>IP addresses</strong> are used to route packets across different networks. This is responsible for <strong>routing packets between different networks</strong>. Problem with L2 switch is that this does not scale well because of the flat topology. In contrast, <strong>IP addresses can have a hierarchical structure</strong>. Just by looking at the IP address, we can determine if the destination is on the same network or a different network.</p>
+<p>The IPv4 protocol was first defined in 1981 with <a href="https://datatracker.ietf.org/doc/html/rfc791">RFC 791</a>. We can see that the institution DARPA (successor name for ARPA) is listed as the author.</p>
+<p>Encapsulation flows from higher layers down to lower layers. An application layer <strong>message</strong> is wrapped into a transport layer <strong>segment</strong>; the segment becomes the payload of a network layer <strong>packet</strong>; and the packet in turn becomes the payload of a data link layer <strong>frame</strong>, which is what finally goes out on the wire.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://media.geeksforgeeks.org/wp-content/uploads/20250425180616422452/segmentpacket.webp" class="img-fluid figure-img" width="500"></p>
+<figcaption>Structure of Segment, Packet, and Frame at each OSI layer</figcaption>
+</figure>
+</div>
+<p>From <a href="https://datatracker.ietf.org/doc/html/rfc791#section-3.1">RFC 791, section 3.1</a>, the header of an IPv4 packet is <strong>20 bytes long</strong> (4 bytes rows, excluding options) and contains the following fields:</p>
+<pre><code> 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Version|  IHL  |Type of Service|          Total Length         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Identification        |Flags|      Fragment Offset    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Time to Live |    Protocol   |         Header Checksum       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                       Source Address                          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Destination Address                        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Options                    |    Padding    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                    Example Internet Datagram Header</code></pre>
+<p>The length of the header is determined by the IHL (Internet Header Length) field, thus in 20 bytes header, the <strong>IHL value is 5</strong>. The maximum value of IHL is 15, which means the maximum header length is 60 bytes.</p>
+<p>Thus packet body contains the actual data being transmitted, right after the header. The length of the packet is determined by the <strong>Total Length</strong> field.</p>
+<p>The maximum size of an IPv4 packet is theoretically 65,535 bytes (<span class="math inline">\(2^{16} - 1\)</span>), but when we use ethernet, the maximum frame data is 1500 bytes (the Ethernet MTU), which means the maximum body size in a packet is 1500 - 20 (header) = <strong>1480 bytes</strong>.</p>
+<p>A packet without a body is also valid — the IP <code>Total Length</code> field can be as small as 20 (header only). The catch is that Ethernet requires a minimum frame payload of 46 bytes, so when an IP packet is shorter than that, the <strong>Ethernet layer (L2) pads the frame with zeros up to 46 bytes</strong> before transmission. The IP layer itself is not aware of this padding; the receiver uses the <code>Total Length</code> field to know where the real packet ends and the padding begins.</p>
+<section id="ip-classes" class="level4">
+<h4 class="anchored" data-anchor-id="ip-classes">IP Classes</h4>
+<p>In the early days of the Internet, there was no distinction between public and private IP addresses. Instead, IP addresses were allocated in a classful manner based on each organization’s request (check <a href="https://datatracker.ietf.org/doc/html/rfc790">RFC 790</a> for more information).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Class</th>
+<th>Leading Bits</th>
+<th>IP Range</th>
+<th>Network Bits</th>
+<th>Host Bits</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td><code>0XXXXXXX</code></td>
+<td>0.0.0.0 - 127.255.255.255</td>
+<td>8</td>
+<td>24</td>
+<td>Unicast (large networks)</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td><code>10XXXXXX</code></td>
+<td>128.0.0.0 - 191.255.255.255</td>
+<td>16</td>
+<td>16</td>
+<td>Unicast (medium networks)</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td><code>110XXXXX</code></td>
+<td>192.0.0.0 - 223.255.255.255</td>
+<td>24</td>
+<td>8</td>
+<td>Unicast (small networks)</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td><code>1110XXXX</code></td>
+<td>224.0.0.0 - 239.255.255.255</td>
+<td>—</td>
+<td>—</td>
+<td>Multicast</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td><code>1111XXXX</code></td>
+<td>240.0.0.0 - 255.255.255.255</td>
+<td>—</td>
+<td>—</td>
+<td>Reserved (experimental)</td>
+</tr>
+</tbody>
+</table>
+<p>This led to lots of wasted IP addresses, especially for small organizations that only needed a few IP addresses but were allocated a large block of addresses.</p>
+</section>
+<section id="classless-ip-addressing-with-cidr" class="level4">
+<h4 class="anchored" data-anchor-id="classless-ip-addressing-with-cidr">Classless IP Addressing with CIDR</h4>
+<p><strong>Classless Inter-Domain Routing (CIDR)</strong> was introduced in 1993 with <a href="https://datatracker.ietf.org/doc/html/rfc1519">RFC 1519</a>.</p>
+<p>CIDR replaces the fixed class boundaries (/8 for Class A, /16 for Class B, /24 for Class C) with arbitrary prefix lengths from /0 to /32, specified explicitly per network.</p>
+<p>There is a whole course from <a href="https://youtube.com/playlist?list=PLIhvC56v63IKrRHh3gvZZBAGvsvOhwrRF&amp;si=x6X-y-Zp8EnpwiHj">NetworkChuck</a> about all this stuff.</p>
+</section>
+<section id="private-ip-addresses" class="level4">
+<h4 class="anchored" data-anchor-id="private-ip-addresses">Private IP Addresses</h4>
+<p>To further address the issue of IP address exhaustion, <strong>private IP addresses</strong> were introduced in 1996 with <a href="https://datatracker.ietf.org/doc/html/rfc1918#section-3">RFC 1918, Section 3</a>.</p>
+<p>The private IP address ranges were allocated from each A, B, and C class as follows:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Class</th>
+<th>Private IP Range</th>
+<th>CIDR Notation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>10.0.0.0 - 10.255.255.255</td>
+<td>10.0.0.0/8</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>172.16.0.0 - 172.31.255.255</td>
+<td>172.16.0.0/12</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>192.168.0.0 - 192.168.255.255</td>
+<td>192.168.0.0/16</td>
+</tr>
+</tbody>
+</table>
+<p>RFC 1918 designated these ranges as private, so they are not routed on the public Internet.</p>
+</section>
+<section id="network-address-translation-nat" class="level4">
+<h4 class="anchored" data-anchor-id="network-address-translation-nat">Network Address Translation (NAT)</h4>
+<p><strong>Network Address Translation (NAT)</strong> was developed alongside the move toward private addressing — both came from the same need to ease IPv4 exhaustion. NAT was formalized first in <a href="https://datatracker.ietf.org/doc/html/rfc1631">RFC 1631</a> (1994), and the private address ranges it translates from were standardized two years later in RFC 1918 (1996).</p>
+<pre><code>┌──────────────┐     ┌─────────────┐
+│ 192.168.1.10 ├─────┤     NAT     ├────
+└──────────────┘     └─────────────┘ </code></pre>
 </section>
 </section>
-<section id="derivatives" class="level2">
-<h2 class="anchored" data-anchor-id="derivatives">Derivatives</h2>
-<section id="mathcall_mathrmbce" class="level3">
-<h3 class="anchored" data-anchor-id="mathcall_mathrmbce"><span class="math inline">\(\mathcal{L}_\mathrm{BCE}\)</span></h3>
-<p><span class="math display">\[
-\begin{align*}
-H(y, \hat{y})
-&amp;= y \log\dfrac{1}{\hat{y}} + (1-y) \log\dfrac{1}{1-\hat{y}} \\
-&amp;= -\left\{ y \log{\hat{y}} + (1-y) \log(1-\hat{y}) \right\} \\
-\dfrac{d H(y, \hat{y})}{d\hat{y}}
-&amp;= -\dfrac{y}{\hat y} + \dfrac{1-y}{1-\hat y} = \dfrac{\hat y - y}{\hat y (1-\hat y)}
-\end{align*}
-\]</span></p>
-</section>
-<section id="mathcall_mathrmce" class="level3">
-<h3 class="anchored" data-anchor-id="mathcall_mathrmce"><span class="math inline">\(\mathcal{L}_\mathrm{CE}\)</span></h3>
-<p><span class="math display">\[
-\begin{align*}
-H(\mathbf y, \hat{\mathbf y})
-&amp;= \sum_i y_i \log \dfrac{1}{\hat{y}_i} = -\sum_i y_i \log \hat{y}_i \\
-\dfrac{\partial H(\mathbf y, \hat{\mathbf y})}{\partial \hat{\mathbf y}}
-&amp;=
-- \begin{pmatrix}
-\dfrac{y_1}{\hat{y}_1}
-&amp; \cdots &amp;
-\dfrac{y_n}{\hat{y}_n}
-\end{pmatrix}
-\end{align*}
-\]</span></p>
-</section>
-<section id="sigmoid" class="level3">
-<h3 class="anchored" data-anchor-id="sigmoid">Sigmoid</h3>
-<p>Let <span class="math inline">\(\sigma : \mathbb R \to \mathbb R\)</span>.</p>
-<p><span class="math display">\[
-\begin{align*}
-\dfrac{d}{dx} \sigma(x)
-&amp;= \dfrac{d}{dx} (1 + e^{-x})^{-1} \\
-&amp;= e^{-x}(1 + e^{-x})^{-2}
-= \dfrac{1}{1 + e^{-x}} \dfrac{e^{-x}}{1 + e^{-x}} \\
-&amp;= \sigma(x) (1-\sigma(x))
-\end{align*}
-\]</span></p>
-</section>
-<section id="softmax" class="level3">
-<h3 class="anchored" data-anchor-id="softmax">Softmax</h3>
-<p>Let <span class="math inline">\(\mathbf{s} : \mathbb R^n \to \mathbb R^n\)</span>.</p>
+<section id="transport-layer" class="level3">
+<h3 class="anchored" data-anchor-id="transport-layer">Transport Layer</h3>
+<p>This layer is responsible for end-to-end communication between applications running on different hosts. Not only does it provide IP address translation, but it also provides lasting connections between applications using ports and protocols (TCP, UDP, etc.).</p>
+<p>In TCP connections, the source and destination ports are 16-bit (up to 65535) numbers that identify the sending and receiving applications. The combination of source IP address, source port, destination IP address, and destination port is called a <strong>socket</strong>.</p>
+<pre><code>┌────────────────────┐     ┌────────────┐
+│ 203.0.113.15:40121 ├─────┤ 1.1.1.1:80 │
+└────────────────────┘     └────────────┘</code></pre>
+<p>Let’s see some difference between TCP and UDP:</p>
+<section id="tcp-and-udp" class="level4">
+<h4 class="anchored" data-anchor-id="tcp-and-udp">TCP and UDP</h4>
+<p>TCP is a connection-oriented protocol that provides reliable, ordered, and error-checked delivery of data between applications. It establishes a connection between the sender and receiver before transmitting data and ensures that all packets are delivered in the correct order. If any packets are lost or corrupted during transmission, TCP will retransmit them until they are successfully received. The <strong>three-way handshake</strong> (SYN, SYN-ACK, ACK) is used to establish a TCP connection, which involves the following steps:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Server
+    rect rgb(230,230,250)
+      Note over Client,Server: 3-Way Handshake
+      Client-&gt;&gt;Server: SYN
+      Server-&gt;&gt;Client: SYN-ACK
+      Client-&gt;&gt;Server: ACK
+    end
+
+    Client-&gt;&gt;Server: Packet-N
+    Server-&gt;&gt;Client: ACK for Packet-N
+
+    Server-&gt;&gt;Client: Packet-M
+    Client-&gt;&gt;Server: ACK for Packet-M
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Server
+    Note over Client,Server: UDP (no handshake, no ACK)
+    Client-&gt;&gt;Server: Packet-1
+    Client--&gt;&gt;Server: Packet-2 (lost)
+    Client-&gt;&gt;Server: Packet-3
+    Server-&gt;&gt;Client: Reply-A
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>UDP just fires packets without a handshake or acknowledgments. If <code>Packet-2</code> is lost on the way, neither side notices at the transport layer — recovery (if any) is up to the application. This makes UDP a good fit for cases where <strong>latency matters more than reliability</strong>: DNS queries, real-time video/voice (RTP), online games, and QUIC (which builds reliability on top of UDP itself).</p>
+<p>Let’s see in the real world, how NAT works with TCP.</p>
+<p>When a packet arrives at the NAT device, it looks at the source IP address and port number and translates them to a new IP address and port number before forwarding the packet to the destination. The NAT device also keeps a mapping table that tracks these translations so that when a response comes back from the destination, it can translate the destination IP address and port number back to the original source IP address and port number before forwarding it to the correct application. &nbsp;</p>
+<pre><code>┌──────────────┐ port 50000  ┌──────────────┐
+│ 192.168.1.10 ├───┐         │              │
+└──────────────┘   │         │    NAT GW    │
+                   ├─────────┤ 203.0.113.15 ├── outbound
+┌──────────────┐   │         │              │
+│ 192.168.1.20 ├───┘         │              │
+└──────────────┘ port 50001  └──────────────┘ 
+                             ┌───────┴───────────────────┐
+                             │       Mapping Table       │
+                             │ 192.168.1.10:50000 :40121 │
+                             │ 192.168.1.20:50001 :40122 │
+                             └───────────────────────────┘</code></pre>
+<p>A typical EKS VPC follows a multi-tier subnet pattern — each AZ has 1 public subnet and 2 private subnets (check the <a href="https://aws.amazon.com/blogs/containers/operating-resilient-workloads-on-amazon-eks">blog post</a> for more information):</p>
 <ul>
-<li><span class="math inline">\(\mathbf x = (x_1 \cdots x_n)^\top\)</span></li>
-<li><span class="math inline">\(\mathbf{s} = (s_1 \cdots s_n)^\top\)</span></li>
-<li><span class="math inline">\(s_i(\mathbf x) = \frac{e^{x_i}}{\sum_j e^{x_j}} \quad (s_i:\mathbb R^n \to \mathbb R)\)</span></li>
+<li>Public subnet: NLB and NAT Gateway</li>
+<li>Private subnet 1: EKS worker nodes</li>
+<li>Private subnet 2: DBs etc.</li>
 </ul>
-<p><span class="math display">\[
-\begin{align*}
-\mathbf J_{\mathbf{s}}
-&amp;=
-\begin{bmatrix}
-\dfrac{\partial s_1(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial s_1(\mathbf x)}{\partial x_n} \\
-\vdots &amp; \ddots &amp; \vdots \\
-\dfrac{\partial s_n(\mathbf x)}{\partial x_1} &amp; \cdots &amp; \dfrac{\partial s_n(\mathbf x)}{\partial x_n}
-\end{bmatrix} \\
-&amp;=
-\begin{bmatrix}
-\dfrac{e^{x_1} \sum_j e^{x_j} - e^{x_1} e^{x_1}}{(\sum_j e^{x_j})^2}
-&amp; \cdots &amp;
-\dfrac{0 \sum_j e^{x_j} - e^{x_1} e^{x_n}}{(\sum_j e^{x_j})^2} \\
-\vdots &amp; \ddots &amp; \vdots \\
-\dfrac{0 \sum_j e^{x_j} - e^{x_n} e^{x_1}}{(\sum_j e^{x_j})^2}
-&amp; \cdots &amp;
-\dfrac{e^{x_n} \sum_j e^{x_j} - e^{x_n} e^{x_n}}{(\sum_j e^{x_j})^2}
-\end{bmatrix} \\
-&amp;=
-\begin{bmatrix}
-\dfrac{e^{x_1}}{\sum_j e^{x_j}}
-\dfrac{\sum_j e^{x_j} - e^{x_1}}{\sum_j e^{x_j}}
-&amp; \cdots &amp;
-- \dfrac{e^{x_1}}{\sum_j e^{x_j}} \dfrac{e^{x_n}}{\sum_j e^{x_j}} \\
-\vdots &amp; \ddots &amp; \vdots \\
-- \dfrac{e^{x_n}}{\sum_j e^{x_j}} \dfrac{e^{x_i}}{\sum_j e^{x_j}}
-&amp; \cdots &amp;
-\dfrac{e^{x_n}}{\sum_j e^{x_j}}
-\dfrac{\sum_j e^{x_j} - e^{x_n}}{\sum_j e^{x_j}}
-\end{bmatrix} \\
-&amp;=
-\begin{bmatrix}
-s_1(\mathbf x)(1-s_1(\mathbf x)) &amp; \cdots &amp; -s_1(\mathbf x) s_n(\mathbf x) \\
-\vdots &amp; \ddots &amp; \vdots \\
--s_n(\mathbf x) s_1(\mathbf x) &amp; \cdots &amp; s_n(\mathbf x)(1-s_n(\mathbf x)) \\
-\end{bmatrix} \\
-&amp;=
-\mathrm{diag}(\mathbf{s}(\mathbf x)) -\mathbf{s}(\mathbf x) \mathbf{s}(\mathbf x)^\top
-\end{align*}
-\]</span></p>
+<p>The difference between NLB and NAT Gateway is that NLB is used for inbound traffic, while <strong>NAT Gateway is used for outbound traffic</strong>.</p>
 </section>
-<section id="sigmoid---mathcal-l_mathrmbce" class="level3">
-<h3 class="anchored" data-anchor-id="sigmoid---mathcal-l_mathrmbce">Sigmoid -&gt; <span class="math inline">\(\mathcal L_\mathrm{BCE}\)</span></h3>
-<p><span class="math display">\[
-\begin{align*}
-\dfrac{d \mathcal L_\mathrm{BCE}}{d x}
-&amp;=
-\dfrac{d \mathcal L_\mathrm{BCE}}{d \hat{y}}
-\dfrac{d \hat{y}}{dx} \\
-&amp;=
-\dfrac{\hat y - y}{\hat y (1-\hat y)} {\hat y (1-\hat y)} \\
-&amp;=
-\hat y - y
-\end{align*}
-\]</span></p>
 </section>
-<section id="softmax---mathcal-l_mathrmce" class="level3">
-<h3 class="anchored" data-anchor-id="softmax---mathcal-l_mathrmce">Softmax -&gt; <span class="math inline">\(\mathcal L_\mathrm{CE}\)</span></h3>
-<p><span class="math display">\[
-\begin{align*}
-\dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \mathbf x}
-&amp;=
-\dfrac{\partial \mathcal L_\mathrm{CE}}{\partial \hat{\mathbf y}}
-\dfrac{\partial \hat{\mathbf y}}{\partial \mathbf x} \\
-&amp;=
-- \left( \dfrac{\mathbf y}{\hat{\mathbf y}} \right)^\top
-\left( \mathrm{diag}(\hat{\mathbf y}) - \hat{\mathbf y} \hat{\mathbf y}^\top \right) \\
-&amp;=
-\begin{pmatrix}
--y_1 + \sum_i y_i \hat{y}_1
-&amp; \cdots &amp;
--y_n + \sum_i y_i \hat{y}_n
-\end{pmatrix}
-\end{align*}
-\]</span></p>
+<section id="session-layer" class="level3">
+<h3 class="anchored" data-anchor-id="session-layer">Session Layer</h3>
+<p>Let’s say when you log into a website and you <strong>change the network connection from WiFi to cellular data</strong>, you don’t want to log in again. This is the job of the session layer, which manages sessions between applications. It allows applications to establish, maintain, and terminate sessions as needed.</p>
+<p>Although the socket has changed (because the IP address and the port changes when switching networks), the session layer can maintain the session by using a unique session ID that is independent of the underlying network connection. We often use <strong>cookies</strong> to maintain sessions in web applications.</p>
 </section>
-<section id="linear" class="level3">
-<h3 class="anchored" data-anchor-id="linear">Linear</h3>
-<p><span class="math display">\[
-\begin{bmatrix}
-\\
-&amp;A&amp; \vert \mathbf b \\
-\\
-\end{bmatrix}
-\begin{bmatrix}
-\\
-\mathbf x \\
-\\
-\hline
-1
-\end{bmatrix}
-=
-\begin{bmatrix}
-\\
-\mathbf z \\
-\\
-\end{bmatrix}
-\]</span></p>
-<p><span class="math display">\[
-\begin{align*}
-\dfrac{\partial z_i}{\partial [A]_i^\top} &amp;= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial [A]_i^\top} = \mathbf x^\top \\
-\dfrac{\partial z_i}{\partial b_j} &amp;= \dfrac{\partial [A]_i\mathbf x + b_i}{\partial b_j} = \delta_{ij} \\
-\dfrac{\partial \mathbf z}{\partial \mathbf b} &amp;= I
-\end{align*}
-\]</span></p>
-</section>
-<section id="relu" class="level3">
-<h3 class="anchored" data-anchor-id="relu">ReLU</h3>
-<div id="b18bdbc1" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ReLU:</span>
-<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
-<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.grad <span class="op">=</span> <span class="va">None</span></span>
-<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-7"><a href="#annotated-cell-1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> derivative(<span class="va">self</span>, x):</span>
-<span id="annotated-cell-1-8"><a href="#annotated-cell-1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""∂ReLU(x)/∂x"""</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-9" class="code-annotation-target"><a href="#annotated-cell-1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.where(x<span class="op">&gt;</span><span class="dv">0</span>, <span class="fl">1.0</span>, <span class="fl">0.0</span>)</span>
-<span id="annotated-cell-1-10"><a href="#annotated-cell-1-10" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="annotated-cell-1-11"><a href="#annotated-cell-1-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, x):</span>
-<span id="annotated-cell-1-12"><a href="#annotated-cell-1-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.grad <span class="op">=</span> <span class="va">self</span>.derivative(x)</span>
-<span id="annotated-cell-1-13"><a href="#annotated-cell-1-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.maximum(<span class="dv">0</span>, x)</span>
-<span id="annotated-cell-1-14"><a href="#annotated-cell-1-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="annotated-cell-1-15"><a href="#annotated-cell-1-15" aria-hidden="true" tabindex="-1"></a>relu <span class="op">=</span> ReLU()</span>
-<span id="annotated-cell-1-16"><a href="#annotated-cell-1-16" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.random.randn(<span class="dv">3</span>,<span class="dv">3</span>)</span>
-<span id="annotated-cell-1-17"><a href="#annotated-cell-1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-1-18"><a href="#annotated-cell-1-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)</span>
-<span id="annotated-cell-1-19"><a href="#annotated-cell-1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(relu(x))</span>
-<span id="annotated-cell-1-20"><a href="#annotated-cell-1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(relu.grad)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-annotation">
-<dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
-<dd>
-<span data-code-cell="annotated-cell-1" data-code-lines="9" data-code-annotation="1">Mathmatically, <code>np.diag(np.ravel(np.where(x&gt;0,1,0)))</code> is correct.</span>
-</dd>
-</dl>
+<section id="presentation-layer" class="level3">
+<h3 class="anchored" data-anchor-id="presentation-layer">Presentation Layer</h3>
+<p>The presentation layer is responsible for translating data between the application layer and the network. <strong>SSL/TLS</strong> operates at this layer to provide encryption and secure communication between applications. <strong>GZIP</strong> compression also operates at this layer to reduce the size of data being transmitted over the network.</p>
+<p>There is a dedicated post about <a href="../posts/TLS.html">TLS</a>. Long story short, TLS is based on TCP connections, thus it starts with the three-way handshake to establish a TCP connection (which is a L4 connection), and then it performs the TLS handshake.</p>
+<p>In cryptography, asymmetric key pairs are commonly used, but each protocol (such as TLS or SSH) uses them differently during the handshake and authentication process. One thing that does not change is that private key is not shared though the network (unless it is encrypted and sent as part of the handshake).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./OSISeven/images/202-presentation-tls.png" class="img-fluid figure-img" width="300"></p>
+<figcaption>Asymmetric key pairs in TLS for Secure Communication</figcaption>
+</figure>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[[-0.42797173  0.60839396  1.15425232]
- [ 0.68239731 -0.93929577 -0.68960342]
- [ 0.56626354 -0.24723246  1.07462857]]
-[[0.         0.60839396 1.15425232]
- [0.68239731 0.         0.        ]
- [0.56626354 0.         1.07462857]]
-[[0. 1. 1.]
- [1. 0. 0.]
- [1. 0. 1.]]</code></pre>
+<p>The default certificate format used in TLS is <strong>X.509</strong>, which is a standard format for public key certificates. In Kubernetes, TLS certificates are often stored in <strong>Secrets</strong> and mounted as files in the container, which can then be used by applications to establish secure connections. When first 6443 port is exposed, the TLS certificate is generated and stored in a Secret called `</p>
+</section>
+<section id="application-layer" class="level3">
+<h3 class="anchored" data-anchor-id="application-layer">Application Layer</h3>
+<p>The application layer is the topmost layer of the OSI model and is responsible for providing network services directly to end-users and applications. It includes protocols that enable various types of communication and data exchange over the network. Some of the most common application layer protocols include HTTP, HTTPS, FTP, SMTP, DNS, and many others.</p>
+<div style="max-width: 400px; margin: auto;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant Client
+    participant Server
+    Client-&gt;&gt;Server: TCP Handshake (L4)
+    Client-&gt;&gt;Server: TLS Handshake (L6)
+    Client-&gt;&gt;Server: HTTP Request (L7)
+    Server-&gt;&gt;Client: HTML/CSS/JS
+</pre>
+</div>
+<p></p></figure><p></p>
 </div>
 </div>
-</section>
-<section id="linear---relu" class="level3">
-<h3 class="anchored" data-anchor-id="linear---relu">Linear -&gt; ReLU</h3>
-<p><span class="math display">\[
-\begin{bmatrix}
-\\
-&amp;A&amp; \vert \mathbf b \\
-\\
-\end{bmatrix}
-\begin{bmatrix}
-\\
-\mathbf x \\
-\\
-\hline
-1
-\end{bmatrix}
-=
-\begin{bmatrix}
-\\
-\mathbf y \\
-\\
-\end{bmatrix},
-\quad \mathrm{ReLU}(\mathbf y) = \mathbf z
-\]</span></p>
-<p><span class="math display">\[
-\dfrac{\partial \mathcal L}{\partial \begin{bmatrix}&amp;[A]_i&amp;|b_i\end{bmatrix}^\top}
-=
-\begin{bmatrix}
-&amp;\mathbf x^\top&amp; \vert 1 \\
-\end{bmatrix}
-\mathbb{1}_{y_i &gt; 0}(y_i)
-\frac{\partial \mathcal L}{\partial z_i}
-\]</span></p>
-</section>
-<section id="convolution" class="level3">
-<h3 class="anchored" data-anchor-id="convolution">Convolution</h3>
-<ul>
-<li><span class="math inline">\(\mathbf x_{4 \times 4}\)</span>: input</li>
-<li><span class="math inline">\(\kappa_{3 \times 3}\)</span>: kernel</li>
-<li><span class="math inline">\(\mathbf z_{2 \times 2}\)</span>: output</li>
-</ul>
-<p><span class="math display">\[
-\begin{bmatrix}
-x_{11} &amp; x_{12} &amp; x_{13} &amp; x_{14} \\
-x_{21} &amp; x_{22} &amp; x_{23} &amp; x_{24} \\
-x_{31} &amp; x_{32} &amp; x_{33} &amp; x_{34} \\
-x_{41} &amp; x_{42} &amp; x_{43} &amp; x_{44}
-\end{bmatrix} \star
-\begin{bmatrix}
-\kappa_{11} &amp; \kappa_{12} &amp; \kappa_{13} \\
-\kappa_{21} &amp; \kappa_{22} &amp; \kappa_{23} \\
-\kappa_{31} &amp; \kappa_{32} &amp; \kappa_{33}
-\end{bmatrix} =
-\begin{bmatrix}
-z_{11} &amp; z_{12} \\
-z_{21} &amp; z_{22}
-\end{bmatrix}
-\]</span></p>
-<p><span class="math display">\[
-\dfrac{\partial \mathbf z}{\partial \kappa}
-\]</span></p>
-<p><span class="math display">\[
-\dfrac{\partial \mathbf z}{\partial \kappa} =
-\begin{matrix}
-       &amp; \kappa_{11} &amp; \kappa_{12} &amp; \kappa_{13} &amp; \kappa_{21} &amp; \kappa_{22} &amp; \kappa_{23} &amp; \kappa_{31} &amp; \kappa_{32} &amp; \kappa_{33} \\
-z_{11} &amp; x_{11} &amp; x_{12} &amp; x_{13} &amp; x_{21} &amp; x_{22} &amp; x_{23} &amp; x_{31} &amp; x_{32} &amp; x_{33} \\
-z_{12} &amp; x_{12} &amp; x_{13} &amp; x_{14} &amp; x_{22} &amp; x_{23} &amp; x_{24} &amp; x_{32} &amp; x_{33} &amp; x_{34} \\
-z_{21} &amp; x_{21} &amp; x_{22} &amp; x_{23} &amp; x_{31} &amp; x_{32} &amp; x_{33} &amp; x_{41} &amp; x_{42} &amp; x_{43} \\
-z_{22} &amp; x_{22} &amp; x_{23} &amp; x_{24} &amp; x_{32} &amp; x_{33} &amp; x_{34} &amp; x_{42} &amp; x_{43} &amp; x_{44}
-\end{matrix}
-\]</span></p>
-<p><span class="math display">\[
-\dfrac{\partial \mathcal L}{\partial \kappa} =
-\dfrac{\partial \mathcal L}{\partial \mathbf z}
-\dfrac{\partial \mathbf z}{\partial \kappa}
-\]</span></p>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

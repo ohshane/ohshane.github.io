@@ -27,11 +27,11 @@
       src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
     ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/katex/dist/katex.min.css" />
     <script src="https://unpkg.com/katex/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 
     <!-- Highlight.js for code linting/highlighting -->
     <link
@@ -345,14 +345,19 @@
         font-size: 14px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
+        text-align: left;
         gap: 8px;
         cursor: pointer;
+        width: 100%;
         transition:
           background 0.12s,
           color 0.12s;
       }
       .sidebar-link:hover {
+        background: var(--sidebar-hover);
+      }
+      .sidebar-link.active {
         background: var(--sidebar-hover);
       }
       .sidebar-link-main {
@@ -515,6 +520,112 @@
       }
       .header-btn:hover {
         background: var(--icon-hover-bg);
+      }
+
+      /* ── Graph drawer ── */
+      .graph-drawer {
+        position: absolute;
+        inset: 0;
+        background: var(--page-bg);
+        z-index: 5;
+        display: flex;
+        flex-direction: column;
+      }
+      .graph-drawer-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+        padding: 4px 8px;
+      }
+      .graph-drawer-meta {
+        font-size: 12px;
+        color: var(--text-tertiary);
+      }
+      .graph-drawer-body {
+        flex: 1;
+        min-height: 0;
+        position: relative;
+      }
+      .graph-svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        cursor: grab;
+        background: var(--chat-bg);
+      }
+      .graph-svg:active {
+        cursor: grabbing;
+      }
+      .graph-link {
+        stroke: var(--text-secondary);
+        stroke-opacity: 0.55;
+        stroke-width: 1px;
+        pointer-events: none;
+      }
+      .graph-link.href {
+        stroke-width: 1.5px;
+        stroke-opacity: 0.75;
+      }
+      .graph-link.child {
+        stroke-dasharray: 4 2;
+      }
+      .graph-link.next {
+        stroke-dasharray: 1 3;
+      }
+      .graph-node {
+        cursor: pointer;
+        stroke: var(--page-bg);
+        stroke-width: 1px;
+      }
+      .graph-node:hover {
+        stroke: var(--text-primary);
+        stroke-width: 2px;
+      }
+      .graph-tooltip {
+        position: absolute;
+        pointer-events: none;
+        background: var(--user-bubble-bg);
+        border: 1px solid var(--sidebar-border);
+        color: var(--text-primary);
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        max-width: 280px;
+        opacity: 0;
+        transition: opacity 0.1s;
+        z-index: 1;
+      }
+      .graph-legend {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: var(--user-bubble-bg);
+        border: 1px solid var(--sidebar-border);
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .graph-legend-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .graph-legend-swatch {
+        width: 18px;
+        height: 2px;
+        display: inline-block;
+      }
+      .graph-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: var(--text-tertiary);
+        font-size: 13px;
       }
 
       /* ── Messages ── */
@@ -1129,11 +1240,6 @@
       const NAV_LINKS = [
         { href: "index.html", label: "Home", icon: "house" },
         { href: "index.html#posts", label: "Posts", icon: "file-text" },
-        {
-          href: "knowledgegraph.html",
-          label: "Knowledge Graph",
-          icon: "brain",
-        },
         { href: "about.html", label: "About", icon: "user" },
         { href: "https://github.com/ohshane", label: "GitHub", icon: "github" },
       ];
@@ -1189,143 +1295,6 @@
         return "https://quarto-chat.shaneoh.workers.dev/api/v1/chat/completions";
       })();
 
-      let searchData = null;
-
-      async function fetchSearchData() {
-        if (searchData) return searchData;
-
-        // Try relative path first.
-        // NOTE: On local dev, the Worker proxies this to http://localhost:8888/search.json
-        const urls = ["/search.json", "https://blog.shaneoh.org/search.json"];
-
-        for (const url of urls) {
-          try {
-            console.log(`Attempting to fetch search data from: ${url}`);
-            const res = await fetch(url);
-            if (res.ok) {
-              searchData = await res.json();
-              console.log(`Successfully loaded search data from: ${url}`);
-              return searchData;
-            } else {
-              console.log(`Fetch failed (HTTP ${res.status}): ${url}`);
-            }
-          } catch (e) {
-            console.warn(`Could not fetch from ${url}:`, e.message);
-          }
-        }
-
-        console.error("All attempts to fetch search.json failed.");
-        return null;
-      }
-
-      function findRelevantContext(query, data, limit = 3) {
-        if (!data || !query || !window.Fuse) {
-          console.log(
-            "[Search] Skipped: No data, query, or Fuse.js not loaded.",
-          );
-          return { context: "", sources: [], totalMatches: 0 };
-        }
-
-        console.log(`[Search] Query: "${query}"`);
-
-        const fuse = new Fuse(data, {
-          keys: [
-            { name: "title", weight: 0.5 },
-            { name: "section", weight: 0.3 },
-            { name: "text", weight: 0.2 },
-          ],
-          threshold: 0.6,
-          includeScore: true,
-          ignoreLocation: true,
-          minMatchCharLength: 2,
-        });
-
-        const allResults = fuse.search(query);
-        const totalMatches = allResults.length;
-
-        if (totalMatches === 0) {
-          console.log("[Search] No matches under threshold 0.6.");
-          const topRejected = fuse.search(query, { limit: 5 });
-          if (topRejected.length > 0) {
-            console.log("[Search] Top candidates (rejected):");
-            topRejected.forEach((res, i) => {
-              console.log(
-                `  ${i + 1}. ${res.item.title} (${res.item.section || "No section"}) - Score: ${res.score.toFixed(4)}`,
-              );
-            });
-          }
-          return { context: "", sources: [], totalMatches: 0 };
-        }
-
-        console.log(`[Search] Found ${totalMatches} matches.`);
-
-        // Context and Sources: Limit both to top 3 for cleaner UI and focused AI
-        const topResults = allResults.slice(0, limit);
-
-        const context = topResults
-          .map(
-            (res) =>
-              `[Source: ${res.item.title}${res.item.section ? " - " + res.item.section : ""}]\n${res.item.text}`,
-          )
-          .join("\n\n");
-
-        const sources = topResults.map((res) => ({
-          title: res.item.title,
-          section: res.item.section,
-          href: res.item.href,
-          score: res.score,
-        }));
-
-        return { context, sources, totalMatches };
-      }
-
-      async function extractKeywords(messages, model) {
-        try {
-          const lastMessage = messages[messages.length - 1]?.content || "";
-          console.log("[Keywords] Extracting technical terms...");
-
-          const contextMessages = messages.slice(-5).map((m) => ({
-            role: m.role === "bot" ? "assistant" : "user",
-            content: m.content,
-          }));
-
-          const res = await fetch(API_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              model,
-              stream: false,
-              messages: [
-                {
-                  role: "system",
-                  content:
-                    "You are a specialized search query optimizer. Identify 3-5 main technical concepts from the conversation. Return ONLY a space-separated list of keywords in Korean and English. NO explanations, NO full sentences, NO introduction. Example: '힙 정렬 Heap Sort 우선순위 큐 Priority Queue'",
-                },
-                ...contextMessages,
-              ],
-            }),
-          });
-
-          if (!res.ok) return lastMessage;
-
-          const json = await res.json();
-          let extracted = json.choices?.[0]?.message?.content || "";
-
-          extracted = extracted
-            .replace(/\n/g, " ")
-            .replace(/아래는|용어입니다|키워드:|입력:|Keywords:/g, "")
-            .trim();
-          console.log(`[Keywords] Extracted: "${extracted || "(none)"}"`);
-
-          return extracted.length > 3 && extracted.length < 200
-            ? `${extracted} ${lastMessage}`
-            : extracted || lastMessage;
-        } catch (e) {
-          console.warn("[Keywords] Extraction failed.", e);
-          return messages[messages.length - 1]?.content || "";
-        }
-      }
-
       async function streamChat(
         messages,
         model,
@@ -1336,37 +1305,12 @@
         signal,
       ) {
         onStatus("Searching blog posts...");
-
-        // Let UI update
         await new Promise((r) => setTimeout(r, 0));
-
-        const data = await fetchSearchData();
-        const searchQuery = await extractKeywords(messages, model);
-        const { context, sources, totalMatches } = findRelevantContext(
-          searchQuery,
-          data,
-        );
-
-        if (totalMatches > 0) {
-          onStatus(`Found ${totalMatches} matches`);
-          if (sources.length > 0) {
-            onSources(sources);
-          }
-        } else {
-          onStatus(""); // Clear status instead of showing 'No matching posts found'
-        }
 
         const apiMessages = messages.map((m) => ({
           role: m.role === "bot" ? "assistant" : "user",
           content: m.content,
         }));
-
-        if (context) {
-          apiMessages.unshift({
-            role: "system",
-            content: `You are a helpful assistant. Use the following context from the user's blog posts to help answer the question if relevant. If the context doesn't help, just answer normally.\n\nContext:\n${context}`,
-          });
-        }
 
         const chatRes = await fetch(API_URL, {
           method: "POST",
@@ -1383,6 +1327,8 @@
         const reader = chatRes.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
+        let inSourcesEvent = false;
+        let sourcesAnnounced = false;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -1393,16 +1339,43 @@
           buffer = lines.pop();
 
           for (const line of lines) {
+            if (line === "") {
+              inSourcesEvent = false;
+              continue;
+            }
+            if (line.startsWith("event: ")) {
+              inSourcesEvent = line.slice(7).trim() === "sources";
+              continue;
+            }
             if (!line.startsWith("data: ")) continue;
             const data = line.slice(6);
+
+            if (inSourcesEvent) {
+              try {
+                const parsed = JSON.parse(data);
+                const srcs = parsed.sources || [];
+                if (srcs.length) onSources(srcs);
+                onStatus(srcs.length ? `Found ${srcs.length} matches` : "");
+                sourcesAnnounced = true;
+              } catch {}
+              continue;
+            }
+
             if (data === "[DONE]") {
+              if (!sourcesAnnounced) onStatus("");
               onDone();
               return;
             }
             try {
               const parsed = JSON.parse(data);
               const delta = parsed.choices?.[0]?.delta?.content;
-              if (delta) onChunk(delta);
+              if (delta) {
+                if (!sourcesAnnounced) {
+                  onStatus("");
+                  sourcesAnnounced = true;
+                }
+                onChunk(delta);
+              }
             } catch {}
           }
         }
@@ -1576,6 +1549,276 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
       }
 
+      /* ── Graph endpoint ── */
+      const GRAPH_URL = API_URL.replace(
+        "/api/v1/chat/completions",
+        "/api/v1/graph",
+      );
+
+      const BLOG_BASE_URL = (() => {
+        const h = window.location.hostname;
+        return h === "localhost" || h === "127.0.0.1"
+          ? "http://localhost:8888/"
+          : "https://blog.shaneoh.org/";
+      })();
+
+      /* ── GraphDrawer ── */
+      const GraphDrawer = ({ onClose, onToggleSidebar }) => {
+        const svgRef = useRef(null);
+        const tooltipRef = useRef(null);
+        const containerRef = useRef(null);
+        const [state, setState] = useState({
+          status: "loading",
+          error: null,
+          nodes: 0,
+          edges: 0,
+        });
+
+        useEffect(() => {
+          let cancelled = false;
+          let simulation = null;
+
+          (async () => {
+            try {
+              const res = await fetch(GRAPH_URL);
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              const snap = await res.json();
+              if (cancelled) return;
+              if (!snap.nodes?.length) {
+                setState({
+                  status: "empty",
+                  error: null,
+                  nodes: 0,
+                  edges: 0,
+                });
+                return;
+              }
+              setState({
+                status: "ready",
+                error: null,
+                nodes: snap.nodes.length,
+                edges: snap.edges.length,
+              });
+
+              if (!window.d3 || !svgRef.current || !containerRef.current) return;
+
+              const d3 = window.d3;
+              const rect = containerRef.current.getBoundingClientRect();
+              const W = rect.width;
+              const H = rect.height;
+
+              const postIds = [...new Set(snap.nodes.map((n) => n.postId))];
+              const color = d3.scaleOrdinal(d3.schemeTableau10).domain(postIds);
+
+              const nodeMap = new Map(snap.nodes.map((n) => [n.id, { ...n }]));
+              for (const pid of postIds) {
+                if (!nodeMap.has(pid)) {
+                  const sample = snap.nodes.find((n) => n.postId === pid);
+                  nodeMap.set(pid, {
+                    id: pid,
+                    postId: pid,
+                    title: sample?.title || pid,
+                    section: "",
+                    href: pid,
+                    depth: 1,
+                  });
+                }
+              }
+              const nodes = [...nodeMap.values()];
+              const validIds = new Set(nodes.map((n) => n.id));
+              const links = snap.edges
+                .filter((e) => validIds.has(e.src) && validIds.has(e.dst))
+                .map((e) => ({ source: e.src, target: e.dst, type: e.type }));
+
+              const svg = d3
+                .select(svgRef.current)
+                .attr("viewBox", `0 0 ${W} ${H}`);
+              svg.selectAll("*").remove();
+              const g = svg.append("g");
+
+              const zoom = d3.zoom().scaleExtent([0.2, 4]).on("zoom", (ev) => {
+                g.attr("transform", ev.transform);
+              });
+              svg.call(zoom);
+
+              const link = g
+                .append("g")
+                .selectAll("line")
+                .data(links)
+                .join("line")
+                .attr("class", (d) => `graph-link ${d.type}`);
+
+              const node = g
+                .append("g")
+                .selectAll("circle")
+                .data(nodes)
+                .join("circle")
+                .attr("class", "graph-node")
+                .attr("r", 5)
+                .attr("fill", (d) => color(d.postId))
+                .on("mouseenter", (ev, d) => {
+                  const tip = tooltipRef.current;
+                  if (!tip) return;
+                  tip.style.opacity = 1;
+                  tip.textContent = d.section
+                    ? `${d.title} > ${d.section}`
+                    : d.title;
+                  const cr = containerRef.current.getBoundingClientRect();
+                  tip.style.left = ev.clientX - cr.left + 12 + "px";
+                  tip.style.top = ev.clientY - cr.top + 12 + "px";
+                })
+                .on("mousemove", (ev) => {
+                  const tip = tooltipRef.current;
+                  if (!tip) return;
+                  const cr = containerRef.current.getBoundingClientRect();
+                  tip.style.left = ev.clientX - cr.left + 12 + "px";
+                  tip.style.top = ev.clientY - cr.top + 12 + "px";
+                })
+                .on("mouseleave", () => {
+                  if (tooltipRef.current) tooltipRef.current.style.opacity = 0;
+                })
+                .on("click", (ev, d) => {
+                  if (!d.href) return;
+                  window.open(BLOG_BASE_URL + d.href, "_blank", "noopener");
+                })
+                .call(
+                  d3
+                    .drag()
+                    .on("start", (ev, d) => {
+                      if (!ev.active) simulation.alphaTarget(0.3).restart();
+                      d.fx = d.x;
+                      d.fy = d.y;
+                    })
+                    .on("drag", (ev, d) => {
+                      d.fx = ev.x;
+                      d.fy = ev.y;
+                    })
+                    .on("end", (ev, d) => {
+                      if (!ev.active) simulation.alphaTarget(0);
+                      d.fx = null;
+                      d.fy = null;
+                    }),
+                );
+
+              simulation = d3
+                .forceSimulation(nodes)
+                .force(
+                  "link",
+                  d3
+                    .forceLink(links)
+                    .id((d) => d.id)
+                    .distance((d) => (d.type === "href" ? 60 : 24))
+                    .strength((d) => (d.type === "href" ? 0.5 : 0.8)),
+                )
+                .force("charge", d3.forceManyBody().strength(-70).distanceMax(300))
+                .force("center", d3.forceCenter(W / 2, H / 2))
+                .force("x", d3.forceX(W / 2).strength(0.03))
+                .force("y", d3.forceY(H / 2).strength(0.03))
+                .force("collide", d3.forceCollide(8))
+                .on("tick", () => {
+                  link
+                    .attr("x1", (d) => d.source.x)
+                    .attr("y1", (d) => d.source.y)
+                    .attr("x2", (d) => d.target.x)
+                    .attr("y2", (d) => d.target.y);
+                  node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+                });
+            } catch (e) {
+              if (!cancelled) {
+                setState({
+                  status: "error",
+                  error: e.message || String(e),
+                  nodes: 0,
+                  edges: 0,
+                });
+              }
+            }
+          })();
+
+          return () => {
+            cancelled = true;
+            if (simulation) simulation.stop();
+          };
+        }, []);
+
+        return (
+          <div className="graph-drawer">
+            <header className="chat-header">
+              <div className="chat-header-inner">
+                <div className="header-left">
+                  <button
+                    className="header-btn mobile-header-btn"
+                    onClick={onToggleSidebar}
+                    title="Toggle sidebar"
+                    aria-label="Toggle sidebar"
+                  >
+                    <Icon name="panel-left" size={18} />
+                  </button>
+                  <span className="graph-drawer-title">Knowledge graph</span>
+                </div>
+                <div className="header-actions">
+                  <span className="graph-drawer-meta">
+                    {state.status === "ready"
+                      ? `${state.nodes} nodes · ${state.edges} edges`
+                      : state.status === "loading"
+                        ? "Loading…"
+                        : state.status === "empty"
+                          ? "Graph not built yet — run ingest"
+                          : `Error: ${state.error}`}
+                  </span>
+                </div>
+              </div>
+            </header>
+            <div className="graph-drawer-body" ref={containerRef}>
+              {state.status === "error" || state.status === "empty" ? (
+                <div className="graph-empty">
+                  {state.status === "empty"
+                    ? "No graph snapshot found. Run the ingest script."
+                    : state.error}
+                </div>
+              ) : (
+                <>
+                  <svg ref={svgRef} className="graph-svg" />
+                  <div ref={tooltipRef} className="graph-tooltip" />
+                  <div className="graph-legend">
+                    <div className="graph-legend-row">
+                      <span
+                        className="graph-legend-swatch"
+                        style={{
+                          borderTop: "2px solid var(--text-secondary)",
+                          height: 0,
+                        }}
+                      />
+                      href (cross-post)
+                    </div>
+                    <div className="graph-legend-row">
+                      <span
+                        className="graph-legend-swatch"
+                        style={{
+                          borderTop: "1px dashed var(--text-secondary)",
+                          height: 0,
+                        }}
+                      />
+                      parent → child
+                    </div>
+                    <div className="graph-legend-row">
+                      <span
+                        className="graph-legend-swatch"
+                        style={{
+                          borderTop: "1px dotted var(--text-secondary)",
+                          height: 0,
+                        }}
+                      />
+                      next (reading order)
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        );
+      };
+
       /* ── App ── */
       function App() {
         const INPUT_MAX_HEIGHT = 160;
@@ -1589,6 +1832,7 @@
         const [streaming, setStreaming] = useState(false);
         const [showClearModal, setShowClearModal] = useState(false);
         const [copiedMessageId, setCopiedMessageId] = useState(null);
+        const [graphOpen, setGraphOpen] = useState(false);
 
         const [conversations, setConversations] = useState(
           () => loadHistory().conversations,
@@ -2086,15 +2330,19 @@
                         if (window.innerWidth <= 768) setSidebarOpen(false);
                       }}
                     >
-                      <span className="sidebar-link-main">
-                        <Icon name={item.icon} size={16} />
-                        <span className="sidebar-link-label">{item.label}</span>
-                      </span>
-                      <span className="sidebar-link-trailing">
-                        <Icon name="chevron-right" size={14} />
-                      </span>
+                      <Icon name={item.icon} size={16} />
+                      <span className="sidebar-link-label">{item.label}</span>
                     </a>
                   ))}
+                  <button
+                    type="button"
+                    className={`sidebar-link ${graphOpen ? "active" : ""}`}
+                    onClick={() => setGraphOpen((v) => !v)}
+                    aria-pressed={graphOpen}
+                  >
+                    <Icon name="waypoints" size={16} />
+                    <span className="sidebar-link-label">Knowledge Graph</span>
+                  </button>
                 </nav>
 
                 <div className="sidebar-footer">
@@ -2111,6 +2359,12 @@
 
               {/* ── Chat area ── */}
               <section className="chat-main">
+                {graphOpen && (
+                  <GraphDrawer
+                    onClose={() => setGraphOpen(false)}
+                    onToggleSidebar={() => setSidebarOpen((v) => !v)}
+                  />
+                )}
                 <header className="chat-header">
                   <div className="chat-header-inner">
                     <div className="header-left">
@@ -2143,13 +2397,6 @@
                           name={theme === "light" ? "moon" : "sun"}
                           size={17}
                         />
-                      </button>
-                      <button
-                        className="header-btn mobile-header-btn"
-                        onClick={handleNewChat}
-                        title="New chat"
-                      >
-                        <Icon name="square-pen" size={16} />
                       </button>
                     </div>
                   </div>
