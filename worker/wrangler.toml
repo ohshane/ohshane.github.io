@@ -1,9 +1,34 @@
 name = "quarto-chat"
 main = "src/index.js"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./public"
+binding = "ASSETS"
 
 [vars]
 ALLOWED_ORIGINS = "https://ohshane.github.io,https://blog.shaneoh.org"
+EMBED_MODEL = "@cf/baai/bge-m3"
+CHAT_MODEL_DEFAULT = "openai/gpt-4o-mini"
+BLOG_BASE_URL = "https://blog.shaneoh.org"
+
+# Workers AI binding. Uncomment for RAG. Requires `npx wrangler login`
+# because AI runs on Cloudflare infra (no local emulator).
+[ai]
+binding = "AI"
+
+# Vectorize: uncomment after running
+#   npx wrangler vectorize create chat-index --dimensions=1024 --metric=cosine
+#   npx wrangler vectorize create-metadata-index chat-index --property-name=postId --type=string
+[[vectorize]]
+binding = "VEC"
+index_name = "chat-index"
+remote = true
+
+# KV namespace: uncomment + paste id after running
+#   npx wrangler kv namespace create GRAPH
+[[kv_namespaces]]
+binding = "GRAPH"
+id = "3115dd621f9841a8b668f9aba66f6120"
+remote = true

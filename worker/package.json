@@ -1,9 +1,11 @@
 {
   "private": true,
   "scripts": {
-    "build": "mkdir -p public && cp ../chat.html public/index.html",
-    "dev:setup": "mkdir -p public && cp ../chat.html public/index.html",
+    "build": "mkdir -p public && cp ../chat.html public/index.html && node scripts/build-graph.mjs",
+    "predev": "test -f .dev.vars || echo 'OPENROUTER_API_KEY=sk-or-v1-REPLACE' > .dev.vars",
+    "dev:setup": "mkdir -p public && cp ../chat.html public/index.html && node scripts/build-graph.mjs",
     "dev": "npm run dev:setup && (npx chokidar-cli \"../chat.html\" -c \"npm run dev:setup\" & npx wrangler dev)",
-    "deploy": "npm run build && npx wrangler deploy"
+    "deploy": "npm run build && npx wrangler deploy",
+    "ingest": "node scripts/ingest.mjs"
   }
 }

@@ -19,10 +19,6 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - href: knowledgegraph.html
-        text: Knowledge Graph
-      - href: jraph.html
-        text: Jraph
       - href: chat.html
         text: Chat
   draft-mode: visible

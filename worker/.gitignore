@@ -1,4 +1,5 @@
 public/
 .env
+.rag-env
 .dev.vars
 node_modules/
