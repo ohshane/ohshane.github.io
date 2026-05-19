@@ -27,7 +27,7 @@ Think of a cable sending **electrical signals using bits**. The physical layer i
 This layer is the first layer that deals with source and destination addresses.
 The switch operates at this layer, and it uses the **MAC address** to forward data (**frames**; on Ethernet, the payload is typically 46 ~ 1500 bytes) to the correct destination. Take a look at the video from Ace Networker [here](https://youtu.be/JsYqqDqmQaE?si=nRT_zVF86KMlfSj_) for more.
 
-![Frames in Data Link Layer](./OSISeven/images/200-datalink-frames.png){width=500}
+![Frames in Data Link Layer](OSISeven/images/200-datalink-frames.png){width=500}
 
 :::{.callout-note}
 # MAC Address
@@ -39,7 +39,7 @@ that maps MAC addresses to physical ports.
 When a frame arrives at the switch, it looks at the destination MAC address and forwards the frame to the appropriate port based on the CAM table.
 If the destination MAC address is not in the CAM table, the switch will broadcast the frame to all ports except the one it arrived on.
 
-![CAM table](./OSISeven/images/201-datalink-cam-table.png){width=500}
+![CAM table](OSISeven/images/201-datalink-cam-table.png){width=500}
 
 When network topology is cyclic, there are infinitely many paths to the destination.
 This will cause broadcast storms, where frames are continuously broadcasted.
@@ -261,7 +261,7 @@ Long story short, TLS is based on TCP connections, thus it starts with the three
 In cryptography, asymmetric key pairs are commonly used, but each protocol (such as TLS or SSH) uses them differently during the handshake and authentication process.
 One thing that does not change is that private key is not shared though the network (unless it is encrypted and sent as part of the handshake).
 
-![Asymmetric key pairs in TLS for Secure Communication](./OSISeven/images/202-presentation-tls.png){width=300}
+![Asymmetric key pairs in TLS for Secure Communication](OSISeven/images/202-presentation-tls.png){width=300}
 
 The default certificate format used in TLS is **X.509**, which is a standard format for public key certificates.
 In Kubernetes, TLS certificates are often stored in **Secrets** and mounted as files in the container, which can then be used by applications to establish secure connections.
