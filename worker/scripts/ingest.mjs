@@ -370,7 +370,7 @@ async function main() {
   const edges = [];
   for (const [chunkId, list] of Object.entries(hierByNode)) {
     for (const e of list) {
-      if (e.type === "child" || e.type === "next") {
+      if (e.type === "child") {
         edges.push({ src: chunkId, dst: e.dst, type: e.type });
       }
     }

@@ -5,6 +5,7 @@ project:
     - "!*_.qmd"
   resources:
     - chat.html
+    - CNAME
   preview:
     port: 8888
 website:

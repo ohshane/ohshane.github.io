@@ -1627,7 +1627,12 @@
               const nodes = [...nodeMap.values()];
               const validIds = new Set(nodes.map((n) => n.id));
               const links = snap.edges
-                .filter((e) => validIds.has(e.src) && validIds.has(e.dst))
+                .filter(
+                  (e) =>
+                    e.type !== "next" &&
+                    validIds.has(e.src) &&
+                    validIds.has(e.dst),
+                )
                 .map((e) => ({ source: e.src, target: e.dst, type: e.type }));
 
               const svg = d3
@@ -1800,16 +1805,6 @@
                         }}
                       />
                       parent → child
-                    </div>
-                    <div className="graph-legend-row">
-                      <span
-                        className="graph-legend-swatch"
-                        style={{
-                          borderTop: "1px dotted var(--text-secondary)",
-                          height: 0,
-                        }}
-                      />
-                      next (reading order)
                     </div>
                   </div>
                 </>

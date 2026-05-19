@@ -93,14 +93,6 @@ function buildHierarchyEdges(headings, postId) {
     }
     stack.push({ level: h.level, id });
   }
-  for (let i = 0; i < headings.length - 1; i++) {
-    if (headings[i].level !== headings[i + 1].level) continue;
-    edges.push({
-      src: `${postId}#${headings[i].id}`,
-      dst: `${postId}#${headings[i + 1].id}`,
-      type: "next",
-    });
-  }
   return edges;
 }
 
