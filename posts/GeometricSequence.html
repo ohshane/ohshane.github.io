@@ -299,7 +299,7 @@ S_n &amp;= \dfrac{a(r^n - 1)}{r-1}
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/ohshane\.github\.io\/");
+        var filterRegex = new RegExp("https:\/\/blog\.shaneoh\.org");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

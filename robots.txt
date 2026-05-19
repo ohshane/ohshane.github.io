@@ -1,1 +1,1 @@
-Sitemap: https://ohshane.github.io/sitemap.xml
+Sitemap: https://blog.shaneoh.org/sitemap.xml

@@ -263,7 +263,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="ascii">ASCII</h2>
 <p>ASCII is a character encoding developed in the ’60s by ANSI. It uses 7 bits for character representation. However, in modern computing, characters are stored in bytes (8 bits) for compatibility reasons.</p>
 <p>Let’s take a look at the 8-bit encoded sentence.</p>
-<div id="3ea71e56" class="cell" data-execution_count="2">
+<div id="fa9ef1f7" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -287,7 +287,7 @@ compression rate: 0.0%</code></pre>
 <h3 class="anchored" data-anchor-id="sec-huffman-tree">Huffman tree</h3>
 <p>We <strong>build the tree from the bottom</strong> using the <strong>less frequent characters</strong>. Eventually, the less frequent ones are placed at deeper levels. The deeper a character is, the longer the traversal route from the root, which results in a longer encoding length.</p>
 <p>Check the code below.</p>
-<div id="c4ec3129" class="cell" data-execution_count="4">
+<div id="438fcfaa" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode python code-annotation-code code-with-copy code-annotated"><code class="sourceCode python"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
 <span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="annotated-cell-1-3"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Node:</span>
@@ -371,67 +371,67 @@ compression rate: 0.0%</code></pre>
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">graph RL
-140104664507472[36]
-140104664507472 -- 0 --&gt; 140104664499472
-140104664507472 -- 1 --&gt; 140104664513104
-140104664499472[21]
-140104664499472 -- 0 --&gt; 140104664509648
-140104664499472 -- 1 --&gt; 140104664506832
-140104664513104[15]
-140104664513104 -- 0 --&gt; 140104664502224
-140104664513104 -- 1 --&gt; 140104664514192
-140104664509648[13]
-140104664509648 -- 0 --&gt; 140104666428880
-140104664509648 -- 1 --&gt; 140104666416912
-140104664506832[8]
-140104664506832 -- 0 --&gt; 140104664507664
-140104664506832 -- 1 --&gt; 140104664497552
-140104664502224[8]
-140104664502224 -- 0 --&gt; 140104664486224
-140104664502224 -- 1 --&gt; 140104664488912
-140104664514192[7]
-140104664514192 -- 0 --&gt; 140104666422480
-140104664514192 -- 1 --&gt; 140104666421200
-140104666428880[' ': 7]
-140104666416912['A': 6]
-140104664507664[4]
-140104664507664 -- 0 --&gt; 140104664489616
-140104664507664 -- 1 --&gt; 140104664493520
-140104664497552[4]
-140104664497552 -- 0 --&gt; 140104664486160
-140104664497552 -- 1 --&gt; 140104664485072
-140104664486224[4]
-140104664486224 -- 0 --&gt; 140104664490320
-140104664486224 -- 1 --&gt; 140104664484048
-140104664488912[4]
-140104664488912 -- 0 --&gt; 140104664495952
-140104664488912 -- 1 --&gt; 140104664496592
-140104666422480['E': 4]
-140104666421200['P': 3]
-140104664489616[2]
-140104664489616 -- 0 --&gt; 140104664492624
-140104664489616 -- 1 --&gt; 140104664487056
-140104664493520[2]
-140104664493520 -- 0 --&gt; 140104664495120
-140104664493520 -- 1 --&gt; 140104664487824
-140104664486160[2]
-140104664486160 -- 0 --&gt; 140104666418704
-140104664486160 -- 1 --&gt; 140104664489104
-140104664485072[2]
-140104664485072 -- 0 --&gt; 140104666416016
-140104664485072 -- 1 --&gt; 140104666416400
-140104664490320['O': 2]
-140104664484048['T': 2]
-140104664495952['Y': 2]
-140104664496592['D': 2]
-140104664492624['W': 1]
-140104664487056['R': 1]
-140104664495120['C': 1]
-140104664487824['H': 1]
-140104666418704['S': 1]
-140104664489104['K': 1]
-140104666416016['L': 1]
-140104666416400['N': 1]
+139831461854032[36]
+139831461854032 -- 0 --&gt; 139831461846416
+139831461854032 -- 1 --&gt; 139831461846928
+139831461846416[21]
+139831461846416 -- 0 --&gt; 139831461848016
+139831461846416 -- 1 --&gt; 139831461839888
+139831461846928[15]
+139831461846928 -- 0 --&gt; 139831461839824
+139831461846928 -- 1 --&gt; 139831461843920
+139831461848016[13]
+139831461848016 -- 0 --&gt; 139831461756816
+139831461848016 -- 1 --&gt; 139830793958288
+139831461839888[8]
+139831461839888 -- 0 --&gt; 139831461641872
+139831461839888 -- 1 --&gt; 139831462199120
+139831461839824[8]
+139831461839824 -- 0 --&gt; 139831462184208
+139831461839824 -- 1 --&gt; 139831462199184
+139831461843920[7]
+139831461843920 -- 0 --&gt; 139830786739984
+139831461843920 -- 1 --&gt; 139830919422800
+139831461756816[' ': 7]
+139830793958288['A': 6]
+139831461641872[4]
+139831461641872 -- 0 --&gt; 139831462187664
+139831461641872 -- 1 --&gt; 139831462194832
+139831462199120[4]
+139831462199120 -- 0 --&gt; 139831462199248
+139831462199120 -- 1 --&gt; 139831462193680
+139831462184208[4]
+139831462184208 -- 0 --&gt; 139830571774544
+139831462184208 -- 1 --&gt; 139830571778000
+139831462199184[4]
+139831462199184 -- 0 --&gt; 139830794789264
+139831462199184 -- 1 --&gt; 139830916721296
+139830786739984['E': 4]
+139830919422800['P': 3]
+139831462187664[2]
+139831462187664 -- 0 --&gt; 139831462184144
+139831462187664 -- 1 --&gt; 139831462188944
+139831462194832[2]
+139831462194832 -- 0 --&gt; 139830571773072
+139831462194832 -- 1 --&gt; 139830571774480
+139831462199248[2]
+139831462199248 -- 0 --&gt; 139830793150672
+139831462199248 -- 1 --&gt; 139830571774672
+139831462193680[2]
+139831462193680 -- 0 --&gt; 139830919417232
+139831462193680 -- 1 --&gt; 139830919517392
+139830571774544['O': 2]
+139830571778000['T': 2]
+139830794789264['Y': 2]
+139830916721296['D': 2]
+139831462184144['W': 1]
+139831462188944['R': 1]
+139830571773072['C': 1]
+139830571774480['H': 1]
+139830793150672['S': 1]
+139830571774672['K': 1]
+139830919417232['L': 1]
+139830919517392['N': 1]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -442,7 +442,7 @@ compression rate: 0.0%</code></pre>
 <section id="huffman-code" class="level3">
 <h3 class="anchored" data-anchor-id="huffman-code">Huffman code</h3>
 <p>Finally, the Huffman coded result is below.</p>
-<div id="5603f86f" class="cell" data-execution_count="8">
+<div id="feefcffc" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-stdout">
 <pre><code>AN APPLE A DAY KEEPS THE DOCTOR AWAY
 
@@ -455,7 +455,7 @@ compression rate: 54.2%</code></pre>
 </div>
 </div>
 <p>You might be familiar with the pangram <code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</code>. It contains all the letters from <code>A</code> to <code>Z</code>, which makes it harder to compress.</p>
-<div id="be40b9c4" class="cell" data-execution_count="10">
+<div id="0f59951d" class="cell" data-execution_count="10">
 <div class="cell-output cell-output-stdout">
 <pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG
 
@@ -659,7 +659,7 @@ Figure&nbsp;2: Kraft-McMillan inequality
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/ohshane\.github\.io\/");
+        var filterRegex = new RegExp("https:\/\/blog\.shaneoh\.org");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
