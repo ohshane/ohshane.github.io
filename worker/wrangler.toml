@@ -8,7 +8,7 @@ directory = "./public"
 binding = "ASSETS"
 
 [vars]
-ALLOWED_ORIGINS = "https://ohshane.github.io,https://blog.shaneoh.org"
+ALLOWED_ORIGINS = "https://ohshane.github.io,https://blog.shaneoh.org,http://blog.shaneoh.org"
 EMBED_MODEL = "@cf/baai/bge-m3"
 CHAT_MODEL_DEFAULT = "openai/gpt-4o-mini"
 BLOG_BASE_URL = "https://blog.shaneoh.org"
