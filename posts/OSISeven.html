@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -42,10 +42,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-041dce2fa3b545dedda7e2f66d5ce58d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-2ba802e17d7574e30f8bfacfaf251162.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -234,7 +234,7 @@ window.Quarto = {
 <p>This layer is the first layer that deals with source and destination addresses. The switch operates at this layer, and it uses the <strong>MAC address</strong> to forward data (<strong>frames</strong>; on Ethernet, the payload is typically 46 ~ 1500 bytes) to the correct destination. Take a look at the video from Ace Networker <a href="https://youtu.be/JsYqqDqmQaE?si=nRT_zVF86KMlfSj_">here</a> for more.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./OSISeven/images/200-datalink-frames.png" class="img-fluid figure-img" width="500"></p>
+<p><img src="OSISeven/images/200-datalink-frames.png" class="img-fluid figure-img" width="500"></p>
 <figcaption>Frames in Data Link Layer</figcaption>
 </figure>
 </div>
@@ -254,7 +254,7 @@ window.Quarto = {
 <p>L2 switches in this layer have a <strong>CAM (Content Addressable Memory)</strong> table that maps MAC addresses to physical ports. When a frame arrives at the switch, it looks at the destination MAC address and forwards the frame to the appropriate port based on the CAM table. If the destination MAC address is not in the CAM table, the switch will broadcast the frame to all ports except the one it arrived on.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./OSISeven/images/201-datalink-cam-table.png" class="img-fluid figure-img" width="500"></p>
+<p><img src="OSISeven/images/201-datalink-cam-table.png" class="img-fluid figure-img" width="500"></p>
 <figcaption>CAM table</figcaption>
 </figure>
 </div>
@@ -493,8 +493,7 @@ window.Quarto = {
 </section>
 <section id="session-layer" class="level3">
 <h3 class="anchored" data-anchor-id="session-layer">Session Layer</h3>
-<p>Let’s say when you log into a website and you <strong>change the network connection from WiFi to cellular data</strong>, you don’t want to log in again. This is the job of the session layer, which manages sessions between applications. It allows applications to establish, maintain, and terminate sessions as needed.</p>
-<p>Although the socket has changed (because the IP address and the port changes when switching networks), the session layer can maintain the session by using a unique session ID that is independent of the underlying network connection. We often use <strong>cookies</strong> to maintain sessions in web applications.</p>
+<p>The session layer establishes, maintains, and terminates <strong>sessions</strong> (dialogs) between applications. It handles dialog control (who transmits when, full- or half-duplex) and <strong>checkpointing/resynchronization</strong>. You can see that this is usefull when file sharing etc. NetBIOS operates at this layer to provide session services for applications on a local network.</p>
 </section>
 <section id="presentation-layer" class="level3">
 <h3 class="anchored" data-anchor-id="presentation-layer">Presentation Layer</h3>
@@ -503,7 +502,7 @@ window.Quarto = {
 <p>In cryptography, asymmetric key pairs are commonly used, but each protocol (such as TLS or SSH) uses them differently during the handshake and authentication process. One thing that does not change is that private key is not shared though the network (unless it is encrypted and sent as part of the handshake).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="./OSISeven/images/202-presentation-tls.png" class="img-fluid figure-img" width="300"></p>
+<p><img src="OSISeven/images/202-presentation-tls.png" class="img-fluid figure-img" width="300"></p>
 <figcaption>Asymmetric key pairs in TLS for Secure Communication</figcaption>
 </figure>
 </div>
