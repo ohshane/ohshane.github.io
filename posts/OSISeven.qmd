@@ -243,10 +243,9 @@ The difference between NLB and NAT Gateway is that NLB is used for inbound traff
 
 ### Session Layer
 
-Let's say when you log into a website and you **change the network connection from WiFi to cellular data**, you don't want to log in again.
-This is the job of the session layer, which manages sessions between applications. It allows applications to establish, maintain, and terminate sessions as needed.
-
-Although the socket has changed (because the IP address and the port changes when switching networks), the session layer can maintain the session by using a unique session ID that is independent of the underlying network connection. We often use **cookies** to maintain sessions in web applications.
+The session layer establishes, maintains, and terminates **sessions** (dialogs) between applications. It handles dialog control (who transmits when, full- or half-duplex) and **checkpointing/resynchronization**.
+You can see that this is usefull when file sharing etc.
+NetBIOS operates at this layer to provide session services for applications on a local network.
 
 ### Presentation Layer
 
