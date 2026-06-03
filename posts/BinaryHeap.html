@@ -522,7 +522,7 @@ Level 3    8   9  10   11 12   13 14   15   Height 0</code></pre>
 <li>There are <span class="math inline">\(2^{l}-1\)</span> nodes in the whole tree just before level <span class="math inline">\(l\)</span>.</li>
 <li>There are <span class="math inline">\(2^{l}\)</span> nodes at level <span class="math inline">\(l\)</span>.</li>
 <li>There are <span class="math inline">\(2^{l+1}\)</span> nodes at the next level, <span class="math inline">\(l+1\)</span>, which is twice as many.</li>
-<li>At <strong>height</strong> <span class="math inline">\(h\)</span>, there are a maximum of <span class="math inline">\(\lceil \frac{N}{2^{h+1}} \rceil\)</span> leaf nodes.</li>
+<li>At <strong>height</strong> <span class="math inline">\(h\)</span>, there are at most <span class="math inline">\(\lceil \frac{N}{2^{h+1}} \rceil\)</span> nodes, where <span class="math inline">\(h\)</span> means the longest downward path from that node to a leaf.</li>
 </ul>
 </div>
 </div>
@@ -536,7 +536,7 @@ Level 3    8   9  10   11 12   13 14   15   Height 0</code></pre>
 &amp;= O(N)
 \end{align*}
 \]</span></p>
-<p>The talor series is useful when explaining this. Check out the [post] if you are interested.</p>
+<p>The talor series is useful when explaining this.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
