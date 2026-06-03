@@ -280,7 +280,7 @@ Pick any level you desire in between and set it as $l$.
 - There are $2^{l}-1$ nodes in the whole tree just before level $l$.
 - There are $2^{l}$ nodes at level $l$.
 - There are $2^{l+1}$ nodes at the next level, $l+1$, which is twice as many.
-- At **height** $h$, there are a maximum of $\lceil \frac{N}{2^{h+1}} \rceil$ leaf nodes.
+- At **height** $h$, there are at most $\lceil \frac{N}{2^{h+1}} \rceil$ nodes, where $h$ means the longest downward path from that node to a leaf.
 :::
 
 The nodes at height $h$ needs to be heapified by sifting down $h$ times
@@ -297,7 +297,6 @@ $$
 $$
 
 The talor series is useful when explaining this.
-Check out the [post] if you are interested.
 
 ::: {.callout-note}
 # What is the range of leaf nodes?
