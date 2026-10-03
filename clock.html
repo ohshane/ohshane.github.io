@@ -2,11 +2,17 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f3f1eb">
   <meta name="description" content="흐릿한 바늘과 붉은 점으로 느끼는 시간의 기척. 고요하게 흐르는 시계.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="clock">
   <title>clock</title>
+  <link rel="manifest" href="/clock.webmanifest">
+  <link rel="apple-touch-icon" href="/image/clock-icon-180.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%23f3f1eb%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2223%22%20fill%3D%22%23e5e3d5%22%20stroke%3D%22%23d6d4c7%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M32%2032%2042%2020%22%20stroke%3D%22%2364685e%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2246%22%20r%3D%224%22%20fill%3D%22%23b34d50%22%2F%3E%3C%2Fsvg%3E">
   <style>
 :root {
@@ -17,6 +23,9 @@
   -webkit-font-smoothing: antialiased;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+/* Lock the page so iPad fullscreen and iOS rubber-banding cannot scroll the background. */
+html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 body { margin: 0; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; }
@@ -36,12 +45,19 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   --glass: #e5e3d5;
   --hand: #505651;
   --dot: #b34d50;
-  min-height: 100svh;
+  --pad-top: 38px;
+  --pad-x: 58px;
+  --pad-bottom: 24px;
+  --clock-size: clamp(240px, 32vw, 380px);
+  --caption-space: 110px;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 38px 58px 24px;
+  padding: max(var(--pad-top), env(safe-area-inset-top)) max(var(--pad-x), env(safe-area-inset-right)) max(var(--pad-bottom), env(safe-area-inset-bottom)) max(var(--pad-x), env(safe-area-inset-left));
   background: radial-gradient(ellipse at 50% 42%, #faf9f4 0%, #f3f1eb 62%, #edeae2 100%);
-  position: relative;
+  touch-action: manipulation;
   isolation: isolate;
   color: var(--text);
   color-scheme: light;
@@ -51,7 +67,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: .13;
+  opacity: .06;
   z-index: -1;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23736f63' opacity='.5' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
 }
@@ -74,16 +90,21 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   color-scheme: dark;
 }
 :root:has(.clock-app[data-finish="stone"]) { background: #252525; color-scheme: dark; }
-.clock-app[data-finish="stone"]::before { opacity: .08; }
-.clock-app[data-finish="stone"] .clock-object::before { background: #000; opacity: .35; inset: 12% 3% -6% 10%; filter: blur(25px); transform: translate(10px, 12px); }
+.clock-app[data-finish="stone"]::before { opacity: .04; }
+.clock-app[data-finish="stone"] .clock-object::before { background: #000; opacity: .5; inset: 12% 3% -6% 10%; filter: blur(25px); transform: translate(10px, 12px); }
 .clock-app[data-finish="stone"] .clock-rim {
   background: linear-gradient(140deg, #ffffff38, #ffffff00 42%, #0000001c 75%, #ffffff18), var(--rim);
   border-color: #c3c3c34d;
   box-shadow: inset 0 1px 2px #ffffff55, inset -1px -2px 3px #00000030, 2px 5px 7px #00000025;
 }
 .clock-app[data-finish="stone"] .clock-glass { box-shadow: inset 1px 2px 3px #39393955, inset -1px -1px 2px #e3e3e35c; }
-.clock-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 65px 0 48px; }
-.clock-object { width: clamp(240px, 32vw, 380px); aspect-ratio: 1; position: relative; }
+.clock-stage { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 65px 0 48px; }
+.clock-object { width: var(--clock-size); flex-shrink: 0; aspect-ratio: 1; position: relative; }
+@supports (width: 1cqh) {
+  .clock-stage { container-type: size; }
+  /* Shrink the dial on short screens so everything fits without scrolling. */
+  .clock-object { width: min(var(--clock-size), max(120px, 100cqh - var(--caption-space))); }
+}
 .clock-object::before {
   content: "";
   position: absolute;
@@ -121,7 +142,27 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
 .time-caption { text-align: center; margin-top: 49px; display: flex; flex-direction: column; gap: 16px; min-height: 61px; transition: opacity .25s; }
 .digital-time { font-size: 24px; font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: .08em; color: var(--time); line-height: 1.1; }
 .clock-app[data-show-time="false"] .time-caption { opacity: 0; visibility: hidden; }
-.clock-footer { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.clock-footer { width: 100%; max-width: 1200px; margin: 0 auto; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; transition: opacity .3s, visibility 0s; }
+.clock-app[data-idle="true"] { cursor: none; }
+.clock-app[data-idle="true"] .clock-footer { opacity: 0; visibility: hidden; transition: opacity .8s, visibility 0s .8s; }
+.clock-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(max(var(--pad-bottom), env(safe-area-inset-bottom)) + 50px);
+  width: max-content;
+  max-width: calc(100% - 48px);
+  margin: 0;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: .02em;
+  color: var(--muted);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s;
+}
+.clock-hint[data-visible="true"] { opacity: 1; }
 .finish-picker { display: flex; align-items: center; gap: 13px; }
 .finish-swatch { padding: 4px; width: 28px; height: 28px; border: 1px solid transparent; border-radius: 50%; background: transparent; cursor: pointer; transition: border-color .2s; }
 .finish-swatch span { display: block; width: 100%; height: 100%; border-radius: 50%; border: 1px solid #00000012; }
@@ -135,28 +176,30 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
 .icon-button svg { width: 20px; height: 20px; }
 .system-theme-button[aria-pressed="true"] { background: var(--hover); color: var(--hover-text); }
 .control-divider { width: 1px; height: 12px; background: var(--border); }
-@media (min-width: 1500px) { .clock-object { width: 400px; } }
+@media (min-width: 1500px) { .clock-app { --clock-size: 400px; } }
 @media (max-width: 640px) {
-  .clock-app { padding: 27px 24px 23px; }
+  .clock-app { --pad-top: 27px; --pad-x: 24px; --pad-bottom: 23px; --clock-size: min(72vw, 330px); --caption-space: 101px; }
   .clock-stage { padding: 62px 0 48px; }
-  .clock-object { width: min(72vw, 330px); }
   .clock-rim { padding: 8px; }
   .time-caption { margin-top: 40px; }
   .finish-picker { gap: 9px; }
   .view-controls { gap: 9px; }
 }
 @media (max-height: 650px) and (min-width: 641px) {
-  .clock-app { padding-top: 24px; }
+  .clock-app { --pad-top: 24px; --clock-size: 250px; --caption-space: 84px; }
   .clock-stage { padding: 30px 0 20px; }
-  .clock-object { width: 250px; }
   .time-caption { margin-top: 23px; gap: 8px; }
+}
+@media (max-height: 420px) {
+  .clock-app { --pad-top: 14px; --pad-bottom: 14px; --caption-space: 70px; }
+  .clock-stage { padding: 8px 0 6px; }
+  .time-caption { margin-top: 12px; gap: 6px; min-height: 58px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
 
 .calendar-date { color: var(--faint); font-size: 11px; font-weight: 300; letter-spacing: .12em; font-variant-numeric: tabular-nums; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 /* Apply the system theme to initial HTML before JavaScript starts. */
 @media (prefers-color-scheme: dark) {
@@ -179,8 +222,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     color-scheme: dark;
   }
   :root:has(.clock-app[data-theme="system"]) { background: #252525; color-scheme: dark; }
-  .clock-app[data-theme="system"]::before { opacity: .08; }
-  .clock-app[data-theme="system"] .clock-object::before { background: #000; opacity: .35; inset: 12% 3% -6% 10%; filter: blur(25px); transform: translate(10px, 12px); }
+  .clock-app[data-theme="system"]::before { opacity: .04; }
+  .clock-app[data-theme="system"] .clock-object::before { background: #000; opacity: .5; inset: 12% 3% -6% 10%; filter: blur(25px); transform: translate(10px, 12px); }
   .clock-app[data-theme="system"] .clock-rim {
     background: linear-gradient(140deg, #ffffff38, #ffffff00 42%, #0000001c 75%, #ffffff18), var(--rim);
     border-color: #c3c3c34d;
@@ -191,7 +234,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   </style>
 </head>
 <body>
-  <main class="clock-app" data-finish="chalk" data-theme="system" data-show-time="true">
+  <main class="clock-app" data-finish="chalk" data-theme="system" data-show-time="false" data-idle="false">
     <section class="clock-stage" aria-label="시계">
       <div class="clock-object" data-clock-object>
         <div class="clock-rim">
@@ -225,16 +268,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         </button>
       </div>
       <div class="view-controls">
-        <button type="button" class="icon-button" data-toggle-time aria-label="디지털 시간 숨기기" aria-pressed="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /><path data-eye-slash d="m4 4 16 16" visibility="hidden" /></svg>
+        <button type="button" class="icon-button" data-toggle-time aria-label="디지털 시간 보이기" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /><path data-eye-slash d="m4 4 16 16" visibility="visible" /></svg>
         </button>
         <span class="control-divider"></span>
         <button type="button" class="icon-button" data-fullscreen aria-label="전체 화면" aria-pressed="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path data-fullscreen-icon d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" /></svg>
         </button>
       </div>
-      <span class="sr-only" role="status" data-status></span>
     </footer>
+    <p class="clock-hint" role="status" data-status></p>
   </main>
   <script>
   (() => {
@@ -249,6 +292,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const themeButtons = [...root.querySelectorAll('[data-color]')];
     const digital = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const IDLE_DELAY = 3000;
     let theme = 'system';
     let animationId = 0;
     let lastMinute = -1;
@@ -281,7 +325,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         const formatted = digital.format(now);
         time.textContent = formatted;
         dial.setAttribute('aria-label', `현재 시각 ${formatted}`);
-        date.textContent = `${now.getFullYear()}年 ${String(now.getMonth() + 1).padStart(2, '0')}月 ${String(now.getDate()).padStart(2, '0')}日`;
+        date.textContent = `${now.getMonth() + 1}月 ${now.getDate()}日 ${'日月火水木金土'[now.getDay()]}`;
         // Approximate sunlight using local time: east at 06:00, overhead at noon, west at 18:00.
         const hour = now.getHours() + now.getMinutes() / 60;
         const daylight = hour >= 6 && hour < 18;
@@ -290,7 +334,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         clock.style.setProperty('--sun-shadow-x', `${lateral * 30}px`);
         clock.style.setProperty('--sun-shadow-y', `${daylight ? 18 + length * 14 : 0}px`);
         clock.style.setProperty('--sun-shadow-blur', `${16 + length * 8}px`);
-        clock.style.setProperty('--sun-shadow-opacity', String(daylight ? 0.18 + length * 0.05 : 0));
+        clock.style.setProperty('--sun-shadow-opacity', String(daylight ? 0.3 + length * 0.08 : 0));
       }
       animationId = requestAnimationFrame(tick);
     }
@@ -312,18 +356,64 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
       root.querySelector('[data-eye-slash]').setAttribute('visibility', visible ? 'hidden' : 'visible');
     });
 
+    // Fade the controls out after a few idle seconds; any pointer movement, tap or key brings them back.
+    const footer = root.querySelector('.clock-footer');
+    const canHover = matchMedia('(hover: hover)');
+    let idleTimer = 0;
+    let lastPointer = '';
+    function scheduleIdle() {
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        // Stay visible while the mouse rests on the controls or keyboard focus is inside them.
+        if ((canHover.matches && footer.matches(':hover')) || footer.querySelector(':focus-visible')) scheduleIdle();
+        else root.dataset.idle = 'true';
+      }, IDLE_DELAY);
+    }
+    function wake() {
+      root.dataset.idle = 'false';
+      scheduleIdle();
+    }
+    document.addEventListener('pointermove', event => {
+      // Ignore synthetic moves where the pointer did not actually travel.
+      const position = `${event.clientX},${event.clientY}`;
+      if (position === lastPointer) return;
+      lastPointer = position;
+      wake();
+    });
+    document.addEventListener('pointerdown', wake);
+    document.addEventListener('keydown', wake);
+    wake();
+
+    let hintTimer = 0;
+    function showHint(message) {
+      status.textContent = message;
+      status.dataset.visible = 'true';
+      clearTimeout(hintTimer);
+      hintTimer = setTimeout(() => { status.dataset.visible = 'false'; }, 5000);
+    }
+
     const fullscreenButton = root.querySelector('[data-fullscreen]');
+    // iPhone Safari has no page fullscreen; a home-screen web app opens without browser chrome instead.
+    const fullscreenHint = 'standalone' in navigator
+      ? '공유 → 홈 화면에 추가로 열면 전체 화면으로 볼 수 있어요.'
+      : '이 브라우저는 전체 화면을 지원하지 않아요.';
+    if (!document.fullscreenEnabled && (navigator.standalone || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches)) {
+      // Already running as a home-screen app, so the button has nothing to do.
+      fullscreenButton.hidden = true;
+      fullscreenButton.previousElementSibling.hidden = true;
+    }
     fullscreenButton.addEventListener('click', async () => {
       status.textContent = '';
       try {
         if (document.fullscreenElement) await document.exitFullscreen();
-        else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
-        else status.textContent = '이 브라우저는 전체 화면을 지원하지 않아요.';
+        else if (document.fullscreenEnabled) await document.documentElement.requestFullscreen();
+        else showHint(fullscreenHint);
       } catch {
-        status.textContent = '전체 화면으로 전환할 수 없어요.';
+        showHint(fullscreenHint);
       }
     });
     document.addEventListener('fullscreenchange', () => {
+      wake();
       const active = Boolean(document.fullscreenElement);
       fullscreenButton.setAttribute('aria-pressed', String(active));
       fullscreenButton.setAttribute('aria-label', active ? '전체 화면 종료' : '전체 화면');

@@ -1,0 +1,16 @@
+{
+  "id": "/clock",
+  "name": "clock",
+  "short_name": "clock",
+  "description": "흐릿한 바늘과 붉은 점으로 느끼는 시간의 기척. 고요하게 흐르는 시계.",
+  "start_url": "/clock",
+  "scope": "/clock",
+  "display": "fullscreen",
+  "background_color": "#f3f1eb",
+  "theme_color": "#f3f1eb",
+  "icons": [
+    { "src": "/image/clock-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/image/clock-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/image/clock-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

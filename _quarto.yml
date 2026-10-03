@@ -6,6 +6,8 @@ project:
   resources:
     - CNAME
     - clock.html
+    - clock.webmanifest
+    - image/clock-icon-*.png
   preview:
     port: 8888
 website:
