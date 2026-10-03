@@ -8,7 +8,8 @@
   <meta name="description" content="흐릿한 바늘과 붉은 점으로 느끼는 시간의 기척. 고요하게 흐르는 시계.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Default status bar: black-translucent makes iOS 26 home-screen apps end short of the screen bottom (WebKit 301108). -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="clock">
   <title>clock</title>
   <link rel="manifest" href="/clock.webmanifest">
@@ -23,7 +24,6 @@
   -webkit-font-smoothing: antialiased;
 }
 * { box-sizing: border-box; }
-[hidden] { display: none !important; }
 /* Lock the page so iPad fullscreen and iOS rubber-banding cannot scroll the background. */
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 body { margin: 0; }
@@ -354,22 +354,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     document.addEventListener('touchmove', event => { if (event.touches.length > 1) event.preventDefault(); }, { passive: false });
     document.addEventListener('wheel', event => { if (event.ctrlKey) event.preventDefault(); }, { passive: false });
 
-    // iOS home-screen apps with viewport-fit=cover lay out a viewport shorter than the screen
-    // (WebKit bug 237961), leaving an empty strip at the bottom. Stretch the page to the real screen height.
-    function fillStandaloneScreen() {
-      root.style.height = '';
-      if (navigator.standalone !== true) return;
-      const portrait = innerHeight >= innerWidth;
-      const short = Math.min(screen.width, screen.height);
-      const long = Math.max(screen.width, screen.height);
-      // Skip windowed apps (iPad Split View or Stage Manager), where the screen size does not apply.
-      if (Math.abs(innerWidth - (portrait ? short : long)) > 1) return;
-      const screenHeight = portrait ? long : short;
-      if (root.getBoundingClientRect().height < screenHeight - 1) root.style.height = `${screenHeight}px`;
-    }
-    window.addEventListener('resize', fillStandaloneScreen);
-    fillStandaloneScreen();
-
     const timeButton = root.querySelector('[data-toggle-time]');
     timeButton.addEventListener('click', () => {
       const visible = root.dataset.showTime !== 'true';
@@ -416,21 +400,17 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     }
 
     const fullscreenButton = root.querySelector('[data-fullscreen]');
-    // iPhone Safari has no page fullscreen; a home-screen web app opens without browser chrome instead.
-    const fullscreenHint = 'standalone' in navigator
-      ? '공유 → 홈 화면에 추가로 열면 전체 화면으로 볼 수 있어요.'
-      : '이 브라우저는 전체 화면을 지원하지 않아요.';
-    if (!document.fullscreenEnabled && (navigator.standalone || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches)) {
-      // Already running as a home-screen app, so the button has nothing to do.
-      fullscreenButton.hidden = true;
-      fullscreenButton.previousElementSibling.hidden = true;
-    }
+    // iPhone Safari and iOS home-screen apps have no page fullscreen, so explain instead of doing nothing.
+    const fullscreenHint = navigator.standalone
+      ? '홈 화면 앱은 이미 전체 화면이에요. 상단 상태 표시줄은 iOS에서 숨길 수 없어요.'
+      : 'standalone' in navigator
+        ? '공유 → 홈 화면에 추가로 열면 전체 화면으로 볼 수 있어요.'
+        : '이 브라우저는 전체 화면을 지원하지 않아요.';
     fullscreenButton.addEventListener('click', async () => {
       status.textContent = '';
       try {
         if (document.fullscreenElement) await document.exitFullscreen();
-        else if (document.fullscreenEnabled) await document.documentElement.requestFullscreen();
-        else showHint(fullscreenHint);
+        else await document.documentElement.requestFullscreen();
       } catch {
         showHint(fullscreenHint);
       }
