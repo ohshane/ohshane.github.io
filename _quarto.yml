@@ -5,7 +5,7 @@ project:
     - "!*_.qmd"
   resources:
     - CNAME
-    - clock/
+    - clock.html
   preview:
     port: 8888
 website:
@@ -20,7 +20,7 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - href: clock/
+      - href: clock.html
         text: Clock
   draft-mode: visible
 format:
