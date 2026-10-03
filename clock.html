@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f3f1eb">
   <meta name="description" content="흐릿한 바늘과 붉은 점으로 느끼는 시간의 기척. 고요하게 흐르는 시계.">
@@ -57,7 +57,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   flex-direction: column;
   padding: max(var(--pad-top), env(safe-area-inset-top)) max(var(--pad-x), env(safe-area-inset-right)) max(var(--pad-bottom), env(safe-area-inset-bottom)) max(var(--pad-x), env(safe-area-inset-left));
   background: radial-gradient(ellipse at 50% 42%, #faf9f4 0%, #f3f1eb 62%, #edeae2 100%);
-  touch-action: manipulation;
+  touch-action: none;
   isolation: isolate;
   color: var(--text);
   color-scheme: light;
@@ -121,6 +121,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   filter: blur(var(--sun-shadow-blur, 12px));
   opacity: var(--sun-shadow-opacity, 0);
   transform: translate(var(--sun-shadow-x, 0px), var(--sun-shadow-y, 0px));
+  transition: opacity 2s, transform 2s, filter 2s;
 }
 .clock-rim {
   width: 100%; height: 100%; padding: 11px; position: relative; border-radius: 50%;
@@ -327,14 +328,15 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         dial.setAttribute('aria-label', `현재 시각 ${formatted}`);
         date.textContent = `${now.getMonth() + 1}月 ${now.getDate()}日 ${'日月火水木金土'[now.getDay()]}曜日`;
         // Approximate sunlight using local time: east at 06:00, overhead at noon, west at 18:00.
+        // At night the shadow falls straight down, as if from a ceiling light.
         const hour = now.getHours() + now.getMinutes() / 60;
         const daylight = hour >= 6 && hour < 18;
         const lateral = daylight ? Math.sin((hour - 12) * Math.PI / 12) : 0;
         const length = Math.abs(lateral);
         clock.style.setProperty('--sun-shadow-x', `${lateral * 30}px`);
-        clock.style.setProperty('--sun-shadow-y', `${daylight ? 18 + length * 14 : 0}px`);
+        clock.style.setProperty('--sun-shadow-y', `${18 + length * 14}px`);
         clock.style.setProperty('--sun-shadow-blur', `${16 + length * 8}px`);
-        clock.style.setProperty('--sun-shadow-opacity', String(daylight ? 0.3 + length * 0.08 : 0));
+        clock.style.setProperty('--sun-shadow-opacity', String(daylight ? 0.3 + length * 0.08 : 0.28));
       }
       animationId = requestAnimationFrame(tick);
     }
@@ -346,6 +348,27 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     window.addEventListener('pagehide', () => cancelAnimationFrame(animationId));
     window.addEventListener('pageshow', resume);
     resume();
+
+    // Block pinch and ctrl-wheel zoom: a zoomed-in page can be panned, which brings the scrollbars back.
+    ['gesturestart', 'gesturechange'].forEach(type => document.addEventListener(type, event => event.preventDefault()));
+    document.addEventListener('touchmove', event => { if (event.touches.length > 1) event.preventDefault(); }, { passive: false });
+    document.addEventListener('wheel', event => { if (event.ctrlKey) event.preventDefault(); }, { passive: false });
+
+    // iOS home-screen apps with viewport-fit=cover lay out a viewport shorter than the screen
+    // (WebKit bug 237961), leaving an empty strip at the bottom. Stretch the page to the real screen height.
+    function fillStandaloneScreen() {
+      root.style.height = '';
+      if (navigator.standalone !== true) return;
+      const portrait = innerHeight >= innerWidth;
+      const short = Math.min(screen.width, screen.height);
+      const long = Math.max(screen.width, screen.height);
+      // Skip windowed apps (iPad Split View or Stage Manager), where the screen size does not apply.
+      if (Math.abs(innerWidth - (portrait ? short : long)) > 1) return;
+      const screenHeight = portrait ? long : short;
+      if (root.getBoundingClientRect().height < screenHeight - 1) root.style.height = `${screenHeight}px`;
+    }
+    window.addEventListener('resize', fillStandaloneScreen);
+    fillStandaloneScreen();
 
     const timeButton = root.querySelector('[data-toggle-time]');
     timeButton.addEventListener('click', () => {
