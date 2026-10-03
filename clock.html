@@ -45,6 +45,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   --glass: #e5e3d5;
   --hand: #505651;
   --dot: #b34d50;
+  --edge: #f3f1eb;
   --pad-top: 38px;
   --pad-x: 58px;
   --pad-bottom: 24px;
@@ -86,6 +87,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   --hover: #ffffff0c;
   --hover-text: #e5e5e5;
   --selected: #c5c5c5;
+  --edge: #252525;
   background: radial-gradient(ellipse at 50% 42%, #353535 0%, #252525 62%, #1d1d1d 100%);
   color-scheme: dark;
 }
@@ -219,6 +221,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     --hover: #ffffff0c;
     --hover-text: #e5e5e5;
     --selected: #c5c5c5;
+    --edge: #252525;
     background: radial-gradient(ellipse at 50% 42%, #353535 0%, #252525 62%, #1d1d1d 100%);
     color-scheme: dark;
   }
@@ -231,6 +234,19 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     box-shadow: inset 0 1px 2px #ffffff55, inset -1px -2px 3px #00000030, 2px 5px 7px #00000025;
   }
   .clock-app[data-theme="system"] .clock-glass { box-shadow: inset 1px 2px 3px #39393955, inset -1px -1px 2px #e3e3e35c; }
+}
+
+/* iOS 26 home-screen apps fill the status bar with the page colour (theme-color is ignored).
+   Fade the top of the page into that same colour so the bar reads as part of the page. */
+.clock-app[data-standalone="true"] { background-color: var(--edge); }
+.clock-app[data-standalone="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 140px;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(var(--edge), transparent);
 }
   </style>
 </head>
@@ -283,6 +299,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   <script>
   (() => {
     const root = document.querySelector('.clock-app');
+    // Running as an iOS home-screen app: lets the CSS blend the page top into the status bar.
+    if (navigator.standalone) root.dataset.standalone = 'true';
     const clock = root.querySelector('[data-clock-object]');
     const hands = Object.fromEntries(['hour', 'minute', 'second'].map(name => [name, root.querySelector(`[data-hand="${name}"]`)]));
     const dial = root.querySelector('[data-dial]');
