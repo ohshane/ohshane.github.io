@@ -4,8 +4,8 @@ project:
     - "*.qmd"
     - "!*_.qmd"
   resources:
-    - chat.html
     - CNAME
+    - clock/
   preview:
     port: 8888
 website:
@@ -20,8 +20,8 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - href: chat.html
-        text: Chat
+      - href: clock/
+        text: Clock
   draft-mode: visible
 format:
   html:

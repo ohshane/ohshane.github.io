@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f3f1eb">
+  <meta name="description" content="흐릿한 바늘과 붉은 점으로 느끼는 시간의 기척. 고요하게 흐르는 시계.">
+  <title>기척 — A quiet clock</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%23f3f1eb%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2223%22%20fill%3D%22%23e5e3d5%22%20stroke%3D%22%23d6d4c7%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M32%2032%2042%2020%22%20stroke%3D%22%2364685e%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2246%22%20r%3D%224%22%20fill%3D%22%23b34d50%22%2F%3E%3C%2Fsvg%3E">
+  <style>
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  background: #f3f1eb;
+  color: #44453f;
+  -webkit-font-smoothing: antialiased;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, a { -webkit-tap-highlight-color: transparent; }
+button { font: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offset: 6px; border-radius: 4px; }
+.clock-app {
+  --text: #44453f;
+  --muted: #919085;
+  --faint: #98988b;
+  --time: #5b5c53;
+  --border: #d9d7cd;
+  --control: #838478;
+  --hover: #dedbd366;
+  --hover-text: #42483d;
+  --selected: #8f9181;
+  --rim: #edece5;
+  --rim-edge: #d6d4c7;
+  --glass: #e5e3d5;
+  --hand: #505651;
+  --dot: #b34d50;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: 38px 58px 24px;
+  background: radial-gradient(ellipse at 50% 42%, #faf9f4 0%, #f3f1eb 62%, #edeae2 100%);
+  position: relative;
+  isolation: isolate;
+  color: var(--text);
+  color-scheme: light;
+}
+.clock-app::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .13;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23736f63' opacity='.5' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
+}
+.clock-app[data-finish="stone"] {
+  --rim: #989898;
+  --rim-edge: #777777;
+  --glass: #bababa;
+  --hand: #444444;
+  --dot: #b84f57;
+  --text: #e2e2e2;
+  --muted: #b3b3b3;
+  --faint: #a3a3a3;
+  --time: #dcdcdc;
+  --border: #444444;
+  --control: #b7b7b7;
+  --hover: #ffffff0c;
+  --hover-text: #e5e5e5;
+  --selected: #c5c5c5;
+  background: radial-gradient(ellipse at 50% 42%, #353535 0%, #252525 62%, #1d1d1d 100%);
+  color-scheme: dark;
+}
+:root:has(.clock-app[data-finish="stone"]) { background: #252525; color-scheme: dark; }
+.clock-app[data-finish="stone"]::before { opacity: .08; }
+.clock-app[data-finish="stone"] .clock-object::before { background: #000; opacity: .35; inset: 12% 3% -6% 10%; filter: blur(25px); transform: translate(10px, 12px); }
+.clock-app[data-finish="stone"] .clock-rim {
+  background: linear-gradient(140deg, #ffffff38, #ffffff00 42%, #0000001c 75%, #ffffff18), var(--rim);
+  border-color: #c3c3c34d;
+  box-shadow: inset 0 1px 2px #ffffff55, inset -1px -2px 3px #00000030, 2px 5px 7px #00000025;
+}
+.clock-app[data-finish="stone"] .clock-glass { box-shadow: inset 1px 2px 3px #39393955, inset -1px -1px 2px #e3e3e35c; }
+.clock-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 65px 0 48px; }
+.clock-object { width: clamp(240px, 32vw, 380px); aspect-ratio: 1; position: relative; }
+.clock-object::before {
+  content: "";
+  position: absolute;
+  inset: 12% 3% -6% 10%;
+  border-radius: 50%;
+  background: #6c6959;
+  filter: blur(25px);
+  opacity: .13;
+  transform: translate(10px, 12px);
+}
+.clock-app[data-finish="chalk"] .clock-object::before {
+  inset: 0;
+  background: #655f54;
+  filter: blur(var(--sun-shadow-blur, 12px));
+  opacity: var(--sun-shadow-opacity, 0);
+  transform: translate(var(--sun-shadow-x, 0px), var(--sun-shadow-y, 0px));
+}
+.clock-rim {
+  width: 100%; height: 100%; padding: 11px; position: relative; border-radius: 50%;
+  background: linear-gradient(140deg, #ffffffa8 0%, #ffffff00 42%, #0000000c 75%, #ffffff66 100%), var(--rim);
+  box-shadow: inset 0 1px 2px #ffffffd9, inset -1px -2px 3px #00000012;
+  border: 1px solid #ffffff80;
+  transition: background-color .5s;
+}
+.clock-glass {
+  width: 100%; height: 100%; overflow: hidden; border-radius: 50%; position: relative;
+  background: radial-gradient(circle at 35% 24%, #ffffff2b, #ffffff00 60%), var(--glass);
+  box-shadow: inset 1px 2px 3px #5d5c4430, inset -1px -1px 2px #ffffffd9;
+  border: 1px solid var(--rim-edge);
+}
+.clock-dial { display: block; width: 100%; height: 100%; position: relative; z-index: 1; }
+.clock-hands { fill: var(--hand); opacity: .72; }
+.second-dot { fill: var(--dot); opacity: .92; }
+.glass-sheen { position: absolute; inset: 0; pointer-events: none; z-index: 2; border-radius: 50%; background: linear-gradient(125deg, #ffffff10, #ffffff00 48%, #ffffff08); }
+.time-caption { text-align: center; margin-top: 49px; display: flex; flex-direction: column; gap: 16px; min-height: 61px; transition: opacity .25s; }
+.digital-time { font-size: 24px; font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: .08em; color: var(--time); line-height: 1.1; }
+.clock-app[data-show-time="false"] .time-caption { opacity: 0; visibility: hidden; }
+.clock-footer { width: 100%; max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.finish-picker { display: flex; align-items: center; gap: 13px; }
+.finish-swatch { padding: 4px; width: 28px; height: 28px; border: 1px solid transparent; border-radius: 50%; background: transparent; cursor: pointer; transition: border-color .2s; }
+.finish-swatch span { display: block; width: 100%; height: 100%; border-radius: 50%; border: 1px solid #00000012; }
+.finish-swatch[data-color="chalk"] span { background: #e8e6db; }
+.finish-swatch[data-color="stone"] span { background: #a2a2a2; }
+.finish-swatch[aria-pressed="true"] { border-color: var(--selected); }
+.finish-swatch:hover { border-color: var(--muted); }
+.view-controls { display: flex; justify-content: flex-end; align-items: center; gap: 16px; }
+.icon-button { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 7px; border: 0; color: var(--control); background: transparent; cursor: pointer; border-radius: 50%; transition: background .2s, color .2s; }
+.icon-button:hover { background: var(--hover); color: var(--hover-text); }
+.icon-button svg { width: 20px; height: 20px; }
+.system-theme-button[aria-pressed="true"] { background: var(--hover); color: var(--hover-text); }
+.control-divider { width: 1px; height: 12px; background: var(--border); }
+@media (min-width: 1500px) { .clock-object { width: 400px; } }
+@media (max-width: 640px) {
+  .clock-app { padding: 27px 24px 23px; }
+  .clock-stage { padding: 62px 0 48px; }
+  .clock-object { width: min(72vw, 330px); }
+  .clock-rim { padding: 8px; }
+  .time-caption { margin-top: 40px; }
+  .finish-picker { gap: 9px; }
+  .view-controls { gap: 9px; }
+}
+@media (max-height: 650px) and (min-width: 641px) {
+  .clock-app { padding-top: 24px; }
+  .clock-stage { padding: 30px 0 20px; }
+  .clock-object { width: 250px; }
+  .time-caption { margin-top: 23px; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+
+.calendar-date { color: var(--faint); font-size: 11px; font-weight: 300; letter-spacing: .12em; font-variant-numeric: tabular-nums; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Apply the system theme to initial HTML before JavaScript starts. */
+@media (prefers-color-scheme: dark) {
+  .clock-app[data-theme="system"] {
+    --rim: #989898;
+    --rim-edge: #777777;
+    --glass: #bababa;
+    --hand: #444444;
+    --dot: #b84f57;
+    --text: #e2e2e2;
+    --muted: #b3b3b3;
+    --faint: #a3a3a3;
+    --time: #dcdcdc;
+    --border: #444444;
+    --control: #b7b7b7;
+    --hover: #ffffff0c;
+    --hover-text: #e5e5e5;
+    --selected: #c5c5c5;
+    background: radial-gradient(ellipse at 50% 42%, #353535 0%, #252525 62%, #1d1d1d 100%);
+    color-scheme: dark;
+  }
+  :root:has(.clock-app[data-theme="system"]) { background: #252525; color-scheme: dark; }
+  .clock-app[data-theme="system"]::before { opacity: .08; }
+  .clock-app[data-theme="system"] .clock-object::before { background: #000; opacity: .35; inset: 12% 3% -6% 10%; filter: blur(25px); transform: translate(10px, 12px); }
+  .clock-app[data-theme="system"] .clock-rim {
+    background: linear-gradient(140deg, #ffffff38, #ffffff00 42%, #0000001c 75%, #ffffff18), var(--rim);
+    border-color: #c3c3c34d;
+    box-shadow: inset 0 1px 2px #ffffff55, inset -1px -2px 3px #00000030, 2px 5px 7px #00000025;
+  }
+  .clock-app[data-theme="system"] .clock-glass { box-shadow: inset 1px 2px 3px #39393955, inset -1px -1px 2px #e3e3e35c; }
+}
+  </style>
+</head>
+<body>
+  <main class="clock-app" data-finish="chalk" data-theme="system" data-show-time="true">
+    <section class="clock-stage" aria-label="시계">
+      <div class="clock-object" data-clock-object>
+        <div class="clock-rim">
+          <div class="clock-glass">
+            <svg data-dial viewBox="0 0 400 400" role="img" aria-label="현재 시각" class="clock-dial">
+              <defs>
+                <filter id="hand-haze" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="5.5" /></filter>
+                <filter id="dot-haze" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.6" /></filter>
+              </defs>
+              <g class="clock-hands">
+                <g data-hand="hour"><rect x="180" y="40" width="40" height="74" rx="6" filter="url(#hand-haze)" /></g>
+                <g data-hand="minute"><rect x="180" y="40" width="40" height="168" rx="6" filter="url(#hand-haze)" /></g>
+              </g>
+              <g data-hand="second"><circle class="second-dot" cx="200" cy="68" r="28" filter="url(#dot-haze)" /></g>
+            </svg>
+            <div class="glass-sheen"></div>
+          </div>
+        </div>
+      </div>
+      <div class="time-caption">
+        <span class="digital-time" data-time>—:—</span>
+        <span class="calendar-date" data-date></span>
+      </div>
+    </section>
+    <footer class="clock-footer">
+      <div class="finish-picker" role="group" aria-label="화면 모드">
+        <button type="button" class="finish-swatch" data-color="chalk" aria-label="라이트 모드" aria-pressed="false"><span></span></button>
+        <button type="button" class="finish-swatch" data-color="stone" aria-label="다크 모드" aria-pressed="false"><span></span></button>
+        <button type="button" class="icon-button system-theme-button" data-color="system" aria-label="시스템 테마 따르기" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M12 16v5m-4 0h8" /></svg>
+        </button>
+      </div>
+      <div class="view-controls">
+        <button type="button" class="icon-button" data-toggle-time aria-label="디지털 시간 숨기기" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /><path data-eye-slash d="m4 4 16 16" visibility="hidden" /></svg>
+        </button>
+        <span class="control-divider"></span>
+        <button type="button" class="icon-button" data-fullscreen aria-label="전체 화면" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path data-fullscreen-icon d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" /></svg>
+        </button>
+      </div>
+      <span class="sr-only" role="status" data-status></span>
+    </footer>
+  </main>
+  <script>
+  (() => {
+    const root = document.querySelector('.clock-app');
+    const clock = root.querySelector('[data-clock-object]');
+    const hands = Object.fromEntries(['hour', 'minute', 'second'].map(name => [name, root.querySelector(`[data-hand="${name}"]`)]));
+    const dial = root.querySelector('[data-dial]');
+    const time = root.querySelector('[data-time]');
+    const date = root.querySelector('[data-date]');
+    const status = root.querySelector('[data-status]');
+    const systemTheme = matchMedia('(prefers-color-scheme: dark)');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const themeButtons = [...root.querySelectorAll('[data-color]')];
+    const digital = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    let theme = 'system';
+    let animationId = 0;
+    let lastMinute = -1;
+
+    function applyTheme() {
+      const finish = theme === 'system' ? (systemTheme.matches ? 'stone' : 'chalk') : theme;
+      root.dataset.theme = theme;
+      root.dataset.finish = finish;
+      document.querySelector('meta[name="theme-color"]').content = finish === 'stone' ? '#252525' : '#f3f1eb';
+      themeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.color === theme)));
+    }
+    themeButtons.forEach(button => button.addEventListener('click', () => {
+      theme = button.dataset.color;
+      applyTheme();
+    }));
+    systemTheme.addEventListener('change', () => { if (theme === 'system') applyTheme(); });
+    applyTheme();
+
+    function tick() {
+      const now = new Date();
+      const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
+      const minutes = now.getMinutes() + seconds / 60;
+      const hours = (now.getHours() % 12) + minutes / 60;
+      hands.second.setAttribute('transform', `rotate(${(reducedMotion.matches ? now.getSeconds() : seconds) * 6} 200 200)`);
+      hands.minute.setAttribute('transform', `rotate(${minutes * 6} 200 200)`);
+      hands.hour.setAttribute('transform', `rotate(${hours * 30} 200 200)`);
+      const currentMinute = Math.floor(now.getTime() / 60000);
+      if (lastMinute !== currentMinute) {
+        lastMinute = currentMinute;
+        const formatted = digital.format(now);
+        time.textContent = formatted;
+        dial.setAttribute('aria-label', `현재 시각 ${formatted}`);
+        date.textContent = `${now.getFullYear()}年 ${String(now.getMonth() + 1).padStart(2, '0')}月 ${String(now.getDate()).padStart(2, '0')}日`;
+        // Approximate sunlight using local time: east at 06:00, overhead at noon, west at 18:00.
+        const hour = now.getHours() + now.getMinutes() / 60;
+        const daylight = hour >= 6 && hour < 18;
+        const lateral = daylight ? Math.sin((hour - 12) * Math.PI / 12) : 0;
+        const length = Math.abs(lateral);
+        clock.style.setProperty('--sun-shadow-x', `${lateral * 30}px`);
+        clock.style.setProperty('--sun-shadow-y', `${daylight ? 18 + length * 14 : 0}px`);
+        clock.style.setProperty('--sun-shadow-blur', `${16 + length * 8}px`);
+        clock.style.setProperty('--sun-shadow-opacity', String(daylight ? 0.18 + length * 0.05 : 0));
+      }
+      animationId = requestAnimationFrame(tick);
+    }
+    function resume() {
+      cancelAnimationFrame(animationId);
+      if (!document.hidden) tick();
+    }
+    document.addEventListener('visibilitychange', resume);
+    window.addEventListener('pagehide', () => cancelAnimationFrame(animationId));
+    window.addEventListener('pageshow', resume);
+    resume();
+
+    const timeButton = root.querySelector('[data-toggle-time]');
+    timeButton.addEventListener('click', () => {
+      const visible = root.dataset.showTime !== 'true';
+      root.dataset.showTime = String(visible);
+      timeButton.setAttribute('aria-pressed', String(visible));
+      timeButton.setAttribute('aria-label', visible ? '디지털 시간 숨기기' : '디지털 시간 보이기');
+      root.querySelector('[data-eye-slash]').setAttribute('visibility', visible ? 'hidden' : 'visible');
+    });
+
+    const fullscreenButton = root.querySelector('[data-fullscreen]');
+    fullscreenButton.addEventListener('click', async () => {
+      status.textContent = '';
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+        else status.textContent = '이 브라우저는 전체 화면을 지원하지 않아요.';
+      } catch {
+        status.textContent = '전체 화면으로 전환할 수 없어요.';
+      }
+    });
+    document.addEventListener('fullscreenchange', () => {
+      const active = Boolean(document.fullscreenElement);
+      fullscreenButton.setAttribute('aria-pressed', String(active));
+      fullscreenButton.setAttribute('aria-label', active ? '전체 화면 종료' : '전체 화면');
+      root.querySelector('[data-fullscreen-icon]').setAttribute('d', active
+        ? 'M3 8h5V3m13 5h-5V3M3 16h5v5m13-5h-5v5'
+        : 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5');
+    });
+  })();
+  </script>
+</body>
+</html>
