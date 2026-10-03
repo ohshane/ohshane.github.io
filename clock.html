@@ -104,9 +104,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   box-shadow: inset 0 1px 2px #ffffff55, inset -1px -2px 3px #00000030, 2px 5px 7px #00000025;
 }
 .clock-app[data-finish="stone"] .clock-glass { box-shadow: inset 1px 2px 3px #39393955, inset -1px -1px 2px #e3e3e35c; }
-.clock-stage { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 65px 0 48px; transition: filter 2s; }
-/* Night hours: dim the dark screen so it works as a bedside clock. */
-.clock-app[data-night="true"][data-finish="stone"] :is(.clock-stage, .clock-footer) { filter: brightness(.55); }
+.clock-stage { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 65px 0 48px; }
 .clock-object { width: var(--clock-size); flex-shrink: 0; aspect-ratio: 1; position: relative; }
 @supports (width: 1cqh) {
   .clock-stage { container-type: size; }
@@ -227,11 +225,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
 <body>
   <main class="clock-app" data-finish="chalk" data-theme="system" data-show-time="true" data-idle="false">
     <script>
-      // Shared with the main script. From 22:00 to 06:00 the system theme turns dark and dark screens dim.
-      function resolveAppearance(theme, now = new Date()) {
-        const night = now.getHours() >= 22 || now.getHours() < 6;
-        const dark = night || matchMedia('(prefers-color-scheme: dark)').matches;
-        return { night, finish: theme === 'system' ? (dark ? 'stone' : 'chalk') : theme };
+      // Shared with the main script.
+      function resolveFinish(theme) {
+        return theme === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'stone' : 'chalk') : theme;
       }
       // Apply the saved theme before the first paint: iOS home-screen apps sample the status bar colour from it.
       (() => {
@@ -239,10 +235,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         let theme = 'system';
         try { theme = localStorage.getItem('clock-theme') || theme; } catch {}
         if (!['chalk', 'stone', 'system'].includes(theme)) theme = 'system';
-        const { night, finish } = resolveAppearance(theme);
         root.dataset.theme = theme;
-        root.dataset.finish = finish;
-        root.dataset.night = String(night);
+        root.dataset.finish = resolveFinish(theme);
         // Running as an iOS home-screen app: lets the CSS blend the page top into the status bar.
         if (navigator.standalone) root.dataset.standalone = 'true';
       })();
@@ -312,12 +306,11 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     let lastMinute = -1;
 
     function applyTheme() {
-      const appearance = resolveAppearance(theme);
-      const changed = appearance.finish !== finish;
-      finish = appearance.finish;
+      const next = resolveFinish(theme);
+      const changed = next !== finish;
+      finish = next;
       root.dataset.theme = theme;
       root.dataset.finish = finish;
-      root.dataset.night = String(appearance.night);
       document.querySelector('meta[name="theme-color"]').content = finish === 'stone' ? '#252525' : '#f3f1eb';
       themeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.color === theme)));
       // iOS home-screen apps sample the status bar colour only when the page loads, so reload to resample it.
@@ -348,8 +341,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
       if (lastMinute !== currentMinute) {
         lastMinute = currentMinute;
         dial.setAttribute('aria-label', `현재 시각 ${time.textContent.slice(0, 5)}`);
-        // Picks up the night hours as they start and end.
-        applyTheme();
         date.textContent = `${now.getMonth() + 1}月 ${now.getDate()}日 ${'日月火水木金土'[now.getDay()]}曜日`;
         // Approximate sunlight using local time: east at 06:00, overhead at noon, west at 18:00.
         // At night the shadow falls straight down, as if from a ceiling light.
