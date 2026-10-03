@@ -252,6 +252,19 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
 </head>
 <body>
   <main class="clock-app" data-finish="chalk" data-theme="system" data-show-time="false" data-idle="false">
+    <script>
+      // Apply the saved theme before the first paint: iOS home-screen apps sample the status bar colour from it.
+      (() => {
+        const root = document.currentScript.parentElement;
+        let theme = 'system';
+        try { theme = localStorage.getItem('clock-theme') || theme; } catch {}
+        if (!['chalk', 'stone', 'system'].includes(theme)) theme = 'system';
+        root.dataset.theme = theme;
+        root.dataset.finish = theme === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'stone' : 'chalk') : theme;
+        // Running as an iOS home-screen app: lets the CSS blend the page top into the status bar.
+        if (navigator.standalone) root.dataset.standalone = 'true';
+      })();
+    </script>
     <section class="clock-stage" aria-label="시계">
       <div class="clock-object" data-clock-object>
         <div class="clock-rim">
@@ -299,8 +312,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   <script>
   (() => {
     const root = document.querySelector('.clock-app');
-    // Running as an iOS home-screen app: lets the CSS blend the page top into the status bar.
-    if (navigator.standalone) root.dataset.standalone = 'true';
     const clock = root.querySelector('[data-clock-object]');
     const hands = Object.fromEntries(['hour', 'minute', 'second'].map(name => [name, root.querySelector(`[data-hand="${name}"]`)]));
     const dial = root.querySelector('[data-dial]');
@@ -312,19 +323,25 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     const themeButtons = [...root.querySelectorAll('[data-color]')];
     const digital = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
     const IDLE_DELAY = 3000;
-    let theme = 'system';
+    let theme = root.dataset.theme;
+    let finish = root.dataset.finish;
     let animationId = 0;
     let lastMinute = -1;
 
     function applyTheme() {
-      const finish = theme === 'system' ? (systemTheme.matches ? 'stone' : 'chalk') : theme;
+      const next = theme === 'system' ? (systemTheme.matches ? 'stone' : 'chalk') : theme;
+      const changed = next !== finish;
+      finish = next;
       root.dataset.theme = theme;
       root.dataset.finish = finish;
       document.querySelector('meta[name="theme-color"]').content = finish === 'stone' ? '#252525' : '#f3f1eb';
       themeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.color === theme)));
+      // iOS home-screen apps sample the status bar colour only when the page loads, so reload to resample it.
+      if (changed && navigator.standalone) location.reload();
     }
     themeButtons.forEach(button => button.addEventListener('click', () => {
       theme = button.dataset.color;
+      try { localStorage.setItem('clock-theme', theme); } catch {}
       applyTheme();
     }));
     systemTheme.addEventListener('change', () => { if (theme === 'system') applyTheme(); });
@@ -373,13 +390,16 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     document.addEventListener('wheel', event => { if (event.ctrlKey) event.preventDefault(); }, { passive: false });
 
     const timeButton = root.querySelector('[data-toggle-time]');
-    timeButton.addEventListener('click', () => {
-      const visible = root.dataset.showTime !== 'true';
+    function showTime(visible) {
       root.dataset.showTime = String(visible);
       timeButton.setAttribute('aria-pressed', String(visible));
       timeButton.setAttribute('aria-label', visible ? '디지털 시간 숨기기' : '디지털 시간 보이기');
       root.querySelector('[data-eye-slash]').setAttribute('visibility', visible ? 'hidden' : 'visible');
-    });
+      // Kept per session so the theme reload above does not hide the time again.
+      try { sessionStorage.setItem('clock-show-time', String(visible)); } catch {}
+    }
+    timeButton.addEventListener('click', () => showTime(root.dataset.showTime !== 'true'));
+    try { if (sessionStorage.getItem('clock-show-time') === 'true') showTime(true); } catch {}
 
     // Fade the controls out after a few idle seconds; any pointer movement, tap or key brings them back.
     const footer = root.querySelector('.clock-footer');
