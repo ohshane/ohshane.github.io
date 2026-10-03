@@ -20,7 +20,7 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - href: clock.html
+      - href: /clock
         text: Clock
   draft-mode: visible
 format:
