@@ -2,146 +2,146 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://blog.shaneoh.org/posts/TraefikHelm.html</loc>
-    <lastmod>2026-10-03T04:02:04.884Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.365Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/TLS.html</loc>
-    <lastmod>2026-10-03T04:02:04.884Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.365Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/RookCeph.html</loc>
-    <lastmod>2026-10-03T04:02:04.884Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.365Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/PfizerClinicalTrial.html</loc>
-    <lastmod>2026-10-03T04:02:04.878Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.359Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/OIDC.html</loc>
-    <lastmod>2026-10-03T04:02:04.871Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.351Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/NNDerivatives.html</loc>
-    <lastmod>2026-10-03T04:02:04.870Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.351Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Lisp.html</loc>
-    <lastmod>2026-10-03T04:02:04.870Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.350Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Keycloak.html</loc>
-    <lastmod>2026-10-03T04:02:04.861Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.341Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/K8sSANs.html</loc>
-    <lastmod>2026-10-03T04:02:04.860Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.341Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/InternallyDividingPoint.html</loc>
-    <lastmod>2026-10-03T04:02:04.859Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.340Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/H200.html</loc>
-    <lastmod>2026-10-03T04:02:04.844Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.325Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/GitPrompt.html</loc>
-    <lastmod>2026-10-03T04:02:04.844Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.325Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/GeometricSequence.html</loc>
-    <lastmod>2026-10-03T04:02:04.844Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.325Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Entropy.html</loc>
-    <lastmod>2026-10-03T04:02:04.842Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.324Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Cloudflare526.html</loc>
-    <lastmod>2026-10-03T04:02:04.839Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.320Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/CertManagerNginx.html</loc>
-    <lastmod>2026-10-03T04:02:04.839Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.320Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/BinaryHeap.html</loc>
-    <lastmod>2026-10-03T04:02:04.839Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.320Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/index.html</loc>
-    <lastmod>2026-10-03T04:02:04.838Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.319Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/about.html</loc>
-    <lastmod>2026-10-03T04:02:04.835Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.316Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/BiasVariance.html</loc>
-    <lastmod>2026-10-03T04:02:04.838Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.319Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/CertManager.html</loc>
-    <lastmod>2026-10-03T04:02:04.839Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.320Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/CertificateSigningReqeust.html</loc>
-    <lastmod>2026-10-03T04:02:04.839Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.320Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/DifferentialEntropy.html</loc>
-    <lastmod>2026-10-03T04:02:04.842Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.324Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/GAN.html</loc>
-    <lastmod>2026-10-03T04:02:04.844Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.325Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Git.html</loc>
-    <lastmod>2026-10-03T04:02:04.844Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.325Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/GoConcurrency.html</loc>
-    <lastmod>2026-10-03T04:02:04.844Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.325Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/HuffmanCoding.html</loc>
-    <lastmod>2026-10-03T04:02:04.858Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.339Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/JensensInequality.html</loc>
-    <lastmod>2026-10-03T04:02:04.860Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.341Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Kafka.html</loc>
-    <lastmod>2026-10-03T04:02:04.861Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.341Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Kubeconfig.html</loc>
-    <lastmod>2026-10-03T04:02:04.870Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.350Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/MeasureingDistributions.html</loc>
-    <lastmod>2026-10-03T04:02:04.870Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.351Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/NginxIngress.html</loc>
-    <lastmod>2026-10-03T04:02:04.870Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.351Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/OSISeven.html</loc>
-    <lastmod>2026-10-03T04:02:04.875Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.356Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/RaspiK8s.html</loc>
-    <lastmod>2026-10-03T04:02:04.880Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.361Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/SkaffoldInCluster.html</loc>
-    <lastmod>2026-10-03T04:02:04.884Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.365Z</lastmod>
   </url>
   <url>
     <loc>https://blog.shaneoh.org/posts/Tmux.html</loc>
-    <lastmod>2026-10-03T04:02:04.884Z</lastmod>
+    <lastmod>2026-10-03T10:26:03.365Z</lastmod>
   </url>
 </urlset>
