@@ -7,6 +7,7 @@ project:
     - CNAME
     - clock.html
     - clock.webmanifest
+    - clock-sw.js
     - image/clock-icon-*.png
   preview:
     port: 8888

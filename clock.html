@@ -14,11 +14,15 @@
   <title>clock</title>
   <link rel="manifest" href="/clock.webmanifest">
   <link rel="apple-touch-icon" href="/image/clock-icon-180.png">
+  <!-- Same font on every device: Pretendard JP covers digits and hanja, Pretendard covers Hangul; only the subsets in use download.
+       crossorigin keeps the responses readable so the service worker can cache them for offline use. -->
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-jp-dynamic-subset.min.css">
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2216%22%20fill%3D%22%23f3f1eb%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2223%22%20fill%3D%22%23e5e3d5%22%20stroke%3D%22%23d6d4c7%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M32%2032%2042%2020%22%20stroke%3D%22%2364685e%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2246%22%20r%3D%224%22%20fill%3D%22%23b34d50%22%2F%3E%3C%2Fsvg%3E">
   <style>
 :root {
   color-scheme: light;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  font-family: "Pretendard JP Variable", "Pretendard Variable", -apple-system, BlinkMacSystemFont, sans-serif;
   background: #f3f1eb;
   color: #44453f;
   -webkit-font-smoothing: antialiased;
@@ -100,7 +104,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   box-shadow: inset 0 1px 2px #ffffff55, inset -1px -2px 3px #00000030, 2px 5px 7px #00000025;
 }
 .clock-app[data-finish="stone"] .clock-glass { box-shadow: inset 1px 2px 3px #39393955, inset -1px -1px 2px #e3e3e35c; }
-.clock-stage { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 65px 0 48px; }
+.clock-stage { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 65px 0 48px; transition: filter 2s; }
+/* Night hours: dim the dark screen so it works as a bedside clock. */
+.clock-app[data-night="true"][data-finish="stone"] :is(.clock-stage, .clock-footer) { filter: brightness(.55); }
 .clock-object { width: var(--clock-size); flex-shrink: 0; aspect-ratio: 1; position: relative; }
 @supports (width: 1cqh) {
   .clock-stage { container-type: size; }
@@ -204,38 +210,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
 
 .calendar-date { color: var(--faint); font-size: 11px; font-weight: 300; letter-spacing: .12em; font-variant-numeric: tabular-nums; }
 
-/* Apply the system theme to initial HTML before JavaScript starts. */
-@media (prefers-color-scheme: dark) {
-  .clock-app[data-theme="system"] {
-    --rim: #989898;
-    --rim-edge: #777777;
-    --glass: #bababa;
-    --hand: #444444;
-    --dot: #b84f57;
-    --text: #e2e2e2;
-    --muted: #b3b3b3;
-    --faint: #a3a3a3;
-    --time: #dcdcdc;
-    --border: #444444;
-    --control: #b7b7b7;
-    --hover: #ffffff0c;
-    --hover-text: #e5e5e5;
-    --selected: #c5c5c5;
-    --edge: #252525;
-    background: radial-gradient(ellipse at 50% 42%, #353535 0%, #252525 62%, #1d1d1d 100%);
-    color-scheme: dark;
-  }
-  :root:has(.clock-app[data-theme="system"]) { background: #252525; color-scheme: dark; }
-  .clock-app[data-theme="system"]::before { opacity: .04; }
-  .clock-app[data-theme="system"] .clock-object::before { background: #000; opacity: .5; inset: 12% 3% -6% 10%; filter: blur(25px); transform: translate(10px, 12px); }
-  .clock-app[data-theme="system"] .clock-rim {
-    background: linear-gradient(140deg, #ffffff38, #ffffff00 42%, #0000001c 75%, #ffffff18), var(--rim);
-    border-color: #c3c3c34d;
-    box-shadow: inset 0 1px 2px #ffffff55, inset -1px -2px 3px #00000030, 2px 5px 7px #00000025;
-  }
-  .clock-app[data-theme="system"] .clock-glass { box-shadow: inset 1px 2px 3px #39393955, inset -1px -1px 2px #e3e3e35c; }
-}
-
 /* iOS 26 home-screen apps fill the status bar with the page colour (theme-color is ignored).
    Fade the top of the page into that same colour so the bar reads as part of the page. */
 .clock-app[data-standalone="true"] { background-color: var(--edge); }
@@ -251,16 +225,24 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   </style>
 </head>
 <body>
-  <main class="clock-app" data-finish="chalk" data-theme="system" data-show-time="false" data-idle="false">
+  <main class="clock-app" data-finish="chalk" data-theme="system" data-show-time="true" data-idle="false">
     <script>
+      // Shared with the main script. From 22:00 to 06:00 the system theme turns dark and dark screens dim.
+      function resolveAppearance(theme, now = new Date()) {
+        const night = now.getHours() >= 22 || now.getHours() < 6;
+        const dark = night || matchMedia('(prefers-color-scheme: dark)').matches;
+        return { night, finish: theme === 'system' ? (dark ? 'stone' : 'chalk') : theme };
+      }
       // Apply the saved theme before the first paint: iOS home-screen apps sample the status bar colour from it.
       (() => {
         const root = document.currentScript.parentElement;
         let theme = 'system';
         try { theme = localStorage.getItem('clock-theme') || theme; } catch {}
         if (!['chalk', 'stone', 'system'].includes(theme)) theme = 'system';
+        const { night, finish } = resolveAppearance(theme);
         root.dataset.theme = theme;
-        root.dataset.finish = theme === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'stone' : 'chalk') : theme;
+        root.dataset.finish = finish;
+        root.dataset.night = String(night);
         // Running as an iOS home-screen app: lets the CSS blend the page top into the status bar.
         if (navigator.standalone) root.dataset.standalone = 'true';
       })();
@@ -285,7 +267,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         </div>
       </div>
       <div class="time-caption">
-        <span class="digital-time" data-time>—:—</span>
+        <span class="digital-time" data-time>—:—:—</span>
         <span class="calendar-date" data-date></span>
       </div>
     </section>
@@ -298,8 +280,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         </button>
       </div>
       <div class="view-controls">
-        <button type="button" class="icon-button" data-toggle-time aria-label="디지털 시간 보이기" aria-pressed="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /><path data-eye-slash d="m4 4 16 16" visibility="visible" /></svg>
+        <button type="button" class="icon-button" data-toggle-time aria-label="디지털 시간 숨기기" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /><path data-eye-slash d="m4 4 16 16" visibility="hidden" /></svg>
         </button>
         <span class="control-divider"></span>
         <button type="button" class="icon-button" data-fullscreen aria-label="전체 화면" aria-pressed="false">
@@ -321,19 +303,21 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     const systemTheme = matchMedia('(prefers-color-scheme: dark)');
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const themeButtons = [...root.querySelectorAll('[data-color]')];
-    const digital = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+    const digital = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
     const IDLE_DELAY = 3000;
     let theme = root.dataset.theme;
     let finish = root.dataset.finish;
     let animationId = 0;
+    let lastSecond = -1;
     let lastMinute = -1;
 
     function applyTheme() {
-      const next = theme === 'system' ? (systemTheme.matches ? 'stone' : 'chalk') : theme;
-      const changed = next !== finish;
-      finish = next;
+      const appearance = resolveAppearance(theme);
+      const changed = appearance.finish !== finish;
+      finish = appearance.finish;
       root.dataset.theme = theme;
       root.dataset.finish = finish;
+      root.dataset.night = String(appearance.night);
       document.querySelector('meta[name="theme-color"]').content = finish === 'stone' ? '#252525' : '#f3f1eb';
       themeButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.color === theme)));
       // iOS home-screen apps sample the status bar colour only when the page loads, so reload to resample it.
@@ -355,12 +339,17 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
       hands.second.setAttribute('transform', `rotate(${(reducedMotion.matches ? now.getSeconds() : seconds) * 6} 200 200)`);
       hands.minute.setAttribute('transform', `rotate(${minutes * 6} 200 200)`);
       hands.hour.setAttribute('transform', `rotate(${hours * 30} 200 200)`);
+      const currentSecond = Math.floor(now.getTime() / 1000);
+      if (lastSecond !== currentSecond) {
+        lastSecond = currentSecond;
+        time.textContent = digital.format(now);
+      }
       const currentMinute = Math.floor(now.getTime() / 60000);
       if (lastMinute !== currentMinute) {
         lastMinute = currentMinute;
-        const formatted = digital.format(now);
-        time.textContent = formatted;
-        dial.setAttribute('aria-label', `현재 시각 ${formatted}`);
+        dial.setAttribute('aria-label', `현재 시각 ${time.textContent.slice(0, 5)}`);
+        // Picks up the night hours as they start and end.
+        applyTheme();
         date.textContent = `${now.getMonth() + 1}月 ${now.getDate()}日 ${'日月火水木金土'[now.getDay()]}曜日`;
         // Approximate sunlight using local time: east at 06:00, overhead at noon, west at 18:00.
         // At night the shadow falls straight down, as if from a ceiling light.
@@ -389,17 +378,37 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
     document.addEventListener('touchmove', event => { if (event.touches.length > 1) event.preventDefault(); }, { passive: false });
     document.addEventListener('wheel', event => { if (event.ctrlKey) event.preventDefault(); }, { passive: false });
 
+    // Keep the screen on while the clock is showing. The lock drops whenever the page is hidden, so ask again
+    // when it comes back, and on taps for browsers that only grant it after a user gesture.
+    let wakeLock = null;
+    async function keepAwake() {
+      if (wakeLock || document.hidden || !navigator.wakeLock) return;
+      wakeLock = navigator.wakeLock.request('screen').catch(() => null);
+      const lock = await wakeLock;
+      wakeLock = lock;
+      lock?.addEventListener('release', () => { wakeLock = null; });
+    }
+    document.addEventListener('visibilitychange', keepAwake);
+    document.addEventListener('pointerdown', keepAwake);
+    keepAwake();
+
+    // Offline support for the home-screen app.
+    navigator.serviceWorker?.register('/clock-sw.js', { scope: '/clock' }).catch(() => {});
+
     const timeButton = root.querySelector('[data-toggle-time]');
     function showTime(visible) {
       root.dataset.showTime = String(visible);
       timeButton.setAttribute('aria-pressed', String(visible));
       timeButton.setAttribute('aria-label', visible ? '디지털 시간 숨기기' : '디지털 시간 보이기');
       root.querySelector('[data-eye-slash]').setAttribute('visibility', visible ? 'hidden' : 'visible');
-      // Kept per session so the theme reload above does not hide the time again.
+      // Kept per session so the theme reload above does not reset it.
       try { sessionStorage.setItem('clock-show-time', String(visible)); } catch {}
     }
     timeButton.addEventListener('click', () => showTime(root.dataset.showTime !== 'true'));
-    try { if (sessionStorage.getItem('clock-show-time') === 'true') showTime(true); } catch {}
+    try {
+      const saved = sessionStorage.getItem('clock-show-time');
+      if (saved) showTime(saved === 'true');
+    } catch {}
 
     // Fade the controls out after a few idle seconds; any pointer movement, tap or key brings them back.
     const footer = root.querySelector('.clock-footer');
