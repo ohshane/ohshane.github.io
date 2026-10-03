@@ -120,6 +120,9 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   filter: blur(25px);
   opacity: .13;
   transform: translate(10px, 12px);
+  /* Own compositing layer: Safari otherwise re-blurs the shadow only inside the small areas repainted by
+     the moving second dot and the ticking caption, leaving bands with no shadow. */
+  will-change: transform;
 }
 .clock-app[data-finish="chalk"] .clock-object::before {
   inset: 0;
@@ -142,7 +145,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
   box-shadow: inset 1px 2px 3px #5d5c4430, inset -1px -1px 2px #ffffffd9;
   border: 1px solid var(--rim-edge);
 }
-.clock-dial { display: block; width: 100%; height: 100%; position: relative; z-index: 1; }
+/* Own layer too, so the hands repainting every frame never invalidates the rest of the page. */
+.clock-dial { display: block; width: 100%; height: 100%; position: relative; z-index: 1; will-change: transform; }
 .clock-hands { fill: var(--hand); opacity: .72; }
 .second-dot { fill: var(--dot); opacity: .92; }
 .glass-sheen { position: absolute; inset: 0; pointer-events: none; z-index: 2; border-radius: 50%; background: linear-gradient(125deg, #ffffff10, #ffffff00 48%, #ffffff08); }
