@@ -325,7 +325,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid #a35548; outline-offs
         const formatted = digital.format(now);
         time.textContent = formatted;
         dial.setAttribute('aria-label', `현재 시각 ${formatted}`);
-        date.textContent = `${now.getMonth() + 1}月 ${now.getDate()}日 ${'日月火水木金土'[now.getDay()]}`;
+        date.textContent = `${now.getMonth() + 1}月 ${now.getDate()}日 ${'日月火水木金土'[now.getDay()]}曜日`;
         // Approximate sunlight using local time: east at 06:00, overhead at noon, west at 18:00.
         const hour = now.getHours() + now.getMinutes() / 60;
         const daylight = hour >= 6 && hour < 18;
